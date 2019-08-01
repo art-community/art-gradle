@@ -1,14 +1,12 @@
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.*
 
-val artifactory_contextUrl: String by project
-val artifactory_user: String by project
-val artifactory_password: String by project
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
 val uploadArchives: Upload by tasks
 val jar: Jar by tasks
 val embedded by configurations.creating
+
 configurations.compileClasspath.get().extendsFrom(embedded)
 
 plugins {
@@ -20,7 +18,7 @@ plugins {
     maven
 }
 
-group = "ru.adk"
+group = "ru.art"
 version = "1.0"
 
 repositories {
@@ -29,13 +27,6 @@ repositories {
     gradlePluginPortal()
     maven {
         url = uri("https://repo.gradle.org/gradle/libs-releases-local/")
-    }
-    maven {
-        url = uri("$artifactory_contextUrl/gradle-virtual")
-        credentials {
-            username = artifactory_user
-            password = artifactory_password
-        }
     }
 }
 
@@ -56,7 +47,6 @@ dependencies {
     embedded("me.champeau.gradle", "jmh-gradle-plugin", "0.4.+")
     embedded("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.3.31")
     embedded("com.google.protobuf", "protobuf-gradle-plugin", "0.8+")
-    embedded("ru.rti.development", "application-generator", "HttpSpecGenerator")
     embedded("net.sf.proguard", "proguard-gradle", "6.1.+")
 }
 
@@ -67,15 +57,6 @@ compileKotlin.kotlinOptions {
 compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
-
-uploadArchives.repositories.withGroovyBuilder {
-    "mavenDeployer" {
-        "repository"("url" to uri("$artifactory_contextUrl/gradle-local")) {
-            "authentication"("userName" to artifactory_user, "password" to artifactory_password)
-        }
-    }
-}
-uploadArchives.dependsOn("build")
 
 with(jar) {
     isZip64 = true
@@ -99,13 +80,13 @@ with(jar) {
 
 gradlePlugin {
     plugins {
-        create("adkProjectPlugin") {
-            id = "adkProject"
-            implementationClass = "ru.adk.gradle.plugin.ProjectPlugin"
+        create("artProjectPlugin") {
+            id = "artProject"
+            implementationClass = "ru.art.gradle.plugin.ProjectPlugin"
         }
-        create("adkSettingsPlugin") {
-            id = "adkSettings"
-            implementationClass = "ru.adk.gradle.plugin.SettingsPlugin"
+        create("artSettingsPlugin") {
+            id = "artSettings"
+            implementationClass = "ru.art.gradle.plugin.SettingsPlugin"
         }
     }
 }

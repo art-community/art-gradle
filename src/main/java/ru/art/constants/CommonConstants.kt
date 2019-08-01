@@ -1,0 +1,23 @@
+package ru.art.constants
+
+const val EMPTY_STRING = ""
+const val STAR = '*'
+const val COMMA = ","
+const val DOT = "."
+const val SLASH = "/"
+const val NEW_LINE = "\n"
+const val PREVIOUS_DIRECTORY = "../"
+const val SEMICOLON = ":"
+const val GRADLE_VERSION_5 = "5"
+const val ART_EXTENSION = "art"
+const val MAIN_SOURCE_SET = "main"
+const val TEST_SOURCE_SET = "test"
+const val SRC = "src"
+const val JAR_EXTENSION = ".jar"
+const val ART_MODULE_GROUP = "ru.art"
+const val CLASS_FILE_EXTENSION = ".class"
+const val JAVA_FILE_EXTENSION = ".java"
+const val ADDITIONAL_LOGGING_MESSAGE_INDENT = "  "
+const val ART_PROJECT = "artProject"
+const val ART_SETTINGS = "artSettings"
+const val ART_PLUGIN_DEPENDENCY = "ru.art:application-gradle-plugin"
