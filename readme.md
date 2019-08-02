@@ -1,0 +1,1 @@
+https://travis-ci.org/art-community/application-gradle-plugin.svg?branch=latest
