@@ -22,8 +22,8 @@ plugins {
     id("com.gradle.plugin-publish") version "0.10.0"
 }
 
-group = "ru.art"
-version = "1.0"
+group = "io.github.art"
+version = "1.1"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
