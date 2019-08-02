@@ -50,11 +50,7 @@ gradle-app.setting
 hs_err_pid*
 *.iml
 .idea/
-gradlew
-gradlew.bat
 gradle-wrapper.properties
-/build
-build
 local-logging-config.yml
 local-module-config.yml
 dist
