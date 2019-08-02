@@ -4,25 +4,34 @@ import org.jetbrains.kotlin.gradle.tasks.*
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
 val jar: Jar by tasks
-val embedded by configurations.creating
+val embedded: Configuration by configurations.creating
 configurations.compileClasspath.get().extendsFrom(embedded)
-
 
 tasks.withType<Wrapper> {
     gradleVersion = "5.5.1"
 }
 
 plugins {
+    kotlin("jvm") version "1.3.31"
     checkstyle
     `java-gradle-plugin`
     java
     `java-library`
-    kotlin("jvm") version "1.3.31"
-    maven
+    `maven-publish`
+    signing
+    id("com.gradle.plugin-publish") version "0.10.0"
 }
 
 group = "ru.art"
 version = "1.0"
+
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
 
 repositories {
     mavenCentral()
@@ -30,6 +39,38 @@ repositories {
     gradlePluginPortal()
     maven {
         url = uri("https://repo.gradle.org/gradle/libs-releases-local/")
+    }
+}
+
+pluginBundle {
+    website = "https://github.com/art-community/application-gradle-plugin"
+    vcsUrl = "https://github.com/art-community/application-gradle-plugin.git"
+    tags = listOf("art",
+            "ART",
+            "configuring",
+            "application",
+            "java",
+            "kotlin",
+            "groovy",
+            "spock",
+            "spock framework",
+            "jmh",
+            "gatling")
+}
+gradlePlugin {
+    plugins {
+        create("artProjectPlugin") {
+            id = "ru.art.artProject"
+            displayName = "Plugin for simplify project configuration"
+            description = "A plugin that helps you to configure JVM projects"
+            implementationClass = "ru.art.gradle.ProjectPlugin"
+        }
+        create("artSettingsPlugin") {
+            id = "ru.art.artSettings"
+            displayName = "Plugin for simplify settings configuration"
+            description = "A plugin that helps you to configure JVM projects"
+            implementationClass = "ru.art.gradle.SettingsPlugin"
+        }
     }
 }
 
@@ -53,14 +94,6 @@ dependencies {
     embedded("net.sf.proguard", "proguard-gradle", "6.1.+")
 }
 
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-
 with(jar) {
     isZip64 = true
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -78,18 +111,4 @@ with(jar) {
             .forEach { from(it) }
 
     exclude(listOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"))
-}
-
-
-gradlePlugin {
-    plugins {
-        create("artProjectPlugin") {
-            id = "artProject"
-            implementationClass = "ru.art.gradle.plugin.ProjectPlugin"
-        }
-        create("artSettingsPlugin") {
-            id = "artSettings"
-            implementationClass = "ru.art.gradle.plugin.SettingsPlugin"
-        }
-    }
 }
