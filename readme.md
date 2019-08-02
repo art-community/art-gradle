@@ -1,1 +1,1 @@
-![Build Status](https://travis-ci.org/art-community/application-gradle-plugin.svg)
+Build status: ![Build Status](https://travis-ci.org/art-community/application-gradle-plugin.svg)
