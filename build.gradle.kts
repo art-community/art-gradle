@@ -60,13 +60,13 @@ pluginBundle {
 gradlePlugin {
     plugins {
         create("artProjectPlugin") {
-            id = "ru.art.artProject"
+            id = "ru.art.project"
             displayName = "Plugin for simplify project configuration"
             description = "A plugin that helps you to configure JVM projects"
             implementationClass = "ru.art.gradle.ProjectPlugin"
         }
         create("artSettingsPlugin") {
-            id = "ru.art.artSettings"
+            id = "ru.art.settings"
             displayName = "Plugin for simplify settings configuration"
             description = "A plugin that helps you to configure JVM projects"
             implementationClass = "ru.art.gradle.SettingsPlugin"
