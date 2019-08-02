@@ -35,13 +35,11 @@ buildNumber.properties
 .gradle
 /build/
 gradle-app.setting
-!gradle-wrapper.jar
 .gradletasknamecache
 *.class
 *.log
 *.ctxt
 .mtj.tmp/
-*.jar
 *.war
 *.ear
 *.zip
@@ -50,7 +48,6 @@ gradle-app.setting
 hs_err_pid*
 *.iml
 .idea/
-gradle-wrapper.properties
 local-logging-config.yml
 local-module-config.yml
 dist
