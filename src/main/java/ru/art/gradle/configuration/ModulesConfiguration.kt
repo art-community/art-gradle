@@ -593,16 +593,19 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
     }
 
     fun dataFormats(configurator: DataFormatsConfiguration.() -> Unit) {
+        dataFormatsConfiguration.group = group
         configurator(dataFormatsConfiguration)
         modules += dataFormatsConfiguration.modules
     }
 
     fun protocols(configurator: ProtocolsConfiguration.() -> Unit) {
+        protocolsConfiguration.group = group
         configurator(protocolsConfiguration)
         modules += protocolsConfiguration.modules
     }
 
     fun db(configurator: DatabasesConfiguration.() -> Unit) {
+        dbConfiguration.group = group
         configurator(dbConfiguration)
         modules += dbConfiguration.modules
     }
