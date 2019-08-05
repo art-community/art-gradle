@@ -23,7 +23,7 @@ plugins {
 }
 
 group = "io.github.art"
-version = "1.1"
+version = "1.7"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
@@ -79,9 +79,9 @@ dependencies {
     compileClasspath("org.projectlombok", "lombok", "1.18.+")
     testImplementation("org.projectlombok", "lombok", "1.18.+")
 
-    implementation("org.gradle", "gradle-kotlin-dsl", "1.1.3").exclude("org.jetbrains.kotlinx", "kotlinx-metadata-jvm")
-    implementation("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx", "kotlinx-metadata-jvm", "0.0.+")
+    compileOnly("org.gradle", "gradle-kotlin-dsl", "1.1.3").exclude("org.jetbrains.kotlinx", "kotlinx-metadata-jvm")
+    compileOnly("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
+    compileOnly("org.jetbrains.kotlinx", "kotlinx-metadata-jvm", "0.1.0")
 
     embedded("org.jfrog.artifactory.client", "artifactory-java-client-services", "2.7.0")
             .exclude("ch.qos.logback", "logback-classic")

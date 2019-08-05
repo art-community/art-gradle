@@ -35,17 +35,17 @@ fun Project.addModules() {
 
     embeddedModules.stream()
             .peek(::substituteModuleWithCode)
-            .map { module -> Dependency(ART_MODULE_GROUP, module.artifact) }
+            .map { module -> Dependency(module.group, module.artifact) }
             .peek { dependency -> applyVersionSelectionMode(dependency, embeddedModulesConfiguration.versionSelectionMode, embeddedModulesConfiguration.version) }
             .forEach { addDependency(EMBEDDED, it) }
     providedModules.stream()
             .peek(::substituteModuleWithCode)
-            .map { module -> Dependency(ART_MODULE_GROUP, module.artifact) }
+            .map { module -> Dependency(module.group, module.artifact) }
             .peek { dependency -> applyVersionSelectionMode(dependency, providedModulesConfiguration.versionSelectionMode, providedModulesConfiguration.version) }
             .forEach { addDependency(PROVIDED, it) }
     testModules.stream()
             .peek(::substituteModuleWithCode)
-            .map { module -> Dependency(ART_MODULE_GROUP, module.artifact) }
+            .map { module -> Dependency(module.group, module.artifact) }
             .peek { dependency -> applyVersionSelectionMode(dependency, testModulesConfiguration.versionSelectionMode, testModulesConfiguration.version) }
             .forEach { addDependency(TEST_COMPILE_CLASSPATH, it) }
 }
