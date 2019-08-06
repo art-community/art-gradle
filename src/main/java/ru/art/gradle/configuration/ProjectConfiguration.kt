@@ -89,7 +89,10 @@ open class ProjectConfiguration @Inject constructor(objectFactory: ObjectFactory
 
     fun resources(action: Action<in ResourcesConfiguration>) = action.execute(resourcesConfiguration)
 
-    fun publishing(action: Action<in PublishingConfiguration>) = action.execute(publishingConfiguration)
+    fun publishing(action: Action<in PublishingConfiguration>) {
+        publishingConfiguration.enabled = true
+        action.execute(publishingConfiguration)
+    }
 
     fun test(action: Action<in TestConfiguration>) = action.execute(testConfiguration)
 

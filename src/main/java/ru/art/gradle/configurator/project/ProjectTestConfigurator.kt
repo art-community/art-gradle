@@ -47,7 +47,7 @@ fun Project.configureTests() {
         }))
     }
 
-    if (projectConfiguration().publishingConfiguration.getUsernameParameter(this@configureTests) == projectConfiguration().testConfiguration.reportsPublisher) {
+    if (projectConfiguration().testConfiguration.publishReports) {
         val uploadReportsTask = tasks.create(UPLOAD_REPORTS, Zip::class.java) { zipTask ->
             with(zipTask) {
                 group = UPLOAD_REPORTS_GROUP

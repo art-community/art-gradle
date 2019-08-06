@@ -27,6 +27,7 @@ import ru.art.gradle.context.Context.projectConfiguration
 import javax.inject.*
 
 open class PublishingConfiguration @Inject constructor(val project: Project) {
+    var enabled = false
     var urlParameter = URL_PROPERTY
     var usernameParameter = USERNAME_PROPERTY
     var passwordParameter = PASSWORD_PROPERTY

@@ -83,9 +83,9 @@ fun Project.configureJava() {
                 if (projectConfiguration().mainClass.isBlank()) {
                     determineMainClass()?.let(projectConfiguration()::mainClass)
                 }
-                manifest { manifest -> manifest.attributes[ru.art.gradle.constants.MAIN_CLASS_ATTRIBUTE] = projectConfiguration().mainClass }
-                exclude(ru.art.gradle.constants.MANIFEST_EXCLUSIONS)
-                archiveFileName.set("$archiveBaseName-${project.version}${ru.art.gradle.constants.JAR_EXTENSION}")
+                manifest { manifest -> manifest.attributes[MAIN_CLASS_ATTRIBUTE] = projectConfiguration().mainClass }
+                exclude(MANIFEST_EXCLUSIONS)
+                archiveFileName.set("$archiveBaseName-${project.version}$JAR_EXTENSION")
                 if (projectConfiguration().mainClass.isNotEmpty()) {
                     attention("Main class: '${projectConfiguration().mainClass}'")
                 }

@@ -38,8 +38,21 @@ fun Project.configureProject() {
         attention("Configure ART project after evaluate")
         configureRefreshing()
         calculateVersion()
-        addRepositoryFromProperties()
-        configurePublishing()
+        if (projectConfiguration.repositoryConfiguration.customConfigurable) {
+            addRepositoryFromProperties()
+        }
+        if (projectConfiguration.repositoryConfiguration.jcenter) {
+            repositories.jcenter()
+        }
+        if (projectConfiguration.repositoryConfiguration.mavenCentral) {
+            repositories.mavenCentral()
+        }
+        if (projectConfiguration.repositoryConfiguration.gradlePluginPortal) {
+            repositories.gradlePluginPortal()
+        }
+        if (projectConfiguration.publishingConfiguration.enabled) {
+            configurePublishing()
+        }
         configureTests()
         if (projectConfiguration.generatorConfiguration.packageName.isNotEmpty()) {
             addGeneratorDependency()

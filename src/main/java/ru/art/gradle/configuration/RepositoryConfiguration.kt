@@ -25,6 +25,10 @@ import ru.art.gradle.constants.configuration.defaults.DefaultRepositoryConfigura
 import ru.art.gradle.constants.configuration.defaults.DefaultRepositoryConfiguration.USERNAME_PROPERTY
 
 open class RepositoryConfiguration {
+    var customConfigurable = false
+    var jcenter = true
+    var mavenCentral = true
+    var gradlePluginPortal = false
     var urlParameter = URL_PROPERTY
     var usernameParameter = USERNAME_PROPERTY
     var passwordParameter = PASSWORD_PROPERTY
