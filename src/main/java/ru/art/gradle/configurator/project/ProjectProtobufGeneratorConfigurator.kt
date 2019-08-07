@@ -27,7 +27,7 @@ fun Project.configureProtobufGenerator() {
     protobuf {
         protoc(closureOf<ExecutableLocator> {
             generatedFilesBaseDir = "${projectDir.absolutePath}$separator$PROTO_DIRECTORY"
-            artifact = PROTOBUF_COMPILER_ARTIFACT(projectConfiguration().externalDependencyVersionsConfiguration.protobufCompilatorVersion)
+            artifact = PROTOBUF_COMPILER_ARTIFACT(projectConfiguration().externalDependencyVersionsConfiguration.protobufCompilerVersion)
         })
     }
 }

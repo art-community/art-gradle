@@ -54,7 +54,7 @@ import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.POSTGRES_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROJECT_REACTOR_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROMETHEUS_DROPWIZARD_SIMPLE_CLIENT
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROTOBUF_COMPILATOR_VERSION
+import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROTOBUF_COMPILER_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROTOBUF_GRADLE_PLUGIN_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.RESILIENCE4J_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.ROCKSDB_VERSION
@@ -64,17 +64,19 @@ import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.SPOCK_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.SSH_PLUGIN_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.STAX_VERSION
+import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.TARANTOOL_CONNECTOR_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.TOMCAT_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.TYPESAFE_CONFIG_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.WSDL2JAVA_VERSION
 import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.YAMLBEANS_VERSION
+import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.ZERO_TURNAROUND_VERSION
 
 open class ExternalDependencyVersionsConfiguration {
     var cglibVersion = CGLIB_VERSION
     var yamlbeansVersion = YAMLBEANS_VERSION
     var jacksonVersion = JACKSON_VERSION
     var protobufGradlePluginVersion = PROTOBUF_GRADLE_PLUGIN_VERSION
-    var protobufCompilatorVersion = PROTOBUF_COMPILATOR_VERSION
+    var protobufCompilerVersion = PROTOBUF_COMPILER_VERSION
     var gradleVersionsPluginVersion = GRADLE_VERSIONS_PLUGIN_VERSION
     var checkstyleVersion = CHECKSTYLE_VERSION
     var typesafeConfigVersion = TYPESAFE_CONFIG_VERSION
@@ -122,4 +124,6 @@ open class ExternalDependencyVersionsConfiguration {
     var kafkaVersion = KAFKA_VERSION
     var kafkaLog4jAppenderVersion = KAFKA_LOG4J_APPENDER_VERSION
     var junitVersion = JUNIT_VERSION
+    var tarantoolConnectorVersion = TARANTOOL_CONNECTOR_VERSION
+    var zeroTurnaroundVersion = ZERO_TURNAROUND_VERSION
 }

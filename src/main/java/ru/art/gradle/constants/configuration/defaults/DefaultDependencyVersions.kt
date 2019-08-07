@@ -21,7 +21,7 @@ object DefaultDependencyVersions {
     const val YAMLBEANS_VERSION = "1.+"
     const val JACKSON_VERSION = "2.9.+"
     const val PROTOBUF_GRADLE_PLUGIN_VERSION = "0.8.+"
-    const val PROTOBUF_COMPILATOR_VERSION = "3.6.+"
+    const val PROTOBUF_COMPILER_VERSION = "3.6.+"
     const val GRADLE_VERSIONS_PLUGIN_VERSION = "0.2+"
     const val CHECKSTYLE_VERSION = "8.+"
     const val TYPESAFE_CONFIG_VERSION = "1.3.+"
@@ -69,4 +69,6 @@ object DefaultDependencyVersions {
     const val KAFKA_VERSION = "2.2.+"
     const val KAFKA_LOG4J_APPENDER_VERSION = "0.9.0.0"
     const val JUNIT_VERSION = "4.12"
+    const val TARANTOOL_CONNECTOR_VERSION = "1.9.+"
+    const val ZERO_TURNAROUND_VERSION = "1.+"
 }

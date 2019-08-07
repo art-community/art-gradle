@@ -79,9 +79,6 @@ fun DependencyResolveDetails.selectVersionByMajor(version: ARTMajorVersion?, pro
 
 fun DependencyResolveDetails.useManualVersionSelection(version: String?, project: Project): String? {
     version ?: return EMPTY_STRING
-    if (!loadVersions(project).contains(version)) {
-        return EMPTY_STRING
-    }
     project.success("For dependency(${this.requested.group}:${this.requested.name}) manually select version: '$version'")
     return version
 }
