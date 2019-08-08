@@ -19,7 +19,6 @@ package ru.art.gradle.configuration
 import ru.art.gradle.constants.ProjectVersionCalculationMode.*
 
 open class VersionConfiguration {
-    var enabled: Boolean? = null
     var calculationMode = ROOT_PROJECT
         private set
 

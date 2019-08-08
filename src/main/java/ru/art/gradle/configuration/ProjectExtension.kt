@@ -134,11 +134,10 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
     }
 
     fun projectVersion(action: Action<in VersionConfiguration>) {
-        projectVersionConfiguration.enabled = true
         action.execute(projectVersionConfiguration)
     }
 
-    fun dependencyRefreshing(action: Action<in DependencyRefreshingConfiguration>) {
+    fun dependencyRefreshing(action: Action<in DependencyRefreshingConfiguration> = Action {}) {
         dependencyRefreshingConfiguration.enabled = true
         action.execute(dependencyRefreshingConfiguration)
     }
@@ -154,17 +153,16 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
 
     fun testModules(action: Action<in ModulesCombinationConfiguration>) {
         action.execute(testModulesConfiguration)
-
-
-        fun resources(action: Action<in ResourcesConfiguration>) = action.execute(resourcesConfiguration)
-
-        fun externalDependencyVersions(action: Action<in ExternalDependencyVersionsConfiguration>) = action.execute(externalDependencyVersionsConfiguration)
-
-
-        fun dependencyVersions(action: Action<in DependencyVersionsConfiguration>) = action.execute(dependencyVersionsConfiguration)
-
-        fun dependencySubstitution(action: Action<in DependencySubstitutionConfiguration>) = action.execute(dependencySubstitutionConfiguration)
     }
+
+    fun resources(action: Action<in ResourcesConfiguration>) = action.execute(resourcesConfiguration)
+
+    fun externalDependencyVersions(action: Action<in ExternalDependencyVersionsConfiguration>) = action.execute(externalDependencyVersionsConfiguration)
+
+
+    fun dependencyVersions(action: Action<in DependencyVersionsConfiguration>) = action.execute(dependencyVersionsConfiguration)
+
+    fun dependencySubstitution(action: Action<in DependencySubstitutionConfiguration>) = action.execute(dependencySubstitutionConfiguration)
 
 
     fun generator(action: Action<in GeneratorConfiguration>) {

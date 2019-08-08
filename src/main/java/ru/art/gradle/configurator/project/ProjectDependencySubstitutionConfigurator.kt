@@ -17,6 +17,7 @@
 package ru.art.gradle.configurator.project
 
 import org.gradle.api.*
+import org.gradle.api.internal.project.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DefaultTasks.BUILD
 import ru.art.gradle.context.Context.projectConfiguration
@@ -29,6 +30,10 @@ fun Project.substituteDependencies() {
             .forEach { dependency ->
                 configurations.all { configuration ->
                     findProject(":${dependency.artifact}") ?: return@all
+                    val dependencyProject = project(":${dependency.artifact}") as DefaultProject
+                    if (dependencyProject.state.isUnconfigured) {
+                        dependencyProject.evaluate()
+                    }
                     substitutedDependencies.add(dependency)
                     val module = configuration.resolutionStrategy.dependencySubstitution.module(dependency.inGradleNotation())
                     val project = configuration.resolutionStrategy.dependencySubstitution.project(":${dependency.artifact}")

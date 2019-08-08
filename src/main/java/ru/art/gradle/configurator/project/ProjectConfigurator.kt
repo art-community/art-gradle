@@ -37,7 +37,6 @@ fun Project.configureProject() {
         if (projectConfiguration.dependencyRefreshingConfiguration.enabled == true) {
             configureRefreshing()
         }
-        calculateVersion()
         if (projectConfiguration.testsConfiguration.enabled == true) {
             configureTests()
         }
@@ -45,8 +44,6 @@ fun Project.configureProject() {
             addGeneratorDependency()
             auxiliaryInformation().hasGenerator = true
         }
-        addModules()
-        substituteDependencies()
         if (projectConfiguration.lombokConfiguration.enabled == true) {
             addLombokDependency()
             auxiliaryInformation().hasLombok = true
@@ -58,6 +55,7 @@ fun Project.configureProject() {
         }
         if (projectConfiguration.spockFrameworkConfiguration.enabled == true) {
             applyGroovyPlugin()
+            addGroovyTestsDependency()
             addSpockDependency()
             auxiliaryInformation().hasSpock = true
         }
@@ -120,8 +118,8 @@ fun Project.configureProject() {
             if (hasGroovyTests && projectConfiguration.groovyConfiguration.enabled == null) {
                 if (projectConfiguration.spockFrameworkConfiguration.enabled != true) {
                     applyGroovyPlugin()
+                    addGroovyTestsDependency()
                 }
-                addGroovyTestsDependency()
                 auxiliaryInformation().hasGroovyTests = hasGroovyTests
             }
             if (hasScala && projectConfiguration.scalaConfiguration.enabled == null) {
@@ -149,6 +147,9 @@ fun Project.configureProject() {
                 auxiliaryInformation().hasWeb = true
             }
         }
+        calculateVersion()
+        addModules()
+        substituteDependencies()
         calculateDependencyVersions()
         configureJava()
         if (projectConfiguration.ideaConfiguration.enabled == true) {
