@@ -18,7 +18,6 @@ package ru.art.gradle.configurator.project
 
 import org.gradle.api.*
 import org.gradle.api.tasks.*
-import ru.art.gradle.exception.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.context.Context.projectConfiguration
 import ru.art.gradle.exception.*

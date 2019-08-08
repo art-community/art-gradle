@@ -19,7 +19,6 @@ package ru.art.gradle.constants
 import org.gradle.api.*
 import ru.art.gradle.dependency.*
 import ru.art.gradle.context.Context.projectConfiguration
-import ru.art.gradle.dependency.*
 
 fun Project.lombok() = Dependency("org.projectlombok", "lombok", projectConfiguration().externalDependencyVersionsConfiguration.lombokVersion)
 fun Project.groovy() = Dependency("org.codehaus.groovy", "groovy-all", projectConfiguration().externalDependencyVersionsConfiguration.groovyVersion)

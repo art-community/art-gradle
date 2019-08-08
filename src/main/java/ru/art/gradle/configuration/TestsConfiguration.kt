@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants
+package ru.art.gradle.configuration
 
-const val PRO_GUARD_TASK = "proGuardTransform"
-const val OPTIMIZED_JAR_POSTFIX = "-optimized.jar"
-const val RU_ART_CLASSES_SPECIFICATION = "class ru.art.** { *; }"
-val KEEP_ATTRIBUTES = arrayOf("*Annotation*", "Signature", "InnerClasses", "EnclosingMethod")
+open class TestsConfiguration {
+    var enabled: Boolean? = null
+    var useJunit = true
+}

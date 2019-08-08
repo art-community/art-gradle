@@ -17,11 +17,8 @@
 package ru.art.gradle.constants
 
 enum class DependencyVersionSelectionMode {
-    BRANCH,
-    TAG,
-    MANUAL,
-    LATEST,
-    MAJOR
+    PROJECT_VERSION_TREE,
+    ART_MAJOR_MINOR
 }
 
 

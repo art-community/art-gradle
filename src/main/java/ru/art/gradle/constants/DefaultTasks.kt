@@ -26,8 +26,6 @@ object DefaultTasks {
     const val CHECK = "check"
     const val CHECKSTYLE_MAIN = "checkstyleMain"
     const val CHECKSTYLE_TEST = "checkstyleTest"
-    const val UPLOAD_ARCHIVES = "uploadArchives"
-    const val UPLOAD_REPORTS = "uploadReports"
     const val JMH_COMPILE_GENERATED_CLASSES = "jmhCompileGeneratedClasses"
     const val GATLING_RUN = "gatlingRun"
 }

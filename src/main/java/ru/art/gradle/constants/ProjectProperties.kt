@@ -16,5 +16,5 @@
 
 package ru.art.gradle.constants
 
-const val USE_BRANCH = "useBranch"
-const val USE_VERSION = "useVersion"
+const val CHECKOUT_BRANCH = "checkoutBranch"
+const val PROJECT_VERSION = "projectVersion"

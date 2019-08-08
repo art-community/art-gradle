@@ -16,7 +16,6 @@
 
 package ru.art.gradle.configuration
 
-open class CheckstyleConfiguration {
+open class GatlingConfiguration {
     var enabled: Boolean? = null
-    var ignoreFailures = true
 }

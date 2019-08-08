@@ -16,10 +16,10 @@
 
 package ru.art.gradle.constants
 
-enum class ARTMajorVersion(val majorTag: Int) {
-    RELEASE_1(1);
+enum class ArtMajorMinorVersion(val version: String) {
+    RELEASE_1_0("1.0.+");
 
     companion object {
-        fun latest() = RELEASE_1
+        fun latest() = RELEASE_1_0
     }
 }

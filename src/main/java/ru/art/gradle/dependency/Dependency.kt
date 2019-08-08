@@ -16,13 +16,13 @@
 
 package ru.art.gradle.dependency
 
-data class Dependency(val group: String,
-                      val artifact: String,
-                      val version: String? = null,
+data class Dependency(var group: String,
+                      var artifact: String,
+                      var version: String? = null,
                       var exclusions: Set<Dependency> = setOf()) {
     fun inGradleNotation(): String {
         version ?: return "$group:$artifact"
-        return if (version.isEmpty()) "$group:$artifact" else "$group:$artifact:$version"
+        return if (version?.isEmpty() ?: return "$group:$artifact") "$group:$artifact" else "$group:$artifact:$version"
     }
 
     override fun equals(other: Any?): Boolean {

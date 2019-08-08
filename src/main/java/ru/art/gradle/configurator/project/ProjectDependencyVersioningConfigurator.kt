@@ -22,7 +22,6 @@ import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyVersionSelectionMode.*
 import ru.art.gradle.context.Context.projectConfiguration
 import ru.art.gradle.dependency.Dependency
-import ru.art.gradle.exception.*
 import ru.art.gradle.logging.*
 import ru.art.gradle.selector.*
 
@@ -55,11 +54,8 @@ private fun Project.resolveConfiguration(configuration: Configuration) {
                 if (requested.version.isNullOrEmpty() &&
                         !projectConfiguration().dependencySubstitutionConfiguration.codeSubstitutions.contains(dependency)) {
                     val version = when (versionSelectionModes[dependency]) {
-                        BRANCH -> selectVersionByBranch(versionsByBranch[dependency], this@resolveConfiguration)
-                        TAG -> selectVersionByTag(versionsByTag[dependency], this@resolveConfiguration)
-                        MANUAL -> useManualVersionSelection(manualVersions[dependency], this@resolveConfiguration)
-                        LATEST -> useLatestVersionSelection(this@resolveConfiguration)
-                        MAJOR -> selectVersionByMajor(majorVersions[dependency], this@resolveConfiguration)
+                        PROJECT_VERSION_TREE -> selectVersionByProjectVersionsTree(projectVersionTreeVersions[dependency], this@resolveConfiguration)
+                        ART_MAJOR_MINOR -> selectVersionByArtMajorMinor(majorMinorVersions[dependency], this@resolveConfiguration)
                         null -> return@eachDependency
                     }
                     if (version.isNullOrBlank()) {
@@ -73,5 +69,4 @@ private fun Project.resolveConfiguration(configuration: Configuration) {
             }
         }
     }
-    ignoreException { configuration.resolve() }
 }

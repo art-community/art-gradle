@@ -32,12 +32,10 @@ fun Project.configureJava() {
     if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
         compileJava.options.annotationProcessorPath = files(configurations.getByName(ANNOTATION_PROCESSOR.configuration).files)
     }
-    compileJava.options.encoding = projectConfiguration().javaConfiguration.compilerEncoding
 
     if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
         compileTestJava.options.annotationProcessorPath = files(configurations.getByName(ANNOTATION_PROCESSOR.configuration).files)
     }
-    compileTestJava.options.encoding = projectConfiguration().javaConfiguration.compilerEncoding
 
     with(convention.getPlugin(JavaPluginConvention::class.java)) {
         val mainSourceSet = sourceSets.getByName(MAIN_SOURCE_SET)
@@ -45,9 +43,6 @@ fun Project.configureJava() {
 
         mainSourceSet.resources.setSrcDirs(projectConfiguration().resourcesConfiguration.resourceDirs)
         testSourceSet.resources.setSrcDirs(projectConfiguration().resourcesConfiguration.testResourceDirs)
-
-        setSourceCompatibility(projectConfiguration().javaConfiguration.sourceCompatibility)
-        setTargetCompatibility(projectConfiguration().javaConfiguration.targetCompatibility)
 
         with(compileJavaTask()) {
             doLast {

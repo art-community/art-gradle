@@ -16,6 +16,14 @@
 
 package ru.art.gradle.configuration
 
-open class TestConfiguration {
-    var publishReports = false
+import org.gradle.api.*
+import org.gradle.api.model.*
+import ru.art.gradle.context.Context.ProjectContext
+import ru.art.gradle.context.Context.projectsContext
+import javax.inject.*
+
+open class AfterConfiguringExtension @Inject constructor(objectFactory: ObjectFactory, val project: Project) {
+    fun run(action: Action<in ProjectContext>) {
+        projectsContext[project.name]?.afterConfiguringAction = action
+    }
 }

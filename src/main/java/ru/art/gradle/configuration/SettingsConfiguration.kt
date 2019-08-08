@@ -28,9 +28,13 @@ import java.util.*
 open class SettingsConfiguration(private val settings: Settings) {
     var projectsPaths = mutableListOf<String>()
         private set
-    var repositoryConfiguration: SettingsRepositoryConfiguration = SettingsRepositoryConfiguration()
+    var pluginsConfiguration = SettingsPluginManagementConfiguration()
         private set
 
+    fun plugins(action: Action<in SettingsPluginManagementConfiguration>) {
+        pluginsConfiguration.enabled = true
+        action.execute(pluginsConfiguration)
+    }
 
     fun addProjectsPath(path: String) {
         if (File(path).exists() && File(path).isDirectory) {
@@ -47,10 +51,6 @@ open class SettingsConfiguration(private val settings: Settings) {
     })
 
     fun importProjectPathsfromEnvironmentVariable(variable: String) = getenv(variable)?.onlyIf({ isNotEmpty() }, { envVar -> envVar.split(COMMA).toTypedArray().forEach(this::addProjectsPath) })
-
-    fun repository(action: Action<in SettingsRepositoryConfiguration>) {
-        action.execute(repositoryConfiguration)
-    }
 
     init {
         settingsConfiguration = this

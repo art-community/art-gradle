@@ -14,11 +14,8 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants.configuration.defaults
+package ru.art.gradle.configuration
 
-object DefaultRepositoryConfiguration {
-    const val URL_PROPERTY = "artifactory_contextUrl"
-    const val REPOSITORY_ID = "gradle-virtual"
-    const val USERNAME_PROPERTY = "artifactory_user"
-    const val PASSWORD_PROPERTY = "artifactory_password"
+open class IdeaConfiguration {
+    var enabled: Boolean? = null
 }

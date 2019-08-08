@@ -14,9 +14,8 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants
+package ru.art.gradle.configuration
 
-enum class RepositoryType {
-    NEXUS,
-    ARTIFACTORY
+open class ProtobufGeneratorConfiguration {
+    var enabled: Boolean? = null
 }

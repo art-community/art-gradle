@@ -17,162 +17,145 @@
 package ru.art.gradle.configurator.project
 
 import org.gradle.api.*
-import ru.art.gradle.configuration.*
 import ru.art.gradle.context.Context.auxiliaryInformation
 import ru.art.gradle.context.Context.projectConfiguration
 import ru.art.gradle.context.Context.runAfterConfiguringAction
-import ru.art.gradle.context.Context.setAfterConfiguringAction
 import ru.art.gradle.determinator.*
 import ru.art.gradle.logging.*
 
 fun Project.configureProject() {
     applyJavaPlugin()
-    applyIdeaPlugin()
-    rootProject.applyIdeaPlugin()
-    applyMavenPlugin()
     applyJavaLibraryPlugin()
     addDependencyConfigurations()
-    setBranchByProperty()
-    val projectConfiguration = projectConfiguration()
     afterEvaluate {
         attention("Configure ART project after evaluate")
-        configureRefreshing()
+        val projectConfiguration = projectConfiguration()
+        if (projectConfiguration.ideaConfiguration.enabled == true) {
+            applyIdeaPlugin()
+            rootProject.applyIdeaPlugin()
+        }
+        if (projectConfiguration.dependencyRefreshingConfiguration.enabled == true) {
+            configureRefreshing()
+        }
         calculateVersion()
-        if (projectConfiguration.repositoryConfiguration.customConfigurable) {
-            addRepositoryFromProperties()
+        if (projectConfiguration.testsConfiguration.enabled == true) {
+            configureTests()
         }
-        if (projectConfiguration.repositoryConfiguration.jcenter) {
-            repositories.jcenter()
-        }
-        if (projectConfiguration.repositoryConfiguration.mavenCentral) {
-            repositories.mavenCentral()
-        }
-        if (projectConfiguration.repositoryConfiguration.gradlePluginPortal) {
-            repositories.gradlePluginPortal()
-        }
-        if (projectConfiguration.publishingConfiguration.enabled) {
-            configurePublishing()
-        }
-        configureTests()
         if (projectConfiguration.generatorConfiguration.packageName.isNotEmpty()) {
             addGeneratorDependency()
             auxiliaryInformation().hasGenerator = true
         }
         addModules()
         substituteDependencies()
-        if (projectConfiguration.withLombok) {
+        if (projectConfiguration.lombokConfiguration.enabled == true) {
             addLombokDependency()
             auxiliaryInformation().hasLombok = true
         }
-        if (projectConfiguration.withProtobufGenerator) {
+        if (projectConfiguration.protobufGeneratorConfiguration.enabled == true) {
             applyProtobufPlugin()
             configureProtobufGenerator()
             auxiliaryInformation().hasProtobufGenerator = true
         }
-        if (projectConfiguration.withSpock == true) {
+        if (projectConfiguration.spockFrameworkConfiguration.enabled == true) {
             applyGroovyPlugin()
             addSpockDependency()
             auxiliaryInformation().hasSpock = true
         }
-        if (projectConfiguration.withCheckstyle == true) {
+        if (projectConfiguration.checkstyleConfiguration.enabled == true) {
             applyCheckStylePlugin()
             addCheckstyle()
             auxiliaryInformation().hasCheckstyle = true
         }
-        if (projectConfiguration.withGatling == true) {
+        if (projectConfiguration.gatlingConfiguration.enabled == true) {
             applyGatlingPlugin()
             applyScalaPlugin()
             configureGatling()
             auxiliaryInformation().hasGatling = true
         }
-        if (projectConfiguration.withJmh == true) {
+        if (projectConfiguration.jmhConfiguration.enabled == true) {
             applyJmhPlugin()
             configureJmh()
             auxiliaryInformation().hasJmh = true
         }
-        if (projectConfiguration.withKotlin == true) {
+        if (projectConfiguration.kotlinConfiguration.enabled == true) {
             applyKotlinPlugin()
             addKotlinDependency()
             auxiliaryInformation().hasKotlin = true
         }
-        if (projectConfiguration.withScala == true) {
+        if (projectConfiguration.scalaConfiguration.enabled == true) {
             applyScalaPlugin()
             addScalaDependency()
             auxiliaryInformation().hasScala = true
         }
-        if (projectConfiguration.withGroovy == true) {
-            if (projectConfiguration.withSpock != true) {
+        if (projectConfiguration.groovyConfiguration.enabled == true) {
+            if (projectConfiguration.spockFrameworkConfiguration.enabled != true) {
                 applyGroovyPlugin()
             }
             addGroovyDependency()
             auxiliaryInformation().hasGroovy = true
         }
-        if (projectConfiguration.withWeb == true) {
+        if (projectConfiguration.webConfiguration.enabled == true) {
             configureWeb()
             auxiliaryInformation().hasWeb = true
         }
         with(determineSourceSets()) {
-            if (hasGatling && projectConfiguration.withGatling == null) {
+            if (hasGatling && projectConfiguration.gatlingConfiguration.enabled == null) {
                 applyGatlingPlugin()
                 applyScalaPlugin()
                 configureGatling()
                 auxiliaryInformation().hasGatling = hasGatling
             }
-            if (hasJmh && projectConfiguration.withJmh == null) {
+            if (hasJmh && projectConfiguration.jmhConfiguration.enabled == null) {
                 applyJmhPlugin()
                 configureJmh()
                 auxiliaryInformation().hasJmh = hasJmh
             }
-            if (hasGroovy && projectConfiguration.withGroovy == null) {
-                if (projectConfiguration.withSpock != true) {
+            if (hasGroovy && projectConfiguration.groovyConfiguration.enabled == null) {
+                if (projectConfiguration.spockFrameworkConfiguration.enabled != true) {
                     applyGroovyPlugin()
                 }
                 addGroovyDependency()
                 auxiliaryInformation().hasGroovy = hasGroovy
             }
-            if (hasGroovyTests && projectConfiguration.withGroovy == null) {
-                if (projectConfiguration.withSpock != true) {
+            if (hasGroovyTests && projectConfiguration.groovyConfiguration.enabled == null) {
+                if (projectConfiguration.spockFrameworkConfiguration.enabled != true) {
                     applyGroovyPlugin()
                 }
                 addGroovyTestsDependency()
                 auxiliaryInformation().hasGroovyTests = hasGroovyTests
             }
-            if (hasScala && projectConfiguration.withScala == null) {
+            if (hasScala && projectConfiguration.scalaConfiguration.enabled == null) {
                 applyScalaPlugin()
                 addScalaDependency()
                 auxiliaryInformation().hasScala = hasScala
             }
-            if (hasScalaTests && projectConfiguration.withScala == null) {
+            if (hasScalaTests && projectConfiguration.scalaConfiguration.enabled == null) {
                 applyScalaPlugin()
                 addScalaTestsDependency()
                 auxiliaryInformation().hasScalaTests = hasScalaTests
             }
-            if (hasKotlin && projectConfiguration.withKotlin == null) {
+            if (hasKotlin && projectConfiguration.kotlinConfiguration.enabled == null) {
                 applyKotlinPlugin()
                 addKotlinDependency()
                 auxiliaryInformation().hasKotlin = hasKotlin
             }
-            if (hasKotlinTests && projectConfiguration.withKotlin == null) {
+            if (hasKotlinTests && projectConfiguration.kotlinConfiguration.enabled == null) {
                 applyKotlinPlugin()
                 addKotlinTestsDependency()
                 auxiliaryInformation().hasKotlinTests = hasKotlinTests
             }
-            if (hasWeb && projectConfiguration.withWeb == null) {
+            if (hasWeb && projectConfiguration.webConfiguration.enabled == null) {
                 configureWeb()
                 auxiliaryInformation().hasWeb = true
             }
         }
         calculateDependencyVersions()
         configureJava()
-        configureIdea()
-        logResultingConfiguration()
-        if (projectConfiguration().useProGuard) {
-            addProGuardTask()
+        if (projectConfiguration.ideaConfiguration.enabled == true) {
+            configureIdea()
         }
-
-        attention("End of ART project configuring")
+        logResultingConfiguration()
         runAfterConfiguringAction()
+        attention("End of ART project configuring")
     }
 }
-
-fun Project.afterConfiguring(action: (configuration: ProjectConfiguration) -> Unit) = setAfterConfiguringAction(action)

@@ -21,19 +21,12 @@ import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode.*
 import org.eclipse.jgit.transport.*
 import org.gradle.api.*
 import org.gradle.api.Project.*
-import org.jetbrains.kotlin.backend.common.*
 import ru.art.gradle.constants.*
-import ru.art.gradle.constants.ConfigurationParameterMode.*
+import ru.art.gradle.constants.ProjectVersionCalculationMode.*
 import ru.art.gradle.context.Context.git
 import ru.art.gradle.context.Context.projectConfiguration
 import ru.art.gradle.logging.*
 import ru.art.gradle.logging.LogMessageColor.*
-
-fun Project.setBranchByProperty() {
-    if (hasProperty(USE_BRANCH) && projectConfiguration().projectVersionConfiguration.branchParameter.isNullOrBlank()) {
-        (property(USE_BRANCH) as String).onlyIf({ isNotEmpty() }, projectConfiguration().projectVersionConfiguration::byBranchValue)
-    }
-}
 
 fun Project.calculateVersion() {
     if (project.version.toString().isNotEmpty() && project.version != DEFAULT_VERSION) {
@@ -41,36 +34,29 @@ fun Project.calculateVersion() {
         return
     }
 
-    if (hasProperty(USE_VERSION) && projectConfiguration().projectVersionConfiguration.versionProperty.isNullOrBlank()) {
-        version = properties[USE_VERSION] as String
-        success("Project version is '${project.version}'(manually set by 'useVersion' property)")
+    if (hasProperty(PROJECT_VERSION)) {
+        version = properties[PROJECT_VERSION] as String
+        success("Project version is '${project.version}'(manually set by 'projectVersion' property)")
         return
     }
 
-    if (!projectConfiguration().projectVersionConfiguration.versionProperty.isNullOrBlank()) {
-        version = properties[projectConfiguration().projectVersionConfiguration.versionProperty] as String
-        success("Project version is '${project.version}'(calculated from 'property=${projectConfiguration().projectVersionConfiguration.versionProperty}')")
-        return
-    }
-
-    if (projectConfiguration().projectVersionConfiguration.versionByBranch) {
-        val git = git()
-        if (git == null) {
-            warning("Unable to calculate project version, because git repository was not loaded correctly")
-            return
+    when (projectConfiguration().projectVersionConfiguration.calculationMode) {
+        ROOT_PROJECT -> {
+            version = rootProject.version
+            success("Project version is '${project.version}'(calculated from 'rootProject=${rootProject.name}')")
         }
-        if (projectConfiguration().projectVersionConfiguration.branchParameterMode == null) {
+        BRANCH -> {
+            val git = git()
+            if (git == null) {
+                warning("Unable to calculate project version, because git repository was not loaded correctly")
+                return
+            }
+            if (hasProperty(CHECKOUT_BRANCH)) {
+                checkoutBranch(git, properties[CHECKOUT_BRANCH] as String)
+            }
             version = git.repository.branch
             success("Project version is '${project.version}'(calculated from 'branch=${git.repository.branch}')")
-            return
         }
-        when (projectConfiguration().projectVersionConfiguration.branchParameterMode) {
-            PROPERTY -> checkoutBranch(git, properties[projectConfiguration().projectVersionConfiguration.branchParameter] as String)
-            VALUE -> checkoutBranch(git, projectConfiguration().projectVersionConfiguration.branchParameter!!)
-        }
-        version = git.repository.branch
-        success("Project version is '${project.version}'(calculated from 'branch=${git.repository.branch}')")
-        return
     }
 }
 

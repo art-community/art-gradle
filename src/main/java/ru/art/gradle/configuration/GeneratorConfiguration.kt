@@ -22,6 +22,6 @@ import javax.inject.*
 
 open class GeneratorConfiguration @Inject constructor(val project: Project) {
     var group = ART_MODULE_GROUP
-    var version = EMPTY_STRING
+    var version = LATEST_VERSION
     var packageName = EMPTY_STRING
 }

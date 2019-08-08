@@ -14,7 +14,8 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants
+package ru.art.gradle.configuration
 
-const val REPORTS_ARCHIVE_NAME = "reports"
-const val UPLOAD_REPORTS_GROUP = "upload"
+open class LombokConfiguration {
+    var enabled: Boolean? = null
+}

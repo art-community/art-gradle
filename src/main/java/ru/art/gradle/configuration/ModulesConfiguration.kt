@@ -20,49 +20,35 @@ import org.gradle.api.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyVersionSelectionMode.*
 import ru.art.gradle.dependency.*
-import ru.art.gradle.model.*
 import javax.inject.*
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
-    var group = ART_MODULE_GROUP
     val modules: MutableSet<Dependency> = mutableSetOf()
-    var versionSelectionMode = BRANCH
+    var useManualVersion = false
+        private set
+    var versionSelectionMode = ART_MAJOR_MINOR
         private set
     var version: Any? = null
         private set
 
-    fun selectVersionByBranch() {
-        versionSelectionMode = BRANCH
+    fun selectVersionByProjectVersionTree() {
+        versionSelectionMode = PROJECT_VERSION_TREE
     }
 
-    fun selectVersionByTag(prefix: String, tag: String) {
-        versionSelectionMode = TAG
-        version = DependencyTagVersion(tag, prefix)
-    }
-
-    fun selectVersionByTag(tag: String) {
-        versionSelectionMode = TAG
-        version = DependencyTagVersion(tag, RELEASE_TAG_PREFIX)
-    }
-
-    fun useLatestMajorVersion(selectionAction: MajorVersionSelector.() -> Unit) {
-        versionSelectionMode = MAJOR
-        val selector = MajorVersionSelector()
+    fun useLatestMajorVersion(selectionAction: ArtMajorVersionSelector.() -> Unit) {
+        versionSelectionMode = ART_MAJOR_MINOR
+        val selector = ArtMajorVersionSelector()
         selectionAction(selector)
         version = selector.selectedVersion
     }
 
-    fun useLatestVersion() {
-        versionSelectionMode = LATEST
-    }
-
     fun useVersion(version: String) {
-        versionSelectionMode = MANUAL
+        useManualVersion = true
         this.version = version
     }
 
     private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
-        val dependency = Dependency(group, module)
+        val dependency = Dependency(ART_MODULE_GROUP, module)
         dependencyModifiers.forEach { modifier -> modifier(dependency) }
         modules.add(dependency)
     }
@@ -593,19 +579,16 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
     }
 
     fun dataFormats(configurator: DataFormatsConfiguration.() -> Unit) {
-        dataFormatsConfiguration.group = group
         configurator(dataFormatsConfiguration)
         modules += dataFormatsConfiguration.modules
     }
 
     fun protocols(configurator: ProtocolsConfiguration.() -> Unit) {
-        protocolsConfiguration.group = group
         configurator(protocolsConfiguration)
         modules += protocolsConfiguration.modules
     }
 
     fun db(configurator: DatabasesConfiguration.() -> Unit) {
-        dbConfiguration.group = group
         configurator(dbConfiguration)
         modules += dbConfiguration.modules
     }

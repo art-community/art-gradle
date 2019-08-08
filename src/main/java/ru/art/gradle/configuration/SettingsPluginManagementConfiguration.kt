@@ -16,7 +16,9 @@
 
 package ru.art.gradle.configuration
 
-open class CheckstyleConfiguration {
+open class SettingsPluginManagementConfiguration {
     var enabled: Boolean? = null
-    var ignoreFailures = true
+    var pluginsManagement = mutableSetOf<PluginConfiguration>()
 }
+
+data class PluginConfiguration(val pluginId: String, val pluginDependency: String)

@@ -28,7 +28,8 @@ import ru.art.gradle.logging.*
 open class ProjectPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {
         attention("Start of ART project configuring")
-        setProjectContext(extensions.create(ART_EXTENSION, ProjectConfiguration::class.java, this), loadGitRepository())
+        setProjectContext(extensions.create(ART_EXTENSION, ProjectExtension::class.java, this), loadGitRepository())
+        extensions.create(AFTER_CONFIGURING_ACTION_EXTENSION, AfterConfiguringExtension::class.java, this)
         configureProject()
     }
 }

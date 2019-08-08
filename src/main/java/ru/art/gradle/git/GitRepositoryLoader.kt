@@ -36,7 +36,8 @@ fun Project.loadGitRepository(): Git? {
         }
         val gitFile = file(GIT_FILE)
         if (gitFile.exists()) {
-            val git = open(File("${parent!!.projectDir.absolutePath}$separator${gitFile.readLines().first().split(SEMICOLON)[1].substringAfter(PREVIOUS_DIRECTORY).removeSuffix(NEW_LINE)}"))
+            val gitProjectPath = gitFile.readLines().first().split(SEMICOLON)[1].substringAfter(PREVIOUS_DIRECTORY).removeSuffix(NEW_LINE)
+            val git = open(File("${parent!!.projectDir.absolutePath}$separator$gitProjectPath"))
             success("Git repository loaded")
             return git
         }

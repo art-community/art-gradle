@@ -26,27 +26,25 @@ object Context {
     @Volatile
     lateinit var settingsConfiguration: SettingsConfiguration
 
-    fun Project.projectConfiguration() = projectsContext[name]!!.projectConfiguration
+    fun Project.projectConfiguration() = projectsContext[name]!!.projectExtension
 
     fun Project.git() = projectsContext[name]!!.git
 
     fun Project.auxiliaryInformation() = projectsContext[name]!!.projectAuxiliaryInformation
 
-    fun Project.setProjectContext(projectConfiguration: ProjectConfiguration, git: Git?) {
-        projectsContext[name] = ProjectContext(projectConfiguration = projectConfiguration, git = git, projectAuxiliaryInformation = ProjectAuxiliaryInformation())
+    fun Project.setProjectContext(projectExtension: ProjectExtension, git: Git?) {
+        projectsContext[name] = ProjectContext(projectExtension = projectExtension,
+                git = git,
+                projectAuxiliaryInformation = ProjectAuxiliaryInformation())
     }
 
-    fun Project.setAfterConfiguringAction(action: (configuration: ProjectConfiguration) -> Unit) {
-        projectsContext[name]?.afterConfiguringAction = action
-    }
-
-    fun Project.runAfterConfiguringAction() = projectsContext[name]?.afterConfiguringAction?.invoke(projectConfiguration())
+    fun Project.runAfterConfiguringAction() = projectsContext[name]?.afterConfiguringAction?.execute(projectsContext[name]!!)
 
 
-    data class ProjectContext(val projectConfiguration: ProjectConfiguration,
+    data class ProjectContext(val projectExtension: ProjectExtension,
                               val git: Git? = null,
                               val projectAuxiliaryInformation: ProjectAuxiliaryInformation,
-                              var afterConfiguringAction: (configuration: ProjectConfiguration) -> Unit = {})
+                              var afterConfiguringAction: Action<in ProjectContext> = Action {})
 
     data class ProjectAuxiliaryInformation(var hasGroovy: Boolean = false,
                                            var hasScala: Boolean = false,
