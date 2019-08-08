@@ -150,7 +150,6 @@ fun Project.configureProject() {
         calculateVersion()
         addModules()
         substituteDependencies()
-        calculateDependencyVersions()
         configureJava()
         if (projectConfiguration.ideaConfiguration.enabled == true) {
             configureIdea()

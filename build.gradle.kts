@@ -23,7 +23,7 @@ plugins {
 }
 
 group = "io.github.art"
-version = "1.0.17"
+version = "1.0.20"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
@@ -59,14 +59,14 @@ pluginBundle {
 }
 gradlePlugin {
     plugins {
-        create("artProjectPlugin") {
-            id = "ru.art.project"
+        create("io.github.art.project") {
+            id = "io.github.art.project"
             displayName = "Plugin for simplify project configuration"
             description = "A plugin that helps you to configure JVM projects"
             implementationClass = "ru.art.gradle.ProjectPlugin"
         }
-        create("artSettingsPlugin") {
-            id = "ru.art.settings"
+        create("io.github.art.settings") {
+            id = "io.github.art.settings"
             displayName = "Plugin for simplify settings configuration"
             description = "A plugin that helps you to configure JVM projects"
             implementationClass = "ru.art.gradle.SettingsPlugin"

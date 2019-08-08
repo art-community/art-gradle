@@ -32,39 +32,18 @@ fun Project.addModules() {
     val providedModules = providedModulesConfiguration.modules.filter { !embeddedModules.contains(it) }
     val testModules = testModulesConfiguration.modules.filter { !providedModules.contains(it) }
 
-    with(embeddedModulesConfiguration) {
-        embeddedModules.stream()
-                .peek(::substituteModuleWithCode)
-                .peek { dependency ->
-                    if (useManualVersion) {
-                        dependency.version = version as String
-                    }
-                }
-                .peek { dependency -> applyVersionSelectionMode(dependency, embeddedModulesConfiguration) }
-                .forEach { addDependency(EMBEDDED, it) }
-    }
-    with(providedModulesConfiguration) {
-        providedModules.stream()
-                .peek(::substituteModuleWithCode)
-                .peek { dependency ->
-                    if (useManualVersion) {
-                        dependency.version = version as String
-                    }
-                }
-                .peek { dependency -> applyVersionSelectionMode(dependency, providedModulesConfiguration) }
-                .forEach { addDependency(PROVIDED, it) }
-    }
-    with(testModulesConfiguration) {
-        testModules.stream()
-                .peek(::substituteModuleWithCode)
-                .peek { dependency ->
-                    if (useManualVersion) {
-                        dependency.version = version as String
-                    }
-                }
-                .peek { dependency -> applyVersionSelectionMode(dependency, testModulesConfiguration) }
-                .forEach { addDependency(TEST_COMPILE_CLASSPATH, it) }
-    }
+    embeddedModules.stream()
+            .peek(::substituteModuleWithCode)
+            .peek { dependency -> setVersion(dependency, embeddedModulesConfiguration) }
+            .forEach { addDependency(EMBEDDED, it) }
+    providedModules.stream()
+            .peek(::substituteModuleWithCode)
+            .peek { dependency -> setVersion(dependency, providedModulesConfiguration) }
+            .forEach { addDependency(PROVIDED, it) }
+    testModules.stream()
+            .peek(::substituteModuleWithCode)
+            .peek { dependency -> setVersion(dependency, testModulesConfiguration) }
+            .forEach { addDependency(TEST_COMPILE_CLASSPATH, it) }
 }
 
 private fun Project.substituteModuleWithCode(module: Dependency) {
@@ -76,16 +55,11 @@ private fun Project.substituteModuleWithCode(module: Dependency) {
     }
 }
 
-private fun Project.applyVersionSelectionMode(module: Dependency, configuration: ModulesCombinationConfiguration) {
+private fun Project.setVersion(module: Dependency, configuration: ModulesCombinationConfiguration) {
     if (projectConfiguration().dependencySubstitutionConfiguration.codeSubstitutions.contains(module)) {
         return
     }
-    if (projectConfiguration().dependencyVersionsConfiguration.versionSelectionModes.contains(module)) {
-        return
-    }
     if (module.version.isNullOrBlank()) {
-        projectConfiguration()
-                .dependencyVersionsConfiguration
-                .addDependencyVersion(module, configuration.versionSelectionMode, configuration.version)
+        module.version = configuration.version
     }
 }

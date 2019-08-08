@@ -65,8 +65,6 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
 
     var dependencySubstitutionConfiguration = objectFactory.newInstance(DependencySubstitutionConfiguration::class.java, project)
         private set
-    var dependencyVersionsConfiguration = objectFactory.newInstance(DependencyVersionsConfiguration::class.java, project)
-        private set
 
     var mainClass = EMPTY_STRING
         private set
@@ -159,8 +157,6 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
 
     fun externalDependencyVersions(action: Action<in ExternalDependencyVersionsConfiguration>) = action.execute(externalDependencyVersionsConfiguration)
 
-
-    fun dependencyVersions(action: Action<in DependencyVersionsConfiguration>) = action.execute(dependencyVersionsConfiguration)
 
     fun dependencySubstitution(action: Action<in DependencySubstitutionConfiguration>) = action.execute(dependencySubstitutionConfiguration)
 

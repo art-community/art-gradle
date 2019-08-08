@@ -18,39 +18,24 @@ package ru.art.gradle.configuration
 
 import org.gradle.api.*
 import ru.art.gradle.constants.*
-import ru.art.gradle.constants.DependencyVersionSelectionMode.*
 import ru.art.gradle.dependency.*
 import javax.inject.*
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
-    var useManualVersion = false
+    var version: String? = null
         private set
-    var versionSelectionMode = ART_MAJOR_MINOR
-        private set
-    var version: Any? = null
-        private set
-
-    fun selectVersionByProjectVersionTree() {
-        versionSelectionMode = PROJECT_VERSION_TREE
-    }
-
-    fun useLatestMajorVersion(selectionAction: ArtMajorVersionSelector.() -> Unit) {
-        versionSelectionMode = ART_MAJOR_MINOR
-        val selector = ArtMajorVersionSelector()
-        selectionAction(selector)
-        version = selector.selectedVersion
-    }
 
     fun useVersion(version: String) {
-        useManualVersion = true
         this.version = version
     }
 
     private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         val dependency = Dependency(ART_MODULE_GROUP, module)
         dependencyModifiers.forEach { modifier -> modifier(dependency) }
-        modules.add(dependency)
+        modules.find { current -> current.group == dependency.group && current.artifact == dependency.artifact }
+                ?.let { current -> current.version = dependency.version }
+                ?: modules.add(dependency)
     }
 
     protected open fun applicationCore(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
