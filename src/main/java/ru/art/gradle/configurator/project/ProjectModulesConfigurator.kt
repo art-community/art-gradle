@@ -84,6 +84,8 @@ private fun Project.applyVersionSelectionMode(module: Dependency, configuration:
         return
     }
     if (module.version.isNullOrBlank()) {
-        projectConfiguration().dependencyVersionsConfiguration.addDependencyVersion(module, configuration.versionSelectionMode, version)
+        projectConfiguration()
+                .dependencyVersionsConfiguration
+                .addDependencyVersion(module, configuration.versionSelectionMode, configuration.version)
     }
 }
