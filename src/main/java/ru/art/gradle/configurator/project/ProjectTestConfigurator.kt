@@ -43,12 +43,12 @@ fun Project.configureTests() {
         }))
     }
 
-    buildTask().dependsOn.remove(checkTask())
-    buildTask().dependsOn.remove(testTask())
-    checkTask().dependsOn.remove(testTask())
-
-    success("Finalize 'test' task by 'uploadReports' (send test reports to publishing repository)")
-    additionalAttention("Disable 'check' task before 'build' task")
-    additionalAttention("Disable 'test' task before 'build' task")
-    additionalAttention("Disable 'check' task before 'test' task")
+    if (!projectConfiguration().testsConfiguration.buildDependsOnTest) {
+        buildTask().dependsOn.remove(testTask())
+        additionalAttention("Disable 'test' task before 'build' task")
+    }
+    if (!projectConfiguration().testsConfiguration.buildDependsOnCheck) {
+        buildTask().dependsOn.remove(checkTask())
+        additionalAttention("Disable 'check' task before 'build' task")
+    }
 }

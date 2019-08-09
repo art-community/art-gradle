@@ -636,6 +636,7 @@ open class ProtocolsConfiguration @Inject constructor(project: Project) : Module
         applicationProtobuf(dependencyModifiers)
         applicationXml(dependencyModifiers)
         applicationProtobufGenerated(dependencyModifiers)
+        applicationRsocket(dependencyModifiers)
     }
 
     fun soapServer(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {

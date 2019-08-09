@@ -18,5 +18,7 @@ package ru.art.gradle.configuration
 
 open class TestsConfiguration {
     var enabled: Boolean? = null
+    var buildDependsOnTest = false
+    var buildDependsOnCheck = false
     var useJunit = true
 }

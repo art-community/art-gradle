@@ -44,6 +44,8 @@ fun Project.addLombokDependency() {
 fun Project.addSpockDependency() {
     addDependency(TEST_COMPILE_CLASSPATH, spock())
     addDependency(TEST_COMPILE_CLASSPATH, cglib())
+    addDependency(TEST_IMPLEMENTATION, spock())
+    addDependency(TEST_RUNTIME_CLASSPATH, cglib())
 }
 
 fun Project.addGroovyDependency() {
@@ -60,14 +62,20 @@ fun Project.addScalaDependency() {
 
 fun Project.addGroovyTestsDependency() {
     addDependency(TEST_COMPILE_CLASSPATH, groovy())
+    addDependency(TEST_IMPLEMENTATION, groovy())
+    addDependency(TEST_RUNTIME_CLASSPATH, groovy())
 }
 
 fun Project.addKotlinTestsDependency() {
     addDependency(TEST_COMPILE_CLASSPATH, kotlin())
+    addDependency(TEST_IMPLEMENTATION, kotlin())
+    addDependency(TEST_RUNTIME_CLASSPATH, kotlin())
 }
 
 fun Project.addScalaTestsDependency() {
     addDependency(TEST_COMPILE_CLASSPATH, scala())
+    addDependency(TEST_IMPLEMENTATION, scala())
+    addDependency(TEST_RUNTIME_CLASSPATH, scala())
 }
 
 fun Project.addGeneratorDependency() {

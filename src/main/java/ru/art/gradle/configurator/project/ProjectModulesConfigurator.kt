@@ -43,7 +43,11 @@ fun Project.addModules() {
     testModules.stream()
             .peek(::substituteModuleWithCode)
             .peek { dependency -> setVersion(dependency, testModulesConfiguration) }
-            .forEach { addDependency(TEST_COMPILE_CLASSPATH, it) }
+            .forEach {
+                addDependency(TEST_COMPILE_CLASSPATH, it)
+                addDependency(TEST_RUNTIME_CLASSPATH, it)
+                addDependency(TEST_IMPLEMENTATION, it);
+            }
 }
 
 private fun Project.substituteModuleWithCode(module: Dependency) {
