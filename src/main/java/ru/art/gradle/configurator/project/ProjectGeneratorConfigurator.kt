@@ -28,6 +28,7 @@ import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import ru.art.gradle.provider.*
 import java.io.File.*
+import kotlin.system.*
 import ru.art.generator.mapper.Generator as MappersGenerator
 import ru.art.generator.spec.http.proxyspec.Generator as HttpCommunicationSpecificationsGenerator
 import ru.art.generator.spec.http.servicespec.Generator as HttpSpecificationsGenerator
@@ -43,7 +44,7 @@ fun Project.configureGenerator() {
     val packageDir = "${sourceDirectories.first().absolutePath}$separator$packagePath"
     if (file("$packageDir$separator$MODEL_PACKAGE").exists()) {
         createGenerateMappersTask(mainSourceSet).dependsOn(compileJavaTask())
-        success("Created 'generateMappers' task depends on 'buildModel' task, running mappers generator and finalized by 'build' task")
+        success("Created 'generateMappers' task depends on 'buildModel' task, running mappers generator")
     }
     if (file("$packageDir$separator$SERVICE_PACKAGE").exists()) {
         file("$packageDir$separator$SERVICE_PACKAGE")
@@ -55,7 +56,9 @@ fun Project.configureGenerator() {
                             .map { type -> createGenerateSpecificationTask(type, packageDir, serviceName) }
                             .asSequence()
                 }
-                .onEach { task -> task.dependsOn(compileJavaTask()) }
+                .onEach { task ->
+                    task.dependsOn(compileJavaTask())
+                }
     }
 }
 

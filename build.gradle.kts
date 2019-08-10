@@ -24,7 +24,7 @@ plugins {
 }
 
 group = "io.github.art"
-version = "1.0.44"
+version = "1.0.46"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
