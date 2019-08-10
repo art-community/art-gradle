@@ -19,14 +19,14 @@ package ru.art.gradle.configurator.project
 import org.gradle.api.*
 import ru.art.gradle.configuration.*
 import ru.art.gradle.constants.DependencyConfiguration.*
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.dependency.*
 
 fun Project.addModules() {
-    val projectConfiguration = projectConfiguration()
-    val embeddedModulesConfiguration = projectConfiguration.embeddedModulesConfiguration
-    val providedModulesConfiguration = projectConfiguration.providedModulesConfiguration
-    val testModulesConfiguration = projectConfiguration.testModulesConfiguration
+    val projectExtension = projectExtension()
+    val embeddedModulesConfiguration = projectExtension.embeddedModulesConfiguration
+    val providedModulesConfiguration = projectExtension.providedModulesConfiguration
+    val testModulesConfiguration = projectExtension.testModulesConfiguration
 
     val embeddedModules = embeddedModulesConfiguration.modules
     val providedModules = providedModulesConfiguration.modules.filter { !embeddedModules.contains(it) }
@@ -46,21 +46,20 @@ fun Project.addModules() {
             .forEach {
                 addDependency(TEST_COMPILE_CLASSPATH, it)
                 addDependency(TEST_RUNTIME_CLASSPATH, it)
-                addDependency(TEST_IMPLEMENTATION, it);
             }
 }
 
 private fun Project.substituteModuleWithCode(module: Dependency) {
-    if (projectConfiguration().dependencySubstitutionConfiguration.artifactSubstitutions.contains(module)) {
+    if (projectExtension().dependencySubstitutionConfiguration.artifactSubstitutions.contains(module)) {
         return
     }
     if (parent?.subprojects?.any { project -> project.name == module.artifact } == true) {
-        projectConfiguration().dependencySubstitutionConfiguration.substituteWithCode(module)
+        projectExtension().dependencySubstitutionConfiguration.substituteWithCode(module)
     }
 }
 
 private fun Project.setVersion(module: Dependency, configuration: ModulesCombinationConfiguration) {
-    if (projectConfiguration().dependencySubstitutionConfiguration.codeSubstitutions.contains(module)) {
+    if (projectExtension().dependencySubstitutionConfiguration.codeSubstitutions.contains(module)) {
         return
     }
     if (module.version.isNullOrBlank()) {

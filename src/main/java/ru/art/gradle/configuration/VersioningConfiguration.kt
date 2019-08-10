@@ -14,8 +14,12 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants
+package ru.art.gradle.configuration
 
-import ru.art.gradle.constants.DependencyConfiguration.*
+import ru.art.gradle.constants.ArtVersion.*
 
-val RESOLVABLE_CONFIGURATIONS = setOf(COMPILE_CLASSPATH.configuration, RUNTIME_CLASSPATH.configuration, TEST_COMPILE_CLASSPATH.configuration, TEST_RUNTIME_CLASSPATH.configuration, EMBEDDED.configuration, PROVIDED.configuration)
+open class VersioningConfiguration {
+    fun latestMajor1() = LATEST_MAJOR_1.version
+    fun latestMajorMinor1() = LATEST_MAJOR_MINOR_1.version
+    fun latest() = LATEST.version
+}

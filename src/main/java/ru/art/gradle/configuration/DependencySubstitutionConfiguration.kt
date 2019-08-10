@@ -18,7 +18,7 @@ package ru.art.gradle.configuration
 
 import org.gradle.api.*
 import org.gradle.api.artifacts.*
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.dependency.Dependency
 import javax.inject.*
 
@@ -49,17 +49,17 @@ open class DependencySubstitutionConfiguration @Inject constructor(val project: 
 }
 
 fun Project.substituteWithCode(dependency: ExternalModuleDependency) {
-    projectConfiguration()
+    projectExtension()
             .dependencySubstitutionConfiguration
             .substituteWithCode(dependency.group ?: return, dependency.name)
 }
 
 fun Project.substituteWithArtifact(dependency: ExternalModuleDependency) {
-    projectConfiguration()
+    projectExtension()
             .dependencySubstitutionConfiguration
             .substituteWithArtifact(dependency.group ?: return, dependency.name)
 }
 
-fun Project.substituteWithCode(dependency: Dependency) = projectConfiguration().dependencySubstitutionConfiguration.substituteWithCode(dependency.group, dependency.artifact)
+fun Project.substituteWithCode(dependency: Dependency) = projectExtension().dependencySubstitutionConfiguration.substituteWithCode(dependency.group, dependency.artifact)
 
-fun Project.substituteWithArtifact(dependency: Dependency) = projectConfiguration().dependencySubstitutionConfiguration.substituteWithArtifact(dependency.group, dependency.artifact)
+fun Project.substituteWithArtifact(dependency: Dependency) = projectExtension().dependencySubstitutionConfiguration.substituteWithArtifact(dependency.group, dependency.artifact)

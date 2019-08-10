@@ -24,7 +24,7 @@ import ru.art.gradle.constants.DefaultTasks.COMPILE_TEST_JAVA
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.constants.IdeaScopeOperations.PLUS
 import ru.art.gradle.constants.IdeaScopes.COMPILE
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 
 
 fun Project.configureIdea() = extensions.configure(IdeaModel::class.java) { model ->
@@ -33,8 +33,8 @@ fun Project.configureIdea() = extensions.configure(IdeaModel::class.java) { mode
             inheritOutputDirs = false
             outputDir = (tasks.getByPath(COMPILE_JAVA) as JavaCompile).destinationDir
             testOutputDir = (tasks.getByPath(COMPILE_TEST_JAVA) as JavaCompile).destinationDir
-            resourceDirs = projectConfiguration().resourcesConfiguration.resourceDirs.map { file(it) }.toSet()
-            testResourceDirs = projectConfiguration().resourcesConfiguration.testResourceDirs.map { file(it) }.toSet()
+            resourceDirs = projectExtension().resourcesConfiguration.resourceDirs.map { file(it) }.toSet()
+            testResourceDirs = projectExtension().resourcesConfiguration.testResourceDirs.map { file(it) }.toSet()
             scopes[COMPILE]?.get(PLUS)?.addAll(listOf(configurations.getByName(EMBEDDED.configuration), configurations.getByName(PROVIDED.configuration)))
         }
     }

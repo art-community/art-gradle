@@ -24,7 +24,7 @@ import org.gradle.api.Project.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.ProjectVersionCalculationMode.*
 import ru.art.gradle.context.Context.git
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import ru.art.gradle.logging.LogMessageColor.*
 
@@ -40,7 +40,7 @@ fun Project.calculateVersion() {
         return
     }
 
-    when (projectConfiguration().projectVersionConfiguration.calculationMode) {
+    when (projectExtension().projectVersionConfiguration.calculationMode) {
         ROOT_PROJECT -> {
             version = rootProject.version
             success("Project version is '${project.version}'(calculated from 'rootProject=${rootProject.name}')")

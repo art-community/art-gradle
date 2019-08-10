@@ -118,6 +118,10 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         addModule("application-json", dependencyModifiers)
     }
 
+    protected open fun applicationKafka(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        addModule("application-kafka", dependencyModifiers)
+    }
+
     protected open fun applicationKafkaConsumer(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         addModule("application-kafka-consumer", dependencyModifiers)
     }
@@ -320,6 +324,10 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
         super.applicationJson(dependencyModifiers)
     }
 
+    public override fun applicationKafka(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
+        super.applicationKafka(dependencyModifiers)
+    }
+
     public override fun applicationKafkaConsumer(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
         super.applicationKafkaConsumer(dependencyModifiers)
     }
@@ -464,12 +472,20 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
     fun kafkaConsumer(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         logging(*dependencyModifiers)
         applicationService(*dependencyModifiers)
+        applicationProtobuf()
+        applicationJson()
+        applicationProtobufGenerated()
+        applicationKafka(*dependencyModifiers)
         applicationKafkaConsumer(*dependencyModifiers)
     }
 
     fun kafkaProducer(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         logging(*dependencyModifiers)
+        applicationProtobuf()
+        applicationJson()
+        applicationProtobufGenerated()
         applicationService(*dependencyModifiers)
+        applicationKafka(*dependencyModifiers)
         applicationKafkaProducer(*dependencyModifiers)
     }
 

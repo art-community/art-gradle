@@ -17,26 +17,63 @@
 package ru.art.gradle.constants
 
 import org.gradle.api.*
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.dependency.*
-import ru.art.gradle.context.Context.projectConfiguration
 
-fun Project.lombok() = Dependency("org.projectlombok", "lombok", projectConfiguration().externalDependencyVersionsConfiguration.lombokVersion)
-fun Project.groovy() = Dependency("org.codehaus.groovy", "groovy-all", projectConfiguration().externalDependencyVersionsConfiguration.groovyVersion)
-fun Project.spock() = Dependency("org.spockframework", "spock-core", projectConfiguration().externalDependencyVersionsConfiguration.spockVersion)
-fun Project.cglib() = Dependency("cglib", "cglib-nodep", projectConfiguration().externalDependencyVersionsConfiguration.cglibVersion)
-fun Project.kotlin() = Dependency("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", projectConfiguration().externalDependencyVersionsConfiguration.kotlinVersion)
-fun Project.scala() = Dependency("org.scala-lang", "scala-library", projectConfiguration().externalDependencyVersionsConfiguration.scalaVersion)
-fun Project.logbackClassic() = Dependency("ch.qos.logback", "logback-classic", projectConfiguration().externalDependencyVersionsConfiguration.logbackVersion)
-fun Project.junit() = Dependency("junit", "junit", projectConfiguration().externalDependencyVersionsConfiguration.junitVersion)
-fun Project.generator() = Dependency(projectConfiguration().generatorConfiguration.group, "application-generator", projectConfiguration().generatorConfiguration.version.ifEmpty { project.version } as String)
+fun Project.lombok() = Dependency(
+        group = "org.projectlombok",
+        artifact = "lombok",
+        version = projectExtension().externalDependencyVersionsConfiguration.lombokVersion)
+
+fun Project.groovy() = Dependency(
+        group = "org.codehaus.groovy",
+        artifact = "groovy-all",
+        version = projectExtension().externalDependencyVersionsConfiguration.groovyVersion)
+
+fun Project.spock() = Dependency(
+        group = "org.spockframework",
+        artifact = "spock-core",
+        version = projectExtension().externalDependencyVersionsConfiguration.spockVersion)
+
+fun Project.cglib() = Dependency(
+        group = "cglib",
+        artifact = "cglib-nodep",
+        version = projectExtension().externalDependencyVersionsConfiguration.cglibVersion)
+
+fun Project.kotlin() = Dependency(
+        group = "org.jetbrains.kotlin",
+        artifact = "kotlin-stdlib-jdk8",
+        version = projectExtension().externalDependencyVersionsConfiguration.kotlinVersion)
+
+fun Project.scala() = Dependency(
+        group = "org.scala-lang",
+        artifact = "scala-library",
+        version = projectExtension().externalDependencyVersionsConfiguration.scalaVersion)
+
+fun Project.logbackClassic() = Dependency(
+        group = "ch.qos.logback",
+        artifact = "logback-classic",
+        version = projectExtension().externalDependencyVersionsConfiguration.logbackVersion)
+
+fun Project.junit() = Dependency(
+        group = "junit",
+        artifact = "junit",
+        version = projectExtension().externalDependencyVersionsConfiguration.junitVersion)
+
+fun Project.generator() = Dependency(
+        group = projectExtension().generatorConfiguration.group,
+        artifact = "application-generator",
+        version = projectExtension().generatorConfiguration.version)
+
 fun Project.gatlingHttp() = Dependency(
         group = "io.gatling",
         artifact = "gatling-http",
-        version = projectConfiguration().externalDependencyVersionsConfiguration.gatlingVersion,
+        version = projectExtension().externalDependencyVersionsConfiguration.gatlingVersion,
         exclusions = setOf(logbackClassic()))
 
-fun Project.gatlingCore() = Dependency("io.gatling",
-        "gatling-core",
-        projectConfiguration().externalDependencyVersionsConfiguration.gatlingVersion,
+fun Project.gatlingCore() = Dependency(
+        group = "io.gatling",
+        artifact = "gatling-core",
+        version = projectExtension().externalDependencyVersionsConfiguration.gatlingVersion,
         exclusions = setOf(logbackClassic()))
 

@@ -20,14 +20,31 @@ import com.google.protobuf.gradle.*
 import org.gradle.api.*
 import org.gradle.kotlin.dsl.*
 import ru.art.gradle.constants.*
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
+import ru.art.gradle.logging.*
+import ru.art.gradle.provider.*
 import java.io.File.*
 
 fun Project.configureProtobufGenerator() {
     protobuf {
         protoc(closureOf<ExecutableLocator> {
             generatedFilesBaseDir = "${projectDir.absolutePath}$separator$PROTO_DIRECTORY"
-            artifact = PROTOBUF_COMPILER_ARTIFACT(projectConfiguration().externalDependencyVersionsConfiguration.protobufCompilerVersion)
+            artifact = PROTOBUF_COMPILER_ARTIFACT(projectExtension().externalDependencyVersionsConfiguration.protobufCompilerVersion)
         })
+    }
+
+    afterEvaluate {
+        if (!projectExtension().protobufGeneratorConfiguration.compileJavaDependsOnExtractIncludeProtoTask) {
+            compileJavaTask().dependsOn.remove(extractIncludeProtoTask())
+        }
+        if (!projectExtension().protobufGeneratorConfiguration.compileJavaDependsOnExtractProtoTask) {
+            compileJavaTask().dependsOn.remove(extractProtoTask())
+        }
+        if (!projectExtension().protobufGeneratorConfiguration.compileJavaDependsOnGenerateProtoTask) {
+            compileJavaTask().dependsOn.remove(generateProtoTask())
+        }
+        additionalAttention("Disable 'extractIncludeProtoTask' task before 'compileJava' task")
+        additionalAttention("Disable 'extractProtoTask' task before 'compileJava' task")
+        additionalAttention("Disable 'generateProtoTask' task before 'compileJava' task")
     }
 }

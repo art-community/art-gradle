@@ -17,7 +17,7 @@
 package ru.art.gradle.configurator.settings
 
 import org.gradle.api.initialization.*
-import ru.art.gradle.context.Context.settingsConfiguration
+import ru.art.gradle.context.Context.settingsExtension
 
 fun Settings.configurePluginManagement() {
     pluginManagement { management ->
@@ -25,7 +25,7 @@ fun Settings.configurePluginManagement() {
             resolutionStrategy { strategy ->
                 strategy.eachPlugin { plugin ->
                     with(plugin) {
-                        settingsConfiguration.pluginsConfiguration
+                        settingsExtension.pluginsConfiguration
                                 .pluginsManagement
                                 .forEach { pluginConfiguration ->
                                     if (requested.id.id == pluginConfiguration.pluginId) {

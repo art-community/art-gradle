@@ -14,10 +14,11 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.configuration
+package ru.art.gradle.extension
 
 import org.gradle.api.*
 import org.gradle.api.model.*
+import ru.art.gradle.configuration.*
 import ru.art.gradle.constants.*
 import javax.inject.*
 
@@ -70,6 +71,8 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
         private set
     var generatorConfiguration = objectFactory.newInstance(GeneratorConfiguration::class.java, project)
         private set
+
+    val versions = objectFactory.newInstance(VersioningConfiguration::class.java)
 
     fun gatling(action: Action<in GatlingConfiguration> = Action {}) {
         gatlingConfiguration.enabled = true

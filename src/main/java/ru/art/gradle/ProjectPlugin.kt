@@ -17,10 +17,10 @@
 package ru.art.gradle
 
 import org.gradle.api.*
-import ru.art.gradle.configuration.*
 import ru.art.gradle.configurator.project.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.context.Context.setProjectContext
+import ru.art.gradle.extension.*
 import ru.art.gradle.git.*
 import ru.art.gradle.logging.*
 

@@ -18,4 +18,7 @@ package ru.art.gradle.configuration
 
 open class ProtobufGeneratorConfiguration {
     var enabled: Boolean? = null
+    var compileJavaDependsOnExtractIncludeProtoTask = false
+    var compileJavaDependsOnExtractProtoTask = false
+    var compileJavaDependsOnGenerateProtoTask = false
 }

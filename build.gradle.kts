@@ -23,7 +23,7 @@ plugins {
 }
 
 group = "io.github.art"
-version = "1.0.27"
+version = "1.0.36"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
@@ -88,6 +88,7 @@ dependencies {
     embedded("me.champeau.gradle", "jmh-gradle-plugin", "0.4.+")
     embedded("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.3.31")
     embedded("com.google.protobuf", "protobuf-gradle-plugin", "0.8+")
+    embedded("io.github.art", "application-generator", "1+")
 }
 
 with(jar) {

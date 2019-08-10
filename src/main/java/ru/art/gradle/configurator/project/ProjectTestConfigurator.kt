@@ -21,7 +21,7 @@ import org.gradle.api.tasks.testing.*
 import org.gradle.kotlin.dsl.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import ru.art.gradle.provider.*
 
@@ -29,7 +29,7 @@ fun Project.configureTests() {
     addDependency(TEST_COMPILE_CLASSPATH, junit())
 
     with(testTask()) {
-        if (projectConfiguration().testsConfiguration.useJunit) {
+        if (projectExtension().testsConfiguration.useJunit) {
             useJUnit()
             success("Use JUnit in tests")
         }
@@ -43,12 +43,17 @@ fun Project.configureTests() {
         }))
     }
 
-    if (!projectConfiguration().testsConfiguration.buildDependsOnTest) {
+    if (!projectExtension().testsConfiguration.buildDependsOnTest) {
         buildTask().dependsOn.remove(testTask())
+        checkTask().dependsOn.remove(testTask())
         additionalAttention("Disable 'test' task before 'build' task")
+        additionalAttention("Disable 'test' task before 'check' task")
     }
-    if (!projectConfiguration().testsConfiguration.buildDependsOnCheck) {
+
+    if (!projectExtension().testsConfiguration.buildDependsOnCheck) {
         buildTask().dependsOn.remove(checkTask())
+        checkTask().dependsOn.remove(testTask())
         additionalAttention("Disable 'check' task before 'build' task")
+        additionalAttention("Disable 'test' task before 'check' task")
     }
 }

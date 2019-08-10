@@ -18,15 +18,15 @@ package ru.art.gradle.context
 
 import org.eclipse.jgit.api.*
 import org.gradle.api.*
-import ru.art.gradle.configuration.*
+import ru.art.gradle.extension.*
 import java.util.concurrent.*
 
 object Context {
     val projectsContext = ConcurrentHashMap<String, ProjectContext>()
     @Volatile
-    lateinit var settingsConfiguration: SettingsConfiguration
+    lateinit var settingsExtension: SettingsExtension
 
-    fun Project.projectConfiguration() = projectsContext[name]!!.projectExtension
+    fun Project.projectExtension() = projectsContext[name]!!.projectExtension
 
     fun Project.git() = projectsContext[name]!!.git
 

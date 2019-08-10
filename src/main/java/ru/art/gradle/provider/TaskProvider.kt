@@ -29,7 +29,10 @@ import ru.art.gradle.constants.DefaultTasks.CHECKSTYLE_TEST
 import ru.art.gradle.constants.DefaultTasks.CLEAN
 import ru.art.gradle.constants.DefaultTasks.COMPILE_JAVA
 import ru.art.gradle.constants.DefaultTasks.COMPILE_TEST_JAVA
+import ru.art.gradle.constants.DefaultTasks.EXTRACT_INCLUDE_PROTO
+import ru.art.gradle.constants.DefaultTasks.EXTRACT_PROTO
 import ru.art.gradle.constants.DefaultTasks.GATLING_RUN
+import ru.art.gradle.constants.DefaultTasks.GENERATE_PROTO
 import ru.art.gradle.constants.DefaultTasks.JAR
 import ru.art.gradle.constants.DefaultTasks.JMH_COMPILE_GENERATED_CLASSES
 import ru.art.gradle.constants.DefaultTasks.TEST
@@ -45,3 +48,6 @@ fun Project.checkstyleMainTask() = tasks.getByPath(CHECKSTYLE_MAIN) as Checkstyl
 fun Project.checkstyleTestTask() = tasks.getByPath(CHECKSTYLE_TEST) as Checkstyle
 fun Project.jmhCompileGeneratedClassesTask() = tasks.getByPath(JMH_COMPILE_GENERATED_CLASSES) as Task
 fun Project.gatlingRunTask() = tasks.getByPath(GATLING_RUN) as GatlingRunTask
+fun Project.extractIncludeProtoTask() = tasks.getByPath(EXTRACT_INCLUDE_PROTO) as DefaultTask
+fun Project.extractProtoTask() = tasks.getByPath(EXTRACT_PROTO) as DefaultTask
+fun Project.generateProtoTask() = tasks.getByPath(GENERATE_PROTO) as DefaultTask

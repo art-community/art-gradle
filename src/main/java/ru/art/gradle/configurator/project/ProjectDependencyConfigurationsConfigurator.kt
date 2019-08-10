@@ -30,7 +30,6 @@ fun Project.addDependencyConfigurations(): Unit = configurations.run {
     getByName(API.configuration).extendsFrom(getByName(EMBEDDED.configuration))
     getByName(TEST_COMPILE_CLASSPATH.configuration).extendsFrom(getByName(EMBEDDED.configuration), getByName(PROVIDED.configuration))
     getByName(TEST_RUNTIME_CLASSPATH.configuration).extendsFrom(getByName(EMBEDDED.configuration), getByName(PROVIDED.configuration))
-    getByName(TEST_IMPLEMENTATION.configuration).extendsFrom(getByName(EMBEDDED.configuration), getByName(PROVIDED.configuration))
 
     success("Created two ART gradle configurations ${message("(embedded and provided)", CYAN_BOLD)}:$NEW_LINE" + message("""
             (*) compileClasspath extends from embedded

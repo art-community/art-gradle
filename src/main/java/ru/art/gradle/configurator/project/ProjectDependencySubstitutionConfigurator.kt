@@ -20,13 +20,13 @@ import org.gradle.api.*
 import org.gradle.api.internal.project.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DefaultTasks.BUILD
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.dependency.*
 import ru.art.gradle.logging.*
 
 fun Project.substituteDependencies() {
     val substitutedDependencies = mutableSetOf<Dependency>()
-    projectConfiguration().dependencySubstitutionConfiguration.codeSubstitutions
+    projectExtension().dependencySubstitutionConfiguration.codeSubstitutions
             .forEach { dependency ->
                 configurations.all { configuration ->
                     findProject(":${dependency.artifact}") ?: return@all

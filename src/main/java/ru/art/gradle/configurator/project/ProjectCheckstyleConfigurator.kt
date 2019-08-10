@@ -21,16 +21,16 @@ import org.gradle.api.plugins.*
 import org.gradle.api.plugins.quality.*
 import ru.art.gradle.*
 import ru.art.gradle.constants.*
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.provider.*
 
 fun Project.addCheckstyle() {
     extensions.configure(CheckstyleExtension::class.java) { extension ->
         with(extension) {
-            toolVersion = projectConfiguration().externalDependencyVersionsConfiguration.checkstyleVersion
+            toolVersion = projectExtension().externalDependencyVersionsConfiguration.checkstyleVersion
             config = resources.text.fromString(ProjectPlugin::class.java.classLoader.getResourceAsStream(CHECK_STYLE_CONFIGURATION)?.reader()?.readText()
                     ?: return@with)
-            isIgnoreFailures = projectConfiguration().checkstyleConfiguration.ignoreFailures
+            isIgnoreFailures = projectExtension().checkstyleConfiguration.ignoreFailures
         }
     }
 

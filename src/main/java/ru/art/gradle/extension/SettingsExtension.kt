@@ -14,18 +14,19 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.configuration
+package ru.art.gradle.extension
 
 import org.gradle.api.*
 import org.gradle.api.initialization.*
 import org.jetbrains.kotlin.backend.common.*
+import ru.art.gradle.configuration.*
 import ru.art.gradle.constants.*
-import ru.art.gradle.context.Context.settingsConfiguration
+import ru.art.gradle.context.Context.settingsExtension
 import java.io.*
 import java.lang.System.*
 import java.util.*
 
-open class SettingsConfiguration(private val settings: Settings) {
+open class SettingsExtension(private val settings: Settings) {
     var projectsPaths = mutableListOf<String>()
         private set
     var pluginsConfiguration = SettingsPluginManagementConfiguration()
@@ -53,6 +54,6 @@ open class SettingsConfiguration(private val settings: Settings) {
     fun importProjectPathsfromEnvironmentVariable(variable: String) = getenv(variable)?.onlyIf({ isNotEmpty() }, { envVar -> envVar.split(COMMA).toTypedArray().forEach(this::addProjectsPath) })
 
     init {
-        settingsConfiguration = this
+        settingsExtension = this
     }
 }

@@ -28,4 +28,7 @@ object DefaultTasks {
     const val CHECKSTYLE_TEST = "checkstyleTest"
     const val JMH_COMPILE_GENERATED_CLASSES = "jmhCompileGeneratedClasses"
     const val GATLING_RUN = "gatlingRun"
+    const val EXTRACT_INCLUDE_PROTO = "extractIncludeProto"
+    const val EXTRACT_PROTO = "extractProto"
+    const val GENERATE_PROTO = "generateProto"
 }

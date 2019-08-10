@@ -21,7 +21,7 @@ import org.gradle.api.file.DuplicatesStrategy.*
 import org.gradle.api.plugins.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
-import ru.art.gradle.context.Context.projectConfiguration
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import ru.art.gradle.provider.*
 
@@ -41,12 +41,12 @@ fun Project.configureJava() {
         val mainSourceSet = sourceSets.getByName(MAIN_SOURCE_SET)
         val testSourceSet = sourceSets.getByName(TEST_SOURCE_SET)
 
-        mainSourceSet.resources.setSrcDirs(projectConfiguration().resourcesConfiguration.resourceDirs)
-        testSourceSet.resources.setSrcDirs(projectConfiguration().resourcesConfiguration.testResourceDirs)
+        mainSourceSet.resources.setSrcDirs(projectExtension().resourcesConfiguration.resourceDirs)
+        testSourceSet.resources.setSrcDirs(projectExtension().resourcesConfiguration.testResourceDirs)
 
         with(compileJavaTask()) {
             doLast {
-                projectConfiguration().resourcesConfiguration.resourceDirs.forEach { dir ->
+                projectExtension().resourcesConfiguration.resourceDirs.forEach { dir ->
                     copy { copy ->
                         with(copy) {
                             from(dir)
@@ -54,7 +54,7 @@ fun Project.configureJava() {
                         }
                     }
                 }
-                projectConfiguration().resourcesConfiguration.testResourceDirs.forEach { dir ->
+                projectExtension().resourcesConfiguration.testResourceDirs.forEach { dir ->
                     copy { copy ->
                         with(copy) {
                             from(dir)
@@ -74,15 +74,19 @@ fun Project.configureJava() {
                     .files
                     .map { file -> if (file.isDirectory) fileTree(file) else zipTree(file) }
                     .forEach { from(it) }
+            var archiveName = archiveBaseName.get()
+            if (project.hasProperty(ARCHIVE_BASE_NAME)) {
+                archiveName = properties[ARCHIVE_BASE_NAME] as String
+            }
+            archiveFileName.set("$archiveName-${project.version}$JAR_EXTENSION")
             doFirst {
-                if (projectConfiguration().mainClass.isBlank()) {
-                    determineMainClass()?.let(projectConfiguration()::mainClass)
+                if (projectExtension().mainClass.isBlank()) {
+                    determineMainClass()?.let(projectExtension()::mainClass)
                 }
-                manifest { manifest -> manifest.attributes[MAIN_CLASS_ATTRIBUTE] = projectConfiguration().mainClass }
+                manifest { manifest -> manifest.attributes[MAIN_CLASS_ATTRIBUTE] = projectExtension().mainClass }
                 exclude(MANIFEST_EXCLUSIONS)
-                archiveFileName.set("$archiveBaseName-${project.version}$JAR_EXTENSION")
-                if (projectConfiguration().mainClass.isNotEmpty()) {
-                    attention("Main class: '${projectConfiguration().mainClass}'")
+                if (projectExtension().mainClass.isNotEmpty()) {
+                    attention("Main class: '${projectExtension().mainClass}'")
                 }
             }
         }

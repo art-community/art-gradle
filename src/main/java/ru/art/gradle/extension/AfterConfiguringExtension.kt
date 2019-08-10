@@ -14,22 +14,14 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants
+package ru.art.gradle.extension
 
-const val EMPTY_STRING = ""
-const val COMMA = ","
-const val DOT = "."
-const val SLASH = "/"
-const val NEW_LINE = "\n"
-const val PREVIOUS_DIRECTORY = "../"
-const val SEMICOLON = ":"
-const val GRADLE_VERSION_5 = "5"
-const val ART_EXTENSION = "art"
-const val AFTER_CONFIGURING_ACTION_EXTENSION = "afterConfiguring"
-const val MAIN_SOURCE_SET = "main"
-const val TEST_SOURCE_SET = "test"
-const val SRC = "src"
-const val JAR_EXTENSION = ".jar"
-const val ART_MODULE_GROUP = "io.github.art"
-const val CLASS_FILE_EXTENSION = ".class"
-const val ADDITIONAL_LOGGING_MESSAGE_INDENT = "  "
+import org.gradle.api.*
+import ru.art.gradle.context.Context.ProjectContext
+import ru.art.gradle.context.Context.projectsContext
+
+open class AfterConfiguringExtension constructor(val project: Project) {
+    fun run(action: Action<in ProjectContext>) {
+        projectsContext[project.name]?.afterConfiguringAction = action
+    }
+}

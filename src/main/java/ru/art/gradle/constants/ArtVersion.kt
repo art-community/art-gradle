@@ -14,14 +14,10 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.configuration
+package ru.art.gradle.constants
 
-import org.gradle.api.*
-import ru.art.gradle.context.Context.ProjectContext
-import ru.art.gradle.context.Context.projectsContext
-
-open class AfterConfiguringExtension constructor(val project: Project) {
-    fun run(action: Action<in ProjectContext>) {
-        projectsContext[project.name]?.afterConfiguringAction = action
-    }
+enum class ArtVersion(val version: String) {
+    LATEST_MAJOR_1("1.+"),
+    LATEST_MAJOR_MINOR_1("1.1.+"),
+    LATEST("1.+")
 }

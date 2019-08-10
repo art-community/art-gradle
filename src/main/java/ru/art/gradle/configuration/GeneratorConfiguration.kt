@@ -18,10 +18,11 @@ package ru.art.gradle.configuration
 
 import org.gradle.api.*
 import ru.art.gradle.constants.*
+import ru.art.gradle.constants.ArtVersion.*
 import javax.inject.*
 
 open class GeneratorConfiguration @Inject constructor(val project: Project) {
     var group = ART_MODULE_GROUP
-    var version = LATEST_VERSION
+    var version = LATEST.version
     var packageName = EMPTY_STRING
 }

@@ -18,10 +18,10 @@ package ru.art.gradle.configurator.settings
 
 import org.gradle.api.initialization.*
 import ru.art.gradle.constants.*
-import ru.art.gradle.context.Context.settingsConfiguration
+import ru.art.gradle.context.Context.settingsExtension
 import java.io.*
 
-fun Settings.includeProjects() = settingsConfiguration.projectsPaths.forEach { path ->
+fun Settings.includeProjects() = settingsExtension.projectsPaths.forEach { path ->
     val projectsDirectory = File(path)
     projectsDirectory.listFiles()
             ?.filter { file ->
