@@ -1,5 +1,6 @@
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.*
+import java.util.concurrent.TimeUnit.*
 
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
@@ -23,7 +24,7 @@ plugins {
 }
 
 group = "io.github.art"
-version = "1.0.37"
+version = "1.0.44"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
@@ -82,14 +83,25 @@ dependencies {
     compileOnly("org.gradle", "gradle-kotlin-dsl", "1.1.3").exclude("org.jetbrains.kotlinx", "kotlinx-metadata-jvm")
     compileOnly("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
     compileOnly("org.jetbrains.kotlinx", "kotlinx-metadata-jvm", "0.1.0")
+    compileOnly("io.github.art", "application-generator", "1+")
 
     embedded("org.eclipse.jgit", "org.eclipse.jgit", "5.3.1.201904271842-r")
     embedded("gradle.plugin.com.github.lkishalmi.gatling", "gradle-gatling-plugin", "3.0.+")
     embedded("me.champeau.gradle", "jmh-gradle-plugin", "0.4.+")
     embedded("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.3.31")
     embedded("com.google.protobuf", "protobuf-gradle-plugin", "0.8+")
-    embedded("io.github.art", "application-generator", "1+")
 }
+
+configurations.all {
+    resolutionStrategy(closureOf<ResolutionStrategy> {
+        cacheChangingModulesFor(1, SECONDS)
+    })
+}
+
+dependencies.components.all {
+    isChanging = true
+}
+
 
 with(jar) {
     isZip64 = true

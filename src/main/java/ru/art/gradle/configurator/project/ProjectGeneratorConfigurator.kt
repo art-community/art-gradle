@@ -20,6 +20,7 @@ import org.gradle.api.*
 import org.gradle.api.plugins.*
 import org.gradle.api.tasks.*
 import org.gradle.internal.classloader.*
+import ru.art.gradle.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.constants.SpecificationType.*
@@ -62,7 +63,7 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
     with(task) {
         group = GENERATOR_GROUP
         doLast {
-            val visitableURLClassLoader = MappersGenerator::class.java.classLoader as VisitableURLClassLoader
+            val visitableURLClassLoader = ProjectPlugin::class.java.classLoader as VisitableURLClassLoader
             visitableURLClassLoader.addURL(mainSourceSet.java.outputDir.toURI().toURL())
             configurations
                     .getByName(COMPILE_CLASSPATH.configuration)
@@ -70,6 +71,7 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             val packagePath = projectExtension().generatorConfiguration.packageName.replace(DOT, separator)
             val sourcesPath = mainSourceSet.java.outputDir.absolutePath
+            visitableURLClassLoader.loadClass(MappersGenerator::class.java.name)
             MappersGenerator.performGeneration("$sourcesPath$separator$packagePath", MODEL_PACKAGE, MAPPING_PACKAGE)
         }
     }
@@ -91,12 +93,7 @@ private fun Project.createGenerateSpecificationTask(type: SpecificationType, pac
         RSOCKET -> GENERATOR_RSOCKET_GROUP
         SOAP -> GENERATOR_SOAP_GROUP
     }
-    val visitableURLClassLoader = when (type) {
-        HTTP -> HttpSpecificationsGenerator::class.java.classLoader as VisitableURLClassLoader
-        HTTP_COMMUNICATION -> HttpCommunicationSpecificationsGenerator::class.java.classLoader as VisitableURLClassLoader
-        else -> return tasks.create(name)
-    }
-
+    val visitableURLClassLoader = ProjectPlugin::class.java.classLoader as VisitableURLClassLoader
     visitableURLClassLoader.addURL(mainSourceSet.java.outputDir.toURI().toURL())
     success("Created '$name' task depends on 'buildService' task, running service specification generator for service $service and finalized by 'build' task")
     return tasks.create(name) { task ->
@@ -119,9 +116,11 @@ private fun Project.createGenerateSpecificationTask(type: SpecificationType, pac
                         .replace(separator, DOT)
                 when (type) {
                     HTTP -> {
+                        visitableURLClassLoader.loadClass(HttpSpecificationsGenerator::class.java.name)
                         HttpSpecificationsGenerator.performGeneration(packageDir, visitableURLClassLoader.loadClass(serviceClass))
                     }
                     HTTP_COMMUNICATION -> {
+                        visitableURLClassLoader.loadClass(HttpCommunicationSpecificationsGenerator::class.java.name)
                         HttpCommunicationSpecificationsGenerator.performGeneration(packageDir, visitableURLClassLoader.loadClass(serviceClass))
                     }
                     else -> {
