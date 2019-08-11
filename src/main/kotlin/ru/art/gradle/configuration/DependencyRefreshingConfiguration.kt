@@ -21,9 +21,4 @@ import ru.art.gradle.constants.*
 open class DependencyRefreshingConfiguration {
     var enabled: Boolean? = null
     var refreshingRateInSeconds = REFRESHING_RATE_IN_SECONDS
-        private set
-
-    fun refreshingRateInSecconds(value: Int) {
-        refreshingRateInSeconds = value
-    }
 }
