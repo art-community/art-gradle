@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ART
+ *    Copyright 2019 ART 
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package ru.art.gradle.configuration
 
-import ru.art.gradle.constants.configuration.defaults.DefaultResourcesConfiguration.RESOURCES_DIR
-import ru.art.gradle.constants.configuration.defaults.DefaultResourcesConfiguration.TEST_RESOURCES_DIR
+import ru.art.gradle.constants.DefaultResources.RESOURCES_DIR
+import ru.art.gradle.constants.DefaultResources.TEST_RESOURCES_DIR
 
 open class ResourcesConfiguration {
     var resourceDirs = mutableListOf(RESOURCES_DIR)

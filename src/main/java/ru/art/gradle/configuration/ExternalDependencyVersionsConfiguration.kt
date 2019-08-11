@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ART
+ *    Copyright 2019 ART 
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,60 +16,60 @@
 
 package ru.art.gradle.configuration
 
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.APACHE_HTTP_ASYNC_CLIENT_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.APACHE_HTTP_CLIENT_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.APACHE_HTTP_CORE_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.CGLIB_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.CHECKSTYLE_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.CXF_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.DROPWIZARD_VERSIONS
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GATLING_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GRADLE_VERSIONS_PLUGIN_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GRADLE_WRAPPER_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GROOVY_MINIMAL_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GROOVY_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GRPC_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.GUAVA_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.HIKARI_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JACKSON_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JAVA_POET_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JOOQ_ART_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JOOQ_PLUGIN_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JOOQ_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JTWIG_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.JUNIT_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.KAFKA_LOG4J_APPENDER_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.KAFKA_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.KONF_TYPESAFE_CONFIG_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.KONF_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.KOTLIN_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.LOG4J_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.LOG4J_VERSION_JDK6
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.LOGBACK_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.LOGBOOK_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.LOMBOK_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.METRICS_DROPWIZ_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.MICROMETER_JVM_EXTRAS_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.MICROMETER_PROMETHEUS_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.POSTGRES_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROJECT_REACTOR_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROMETHEUS_DROPWIZARD_SIMPLE_CLIENT
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROTOBUF_COMPILER_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.PROTOBUF_GRADLE_PLUGIN_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.RESILIENCE4J_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.ROCKSDB_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.RSOCKET_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.SCALA_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.SL4J_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.SPOCK_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.SSH_PLUGIN_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.STAX_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.TARANTOOL_CONNECTOR_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.TOMCAT_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.TYPESAFE_CONFIG_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.WSDL2JAVA_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.YAMLBEANS_VERSION
-import ru.art.gradle.constants.configuration.defaults.DefaultDependencyVersions.ZERO_TURNAROUND_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.APACHE_HTTP_ASYNC_CLIENT_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.APACHE_HTTP_CLIENT_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.APACHE_HTTP_CORE_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.CGLIB_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.CHECKSTYLE_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.CXF_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.DROPWIZARD_VERSIONS
+import ru.art.gradle.constants.DefaultDependencyVersions.GATLING_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.GRADLE_VERSIONS_PLUGIN_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.GRADLE_WRAPPER_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.GROOVY_MINIMAL_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.GROOVY_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.GRPC_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.GUAVA_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.HIKARI_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JACKSON_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JAVA_POET_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JOOQ_ART_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JOOQ_PLUGIN_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JOOQ_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JTWIG_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.JUNIT_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.KAFKA_LOG4J_APPENDER_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.KAFKA_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.KONF_TYPESAFE_CONFIG_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.KONF_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.KOTLIN_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.LOG4J_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.LOG4J_VERSION_JDK6
+import ru.art.gradle.constants.DefaultDependencyVersions.LOGBACK_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.LOGBOOK_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.LOMBOK_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.METRICS_DROPWIZ_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.MICROMETER_JVM_EXTRAS_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.MICROMETER_PROMETHEUS_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.POSTGRES_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.PROJECT_REACTOR_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.PROMETHEUS_DROPWIZARD_SIMPLE_CLIENT
+import ru.art.gradle.constants.DefaultDependencyVersions.PROTOBUF_COMPILER_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.PROTOBUF_GRADLE_PLUGIN_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.RESILIENCE4J_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.ROCKSDB_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.RSOCKET_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.SCALA_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.SL4J_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.SPOCK_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.SSH_PLUGIN_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.STAX_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.TARANTOOL_CONNECTOR_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.TOMCAT_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.TYPESAFE_CONFIG_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.WSDL2JAVA_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.YAMLBEANS_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.ZERO_TURNAROUND_VERSION
 
 open class ExternalDependencyVersionsConfiguration {
     var cglibVersion = CGLIB_VERSION

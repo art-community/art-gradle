@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ART
+ *    Copyright 2019 ART 
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,6 +14,11 @@
  *    limitations under the License.
  */
 
-package ru.art.gradle.constants.configuration.defaults
+package ru.art.gradle.constants
 
-const val REFRESHING_RATE_IN_SECONDS = 30
+import java.io.File.*
+
+object DefaultResources {
+    val RESOURCES_DIR = "src${separator}main${separator}resources"
+    val TEST_RESOURCES_DIR = "src${separator}test${separator}resources"
+}

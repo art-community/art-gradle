@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ART
+ *    Copyright 2019 ART 
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,4 +25,6 @@ open class GeneratorConfiguration @Inject constructor(val project: Project) {
     var group = ART_MODULE_GROUP
     var version = LATEST.version
     var packageName = EMPTY_STRING
+    var compileModelsSourcePackages = DEFAULT_COMPILE_MODELS_SOURCES
+    var compileServiceSourcePackages = DEFAULT_COMPILE_SERVICES_SOURCES
 }

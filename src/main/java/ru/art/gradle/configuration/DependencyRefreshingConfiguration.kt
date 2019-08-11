@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ART
+ *    Copyright 2019 ART 
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package ru.art.gradle.configuration
 
-import ru.art.gradle.constants.configuration.defaults.*
+import ru.art.gradle.constants.*
 
 open class DependencyRefreshingConfiguration {
     var enabled: Boolean? = null
