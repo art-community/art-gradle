@@ -18,12 +18,13 @@ package ru.art.gradle.configuration
 
 import org.gradle.api.*
 import ru.art.gradle.constants.*
+import ru.art.gradle.constants.ArtVersion.*
 import ru.art.gradle.dependency.*
 import javax.inject.*
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
-    var version: String? = null
+    var version: String = LATEST.version
         private set
 
     fun useVersion(version: String) {
