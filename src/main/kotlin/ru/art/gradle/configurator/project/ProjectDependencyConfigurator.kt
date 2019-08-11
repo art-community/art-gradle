@@ -35,9 +35,8 @@ fun Project.addLombokDependency() {
     if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
         addDependency(ANNOTATION_PROCESSOR, lombok())
     }
-    addDependency(COMPILE_CLASSPATH, lombok())
-    addDependency(TEST_COMPILE_CLASSPATH, lombok())
-    addDependency(TEST_RUNTIME_CLASSPATH, lombok())
+    addDependency(COMPILE_ONLY, lombok())
+    addDependency(TEST_COMPILE_ONLY, lombok())
 }
 
 fun Project.addSpockDependency() {

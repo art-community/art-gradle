@@ -30,6 +30,7 @@ enum class DependencyConfiguration(val configuration: String) {
     EXTERNAL("external"),
     TEST_COMPILE_CLASSPATH("testCompileClasspath"),
     TEST_RUNTIME_CLASSPATH("testRuntimeClasspath"),
+    TEST_COMPILE_ONLY("testCompileOnly"),
     CLASSPATH("classpath"),
     GATLING("gatling"),
     API("api")
