@@ -511,6 +511,8 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
         applicationConfiguratorApi(*dependencyModifiers)
         applicationProtobuf(*dependencyModifiers)
         applicationProtobufGenerated(*dependencyModifiers)
+        applicationGrpcClient(*dependencyModifiers)
+        applicationGrpcServer(*dependencyModifiers)
     }
 
     fun configurationManagement(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
