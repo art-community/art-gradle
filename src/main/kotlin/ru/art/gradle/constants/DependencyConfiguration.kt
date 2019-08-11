@@ -27,6 +27,7 @@ enum class DependencyConfiguration(val configuration: String) {
     TEST_IMPLEMENTATION("testImplementation"),
     EMBEDDED("embedded"),
     PROVIDED("provided"),
+    EXTERNAL("external"),
     TEST_COMPILE_CLASSPATH("testCompileClasspath"),
     TEST_RUNTIME_CLASSPATH("testRuntimeClasspath"),
     CLASSPATH("classpath"),

@@ -59,6 +59,7 @@ fun Project.configureProject() {
             addGroovyTestsDependency()
             addSpockDependency()
             auxiliaryInformation().hasSpock = true
+            auxiliaryInformation().hasGroovyTests = true
         }
         if (projectExtension.checkstyleConfiguration.enabled == true) {
             applyCheckStylePlugin()

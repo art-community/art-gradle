@@ -30,7 +30,7 @@ fun Project.determineSourceSets(): SourceSetDeterminationResult {
     var hasGroovyTests = false
     var hasScalaTests = false
     var hasKotlinTests = false
-    val testSourceSet = file("$projectDir/$SRC/$TEST_SOURCE_SET")
+    val testSourceSet = file("$projectDir$separator$SRC$separator$TEST_SOURCE_SET")
     if (testSourceSet.exists()) {
         testSourceSet.listFiles()?.forEach { file ->
             hasGroovyTests = hasGroovyTests or file.name.contains(GROOVY)
@@ -40,7 +40,7 @@ fun Project.determineSourceSets(): SourceSetDeterminationResult {
     }
     file("$projectDir$separator$SRC").walkTopDown()
             .maxDepth(2)
-            .filter { !it.absolutePath.contains("$projectDir/$SRC/$TEST_SOURCE_SET") }
+            .filter { !it.absolutePath.contains("$SRC$separator$TEST_SOURCE_SET") }
             .forEach { file ->
                 hasGroovy = hasGroovy or file.name.contains(GROOVY)
                 hasGatling = hasGatling or file.name.contains(GATLING)

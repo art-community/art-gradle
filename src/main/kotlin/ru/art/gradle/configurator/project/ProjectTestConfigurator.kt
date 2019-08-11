@@ -27,6 +27,7 @@ import ru.art.gradle.provider.*
 
 fun Project.configureTests() {
     addDependency(TEST_COMPILE_CLASSPATH, junit())
+    addDependency(TEST_RUNTIME_CLASSPATH, junit())
 
     with(testTask()) {
         if (projectExtension().testsConfiguration.useJunit) {
