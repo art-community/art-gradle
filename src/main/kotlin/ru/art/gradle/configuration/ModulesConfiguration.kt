@@ -550,7 +550,7 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
 
     fun remoteScheduling(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         protocols {
-            grpcServer(*dependencyModifiers)
+            grpcCommunication(*dependencyModifiers)
         }
         applicationRemoteSchedulerApi(*dependencyModifiers)
     }
