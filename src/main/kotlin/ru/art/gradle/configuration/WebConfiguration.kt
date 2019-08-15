@@ -16,6 +16,13 @@
 
 package ru.art.gradle.configuration
 
+import ru.art.gradle.constants.*
+
 open class WebConfiguration {
+    var webSourcesDir = WEB_SOURCE_SET
+    var webBuildDir = WEB_SOURCE_SET_DIST
     var enabled: Boolean? = null
+    var buildToolCheckingCommand = NPM
+    var prepareWebCommand = PREPARE_WEB_COMMAND
+    var buildWebCommand = BUILD_WEB_COMMAND
 }

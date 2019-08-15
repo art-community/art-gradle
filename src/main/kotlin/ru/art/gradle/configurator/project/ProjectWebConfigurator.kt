@@ -16,26 +16,29 @@
 
 package ru.art.gradle.configurator.project
 
-import org.gradle.api.*
-import org.gradle.api.tasks.*
+import org.gradle.api.Project
+import org.gradle.api.tasks.Exec
 import ru.art.gradle.constants.*
 import ru.art.gradle.context.Context.projectExtension
-import ru.art.gradle.exception.*
-import ru.art.gradle.logging.*
-import ru.art.gradle.logging.LogMessageColor.*
-import ru.art.gradle.provider.*
-import java.io.*
-import java.io.File.*
-import java.lang.Runtime.*
+import ru.art.gradle.exception.ignoreException
+import ru.art.gradle.logging.LogMessageColor.PURPLE_BOLD
+import ru.art.gradle.logging.message
+import ru.art.gradle.logging.success
+import ru.art.gradle.provider.buildTask
+import ru.art.gradle.provider.cleanTask
+import ru.art.gradle.provider.jarTask
+import java.io.ByteArrayOutputStream
+import java.io.File.separator
+import java.lang.Runtime.getRuntime
 
 fun Project.configureWeb() = ignoreException {
-    getRuntime().exec(NPM)
+    getRuntime().exec(projectExtension().webConfiguration.buildToolCheckingCommand)
     val prepareWeb = tasks.create(PREPARE_WEB, Exec::class.java) { task ->
         task.group = WEB_TASK_GROUP
 
         with(task) {
-            workingDir = file("$projectDir$separator$WEB_SOURCE_SET")
-            commandLine = PREPARE_WEB_COMMAND
+            workingDir = file("$projectDir$separator${projectExtension().webConfiguration.webSourcesDir}")
+            commandLine = projectExtension().webConfiguration.prepareWebCommand
             standardOutput = ByteArrayOutputStream()
         }
     }
@@ -44,8 +47,8 @@ fun Project.configureWeb() = ignoreException {
         task.group = WEB_TASK_GROUP
 
         with(task) {
-            workingDir = file("$projectDir$separator$WEB_SOURCE_SET")
-            commandLine = BUILD_WEB_COMMAND
+            workingDir = file("$projectDir$separator${projectExtension().webConfiguration.webSourcesDir}")
+            commandLine = projectExtension().webConfiguration.buildWebCommand
             standardOutput = ByteArrayOutputStream()
         }
     }
@@ -54,7 +57,7 @@ fun Project.configureWeb() = ignoreException {
         task.group = WEB_TASK_GROUP
 
         task.doLast {
-            delete(WEB_SOURCE_SET_DIST)
+            delete(projectExtension().webConfiguration.webBuildDir)
         }
     }
 
@@ -63,13 +66,13 @@ fun Project.configureWeb() = ignoreException {
     cleanTask().dependsOn(cleanWeb)
     buildTask().dependsOn(buildWeb)
 
-    projectExtension().resourcesConfiguration.resourceDirs.add(WEB_SOURCE_SET_DIST)
+    projectExtension().resourcesConfiguration.resourceDirs.add(projectExtension().webConfiguration.webBuildDir)
 
     success("Configuring Web:\n" + message("""
         (!) prepareWeb task runs 'npm install' command
         (!) buildWeb task runs 'npm run production' command
-        (!) cleanWeb will delete '$WEB_SOURCE_SET_DIST' 
-        (!) directory '$WEB_SOURCE_SET_DIST' applied as resourcesDir 
+        (!) cleanWeb will delete '${projectExtension().webConfiguration.webSourcesDir}' 
+        (!) directory '${projectExtension().webConfiguration.webBuildDir}' applied as resourcesDir 
         (!) buildWeb depends on prepareWeb
         (!) jar depends on buildWeb
         (!) clean depends on cleanWeb
