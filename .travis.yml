@@ -1,13 +1,40 @@
-language: java
-install: true
+#
+# ART Java
+#
+# Copyright 2019 ART
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
 
-os: linux
 dist: trusty
-jdk: oraclejdk8
+install: true
+language: java
 
-before_install: chmod +x gradlew
+matrix:
+  include:
+    - jdk: oraclejdk8
 
-script: ./gradlew build --info --stacktrace --console=plain --max-workers=1 --no-daemon --build-cache -Dkotlin.colors.enabled=false
+env:
+  global:
+    - secure: "QKeJIthLnQXMe10nR0vuNQnQ6Catj6pehKyZTkXWSi7Gwtl/GWexwAZnR9euTHYtHPrbOsKMCpl0jZ083XnPbFNQjeijrJLq2P8gWDsPuW5v2dAkGj2Hssno0Tm2MvG8r8mjwRn/Ks/uhYzfOQDvzsnjCECOO6wlJi9DPvQvmZKOOh810eapRyrEVPswl3+Y9Y0xss6zTptEsaZ68c6vCu0D6yPTvVYfavLyjMquKKXMyg+7GX+ON6yLiWLKV1sYJ4QtU2SM/AIVOvl1cEfcZM/7SvL/xdiLJVrmXSE4Pb3DS99I5l3mwzhHnw3XCnsaFfHVrAu1Vh75DmZkdAYNqP4l+OoGG+NUmtYcf+gvDqT+lfcF97T6uUHJLsI8YdL2pKbcnbqkgny2DBnVuxh+YqUp3MLznRhRaptPZkOZ37bnzvrbw4w0teFsLa/HzdvlIaLZpLo1jA1pmfYUR7I0421vtjxhynWp8ydzCqXqlZ0qeI5oBS47waK4GyFU+1lF0owUQzI+782wvKT4BSqdJfJI7zJcT3lz00c9gNEcmIM/3fbssgwupbTamrHJSmxS09IiqDQv7Divkpz5HfAtfAnLKfmnkGnEvuAF3+6tX2Neg1fxMZ1U45ifnxmkIxnRgZuY7FciC4jjjK14fobvauL7qCk2DEBLEiZnflprYMc="
+
+before_install:
+  - chmod 777 ci/travis.sh
+  - chmod 777 gradlew
+
+script:
+  - ci/travis.sh
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

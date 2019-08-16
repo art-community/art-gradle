@@ -1,16 +1,13 @@
+
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.tasks.*
-import java.util.concurrent.TimeUnit.*
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.concurrent.TimeUnit.SECONDS
 
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
 val jar: Jar by tasks
 val embedded: Configuration by configurations.creating
 configurations.compileClasspath.get().extendsFrom(embedded)
-
-tasks.withType<Wrapper> {
-    gradleVersion = "5.5.1"
-}
 
 plugins {
     kotlin("jvm") version "1.3.31"
@@ -24,7 +21,6 @@ plugins {
 }
 
 group = "io.github.art"
-version = "1.0.63"
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
