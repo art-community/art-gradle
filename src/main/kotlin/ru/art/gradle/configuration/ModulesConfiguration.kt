@@ -121,8 +121,13 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         addModule("application-json", dependencyModifiers)
     }
 
-    protected open fun applicationKafka(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+    protected open fun applicationKafkaClient(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        //TODO: Change to  application-kafka-client
         addModule("application-kafka", dependencyModifiers)
+    }
+
+    protected open fun applicationKafkaBroker(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        addModule("application-kafka-broker", dependencyModifiers)
     }
 
     protected open fun applicationKafkaConsumer(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
@@ -327,8 +332,12 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
         super.applicationJson(dependencyModifiers)
     }
 
-    public override fun applicationKafka(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
-        super.applicationKafka(dependencyModifiers)
+    public override fun applicationKafkaClient(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
+        super.applicationKafkaClient(dependencyModifiers)
+    }
+
+    public override fun applicationKafkaBroker(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
+        super.applicationKafkaBroker(dependencyModifiers)
     }
 
     public override fun applicationKafkaConsumer(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
@@ -478,7 +487,7 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
         applicationProtobuf()
         applicationJson()
         applicationProtobufGenerated()
-        applicationKafka(*dependencyModifiers)
+        applicationKafkaClient(*dependencyModifiers)
         applicationKafkaConsumer(*dependencyModifiers)
     }
 
@@ -488,13 +497,18 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
         applicationJson()
         applicationProtobufGenerated()
         applicationService(*dependencyModifiers)
-        applicationKafka(*dependencyModifiers)
+        applicationKafkaClient(*dependencyModifiers)
         applicationKafkaProducer(*dependencyModifiers)
     }
 
-    fun kafka(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
+    fun kafkaClient(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         kafkaConsumer(*dependencyModifiers)
         kafkaProducer(*dependencyModifiers)
+    }
+
+    fun kafkaBroker(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
+        logging(*dependencyModifiers)
+        applicationKafkaBroker(*dependencyModifiers)
     }
 
     fun localConfigurationManagement(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
@@ -539,7 +553,7 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
 
     fun clientBalancing(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         protocols {
-            grpcServer(*dependencyModifiers)
+            grpcCommunication(*dependencyModifiers)
         }
         applicationNetworkManager(*dependencyModifiers)
         applicationStateApi(*dependencyModifiers)
@@ -600,7 +614,7 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
     }
 
     fun kit(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
-        kafka(*dependencyModifiers)
+        kafkaClient(*dependencyModifiers)
         configurationManagement(*dependencyModifiers)
         scheduling(*dependencyModifiers)
         protocols {
