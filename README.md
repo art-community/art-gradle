@@ -4,7 +4,6 @@ Application Gradle Plugin provides functional for configuring java/scala/kotlin/
 
 ## Badges
 ![Build Status](https://travis-ci.com/art-community/application-gradle-plugin.svg)
-[![CodeFactor](https://www.codefactor.io/repository/github/art-community/application-gradle-plugin/badge)](https://www.codefactor.io/repository/github/art-community/application-gradle-plugin)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/56edba7f477640ee87e0ebc20f45eecf)](https://app.codacy.com/app/antonbashir/application-gradle-plugin?utm_source=github.com&utm_medium=referral&utm_content=art-community/application-gradle-plugin&utm_campaign=Badge_Grade_Dashboard)
 
 ## Build and Binaries
