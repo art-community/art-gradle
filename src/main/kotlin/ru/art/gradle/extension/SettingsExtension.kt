@@ -18,10 +18,8 @@
 
 package ru.art.gradle.extension
 
-import org.gradle.api.*
 import org.gradle.api.initialization.*
 import org.jetbrains.kotlin.backend.common.*
-import ru.art.gradle.configuration.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.context.Context.settingsExtension
 import java.io.*
@@ -31,13 +29,6 @@ import java.util.*
 open class SettingsExtension(private val settings: Settings) {
     var projectsPaths = mutableListOf<String>()
         private set
-    var pluginsConfiguration = SettingsPluginManagementConfiguration()
-        private set
-
-    fun plugins(action: Action<in SettingsPluginManagementConfiguration>) {
-        pluginsConfiguration.enabled = true
-        action.execute(pluginsConfiguration)
-    }
 
     fun addProjectsPath(path: String) {
         if (File(path).exists() && File(path).isDirectory) {
@@ -47,7 +38,7 @@ open class SettingsExtension(private val settings: Settings) {
 
     fun addCurrentPath() = addProjectsPath(settings.settingsDir.absolutePath)
 
-    fun importProjectPathsfromLocalProperties() = File(LOCAL_PROPERTIES).onlyIf({ exists() }, { file ->
+    fun importProjectPathsFromLocalProperties() = File(LOCAL_PROPERTIES).onlyIf({ exists() }, { file ->
         val properties = Properties()
         properties.load(file.inputStream())
         (properties[PROJECTS_PATH_PROPERTY] as String).split(COMMA).toTypedArray().forEach(this::addProjectsPath)
