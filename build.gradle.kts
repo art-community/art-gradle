@@ -39,6 +39,10 @@ plugins {
 
 group = "io.github.art"
 
+tasks.withType(Wrapper::class.java) {
+    gradleVersion = "5.6"
+}
+
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
