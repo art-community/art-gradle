@@ -18,11 +18,11 @@
 
 package ru.art.gradle.configuration
 
-import org.gradle.api.*
-import ru.art.gradle.constants.*
-import ru.art.gradle.constants.ArtVersion.*
-import ru.art.gradle.dependency.*
-import javax.inject.*
+import org.gradle.api.Project
+import ru.art.gradle.constants.ART_MODULE_GROUP
+import ru.art.gradle.constants.ArtVersion.LATEST
+import ru.art.gradle.dependency.Dependency
+import javax.inject.Inject
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
@@ -122,8 +122,7 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
     }
 
     protected open fun applicationKafkaClient(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
-        //TODO: Change to  application-kafka-client
-        addModule("application-kafka", dependencyModifiers)
+        addModule("application-kafka-client", dependencyModifiers)
     }
 
     protected open fun applicationKafkaBroker(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
