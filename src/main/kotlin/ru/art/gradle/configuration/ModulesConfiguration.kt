@@ -526,6 +526,7 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
         applicationConfiguratorApi(*dependencyModifiers)
         applicationProtobuf(*dependencyModifiers)
         applicationProtobufGenerated(*dependencyModifiers)
+        applicationGrpc(*dependencyModifiers)
         applicationGrpcClient(*dependencyModifiers)
         applicationGrpcServer(*dependencyModifiers)
     }
