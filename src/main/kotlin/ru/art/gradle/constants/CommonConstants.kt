@@ -21,7 +21,6 @@ package ru.art.gradle.constants
 const val EMPTY_STRING = ""
 const val COMMA = ","
 const val DOT = "."
-const val SLASH = "/"
 const val NEW_LINE = "\n"
 const val PREVIOUS_DIRECTORY = "../"
 const val SEMICOLON = ":"

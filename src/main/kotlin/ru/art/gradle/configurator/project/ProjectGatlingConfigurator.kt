@@ -32,14 +32,15 @@ import ru.art.gradle.provider.*
 
 fun Project.configureGatling() {
     configure<GatlingPluginExtension> {
-        simulations = fileTree(SIMULATIONS_DIR).files.map { "$SIMULATIONS_PREFIX.${it.name.removeSuffix(SCALA_POSTFIX)}" }
+        simulations = fileTree(SIMULATIONS_PATH).files.map { "$SIMULATIONS_PREFIX.${it.name.removeSuffix(SCALA_POSTFIX)}" }
     }
 
     convention.getPlugin(JavaPluginConvention::class.java).sourceSets {
         GATLING {
             withConvention(ScalaSourceSet::class) {
                 scala { source ->
-                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) }.filter { directory -> !directory.absolutePath.contains(SIMULATIONS_DIR) })
+                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) }
+                            .filter { directory -> !directory.absolutePath.endsWith(SIMULATIONS_PATH) })
                 }
             }
         }
@@ -56,12 +57,20 @@ fun Project.configureGatling() {
                 getByName(EMBEDDED.configuration),
                 getByName(TEST_COMPILE_CLASSPATH.configuration),
                 getByName(TEST_RUNTIME_CLASSPATH.configuration))
+        getByName(GATLING_COMPILE.configuration).extendsFrom(getByName(PROVIDED.configuration),
+                getByName(EMBEDDED.configuration),
+                getByName(TEST_COMPILE_CLASSPATH.configuration))
+        getByName(GATLING_RUNTIME.configuration).extendsFrom(getByName(PROVIDED.configuration),
+                getByName(EMBEDDED.configuration),
+                getByName(TEST_RUNTIME_CLASSPATH.configuration))
     }
 
     gatlingRunTask().dependsOn(buildTask())
 
     success("Configuring Gatling:\n" + message("""
         'gatling' dependency configuration extends from embedded, provided, testCompileClasspath and testRuntimeClasspath
+        'gatlingCompile' dependency configuration extends from embedded, provided, testCompileClasspath
+        'gatlingRuntime' dependency configuration extends from embedded, provided, testRuntimeClasspath
         Simulations = ${fileTree(SIMULATIONS_DIR).files.map { "$SIMULATIONS_PREFIX.${it.name.removeSuffix(SCALA_POSTFIX)}" }}
         Sources directory = $GATLING_SOURCE_SET_DIR
         (!) gatlingRun depends on build
