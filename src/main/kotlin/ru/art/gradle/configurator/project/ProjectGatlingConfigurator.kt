@@ -39,7 +39,7 @@ fun Project.configureGatling() {
         GATLING {
             withConvention(ScalaSourceSet::class) {
                 scala { source ->
-                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) })
+                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) }.filter { directory -> !directory.absolutePath.contains(SIMULATIONS_DIR) })
                 }
             }
         }
@@ -51,9 +51,17 @@ fun Project.configureGatling() {
     addDependency(PROVIDED, gatlingHttp())
     addDependency(PROVIDED, gatlingCore())
 
+    with(configurations) {
+        getByName(GATLING.configuration).extendsFrom(getByName(PROVIDED.configuration),
+                getByName(EMBEDDED.configuration),
+                getByName(TEST_COMPILE_CLASSPATH.configuration),
+                getByName(TEST_RUNTIME_CLASSPATH.configuration))
+    }
+
     gatlingRunTask().dependsOn(buildTask())
 
     success("Configuring Gatling:\n" + message("""
+        'gatling' dependency configuration extends from embedded, provided, testCompileClasspath and testRuntimeClasspath
         Simulations = ${fileTree(SIMULATIONS_DIR).files.map { "$SIMULATIONS_PREFIX.${it.name.removeSuffix(SCALA_POSTFIX)}" }}
         Sources directory = $GATLING_SOURCE_SET_DIR
         (!) gatlingRun depends on build
