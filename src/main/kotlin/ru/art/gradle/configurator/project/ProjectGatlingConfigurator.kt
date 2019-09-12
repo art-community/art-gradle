@@ -39,7 +39,7 @@ fun Project.configureGatling() {
         GATLING {
             withConvention(ScalaSourceSet::class) {
                 scala { source ->
-                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) })
+                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) }.filter { directory -> !directory.absolutePath.contains(SIMULATIONS_DIR) })
                 }
             }
         }
