@@ -19,28 +19,38 @@
 package ru.art.gradle.configurator.project
 
 import com.github.lkishalmi.gradle.gatling.*
-import org.gradle.api.*
+import org.gradle.api.Project
 import org.gradle.api.plugins.*
 import org.gradle.api.tasks.*
 import org.gradle.kotlin.dsl.*
+import org.gradle.plugins.ide.idea.model.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.constants.DependencyConfiguration.GATLING
+import ru.art.gradle.constants.IdeaScopeOperations.PLUS
+import ru.art.gradle.constants.IdeaScopes.COMPILE
+import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import ru.art.gradle.logging.LogMessageColor.*
 import ru.art.gradle.provider.*
+import java.io.*
+import java.io.File.*
 
 fun Project.configureGatling() {
+    val resolvedSimulations = fileTree(SIMULATIONS_PATH)
+            .files
+            .filter(File::isFile)
+            .filter { file -> file.readText().contains(SIMULATION_MARKER) }
+            .map { file -> "$SIMULATIONS_PACKAGE.${file.name.substringAfter(SIMULATIONS_PACKAGE).replace(separator, DOT).removeSuffix(SCALA_SUFFIX)}" }
     configure<GatlingPluginExtension> {
-        simulations = fileTree(SIMULATIONS_PATH).files.map { "$SIMULATIONS_PREFIX.${it.name.removeSuffix(SCALA_POSTFIX)}" }
+        simulations = resolvedSimulations
     }
 
     convention.getPlugin(JavaPluginConvention::class.java).sourceSets {
         GATLING {
             withConvention(ScalaSourceSet::class) {
                 scala { source ->
-                    source.setSrcDirs(source.srcDirs.apply { add(file(GATLING_SOURCE_SET_DIR)) }
-                            .filter { directory -> !directory.absolutePath.endsWith(SIMULATIONS_PATH) })
+                    source.setSrcDirs(source.srcDirs.filter { directory -> directory.path != file(SIMULATIONS_PATH).absolutePath }.toMutableList().apply { add(file(GATLING_SOURCE_SET_DIR)) })
                 }
             }
         }
@@ -48,30 +58,29 @@ fun Project.configureGatling() {
 
     addDependency(GATLING, logbackClassic())
     addDependency(GATLING, scala())
-    addDependency(PROVIDED, scala())
-    addDependency(PROVIDED, gatlingHttp())
-    addDependency(PROVIDED, gatlingCore())
+    addDependency(COMPILE_CLASSPATH, scala())
+    addDependency(RUNTIME_CLASSPATH, scala())
+    addDependency(GATLING, gatlingHttp())
+    addDependency(GATLING, gatlingCore())
 
-    with(configurations) {
-        getByName(GATLING.configuration).extendsFrom(getByName(PROVIDED.configuration),
-                getByName(EMBEDDED.configuration),
-                getByName(TEST_COMPILE_CLASSPATH.configuration),
-                getByName(TEST_RUNTIME_CLASSPATH.configuration))
-        getByName(GATLING_COMPILE.configuration).extendsFrom(getByName(PROVIDED.configuration),
-                getByName(EMBEDDED.configuration),
-                getByName(TEST_COMPILE_CLASSPATH.configuration))
-        getByName(GATLING_RUNTIME.configuration).extendsFrom(getByName(PROVIDED.configuration),
-                getByName(EMBEDDED.configuration),
-                getByName(TEST_RUNTIME_CLASSPATH.configuration))
+    projectExtension().gatlingConfiguration.modulesConfiguration.modules.stream()
+            .peek(::substituteModuleWithCode)
+            .peek { dependency -> setVersion(dependency, projectExtension().gatlingConfiguration.modulesConfiguration) }
+            .forEach { addDependency(GATLING, it) }
+
+
+    extensions.configure(IdeaModel::class.java) { model ->
+        model.module { module ->
+            with(module) {
+                scopes[COMPILE]?.get(PLUS)?.addAll(listOf(configurations.getByName(GATLING.configuration)))
+            }
+        }
     }
 
     gatlingRunTask().dependsOn(buildTask())
 
     success("Configuring Gatling:\n" + message("""
-        'gatling' dependency configuration extends from embedded, provided, testCompileClasspath and testRuntimeClasspath
-        'gatlingCompile' dependency configuration extends from embedded, provided, testCompileClasspath
-        'gatlingRuntime' dependency configuration extends from embedded, provided, testRuntimeClasspath
-        Simulations = ${fileTree(SIMULATIONS_DIR).files.map { "$SIMULATIONS_PREFIX.${it.name.removeSuffix(SCALA_POSTFIX)}" }}
+        Simulations = $resolvedSimulations"
         Sources directory = $GATLING_SOURCE_SET_DIR
         (!) gatlingRun depends on build
         """.replaceIndent(ADDITIONAL_LOGGING_MESSAGE_INDENT), PURPLE_BOLD))

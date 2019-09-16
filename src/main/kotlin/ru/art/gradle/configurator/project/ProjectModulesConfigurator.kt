@@ -51,7 +51,7 @@ fun Project.addModules() {
             }
 }
 
-private fun Project.substituteModuleWithCode(module: Dependency) {
+fun Project.substituteModuleWithCode(module: Dependency) {
     if (projectExtension().dependencySubstitutionConfiguration.artifactSubstitutions.contains(module)) {
         return
     }
@@ -60,7 +60,7 @@ private fun Project.substituteModuleWithCode(module: Dependency) {
     }
 }
 
-private fun Project.setVersion(module: Dependency, configuration: ModulesCombinationConfiguration) {
+fun Project.setVersion(module: Dependency, configuration: ModulesCombinationConfiguration) {
     if (projectExtension().dependencySubstitutionConfiguration.codeSubstitutions.contains(module)) {
         return
     }

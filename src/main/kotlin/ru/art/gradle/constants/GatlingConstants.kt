@@ -20,8 +20,11 @@ package ru.art.gradle.constants
 
 import java.io.File.*
 
-const val SIMULATIONS_DIR = "simulations"
 val SIMULATIONS_PATH = "src${separator}gatling${separator}simulations"
 val GATLING_SOURCE_SET_DIR = "src${separator}gatling"
-const val SIMULATIONS_PREFIX = "simulations"
-const val SCALA_POSTFIX = ".scala"
+const val GATLING_CLASSPATH_FILE = "gatling-classpath.jar"
+const val GATLING_CLASSPATH_TASK = "gatlingCreateClasspathJar"
+const val LIBS_DIR = "libs"
+const val SIMULATIONS_PACKAGE = "simulations"
+const val SIMULATION_MARKER = "extends Simulation"
+const val SCALA_SUFFIX = ".scala"
