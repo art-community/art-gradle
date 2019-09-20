@@ -21,6 +21,7 @@ package ru.art.gradle.configurator.project
 import org.gradle.api.*
 import org.gradle.api.plugins.*
 import org.gradle.api.plugins.quality.*
+import org.gradle.kotlin.dsl.*
 import ru.art.gradle.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.context.Context.projectExtension

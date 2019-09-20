@@ -21,6 +21,7 @@ package ru.art.gradle.configurator.project
 import org.gradle.api.*
 import org.gradle.api.file.DuplicatesStrategy.*
 import org.gradle.api.plugins.*
+import org.gradle.kotlin.dsl.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.context.Context.projectExtension
