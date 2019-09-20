@@ -37,8 +37,8 @@ fun Project.addCheckstyle() {
     }
 
     with(convention.getPlugin(JavaPluginConvention::class.java)) {
-        checkstyleMainTask().source = sourceSets.getByName(MAIN_SOURCE_SET).allSource
-        checkstyleTestTask().source = sourceSets.getByName(TEST_SOURCE_SET).allSource
+        checkstyleMainTask().source = sourceSets[MAIN_SOURCE_SET].allSource
+        checkstyleTestTask().source = sourceSets[TEST_SOURCE_SET].allSource
     }
 
     buildTask().dependsOn(checkstyleMainTask())

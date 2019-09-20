@@ -20,6 +20,7 @@ package ru.art.gradle.constants
 
 object DefaultTasks {
     const val COMPILE_JAVA = "compileJava"
+    const val COMPILE_GATLING_SCALA = "compileGatlingScala"
     const val COMPILE_TEST_JAVA = "compileTestJava"
     const val JAR = "jar"
     const val BUILD = "build"
@@ -29,7 +30,6 @@ object DefaultTasks {
     const val CHECKSTYLE_MAIN = "checkstyleMain"
     const val CHECKSTYLE_TEST = "checkstyleTest"
     const val JMH_COMPILE_GENERATED_CLASSES = "jmhCompileGeneratedClasses"
-    const val GATLING_RUN = "gatlingRun"
     const val EXTRACT_INCLUDE_PROTO = "extractIncludeProto"
     const val EXTRACT_PROTO = "extractProto"
     const val GENERATE_PROTO = "generateProto"

@@ -32,16 +32,16 @@ fun Project.configureJava() {
     val compileTestJava = compileTestJavaTask()
 
     if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
-        compileJava.options.annotationProcessorPath = files(configurations.getByName(ANNOTATION_PROCESSOR.configuration).files)
+        compileJava.options.annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 
     if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
-        compileTestJava.options.annotationProcessorPath = files(configurations.getByName(ANNOTATION_PROCESSOR.configuration).files)
+        compileTestJava.options.annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 
     with(convention.getPlugin(JavaPluginConvention::class.java)) {
-        val mainSourceSet = sourceSets.getByName(MAIN_SOURCE_SET)
-        val testSourceSet = sourceSets.getByName(TEST_SOURCE_SET)
+        val mainSourceSet = sourceSets[MAIN_SOURCE_SET]
+        val testSourceSet = sourceSets[TEST_SOURCE_SET]
 
         mainSourceSet.resources.setSrcDirs(projectExtension().resourcesConfiguration.resourceDirs)
         testSourceSet.resources.setSrcDirs(projectExtension().resourcesConfiguration.testResourceDirs)
@@ -72,7 +72,7 @@ fun Project.configureJava() {
             duplicatesStrategy = EXCLUDE
 
             mainSourceSet.output.classesDirs.forEach { classpathSource -> from(classpathSource) }
-            configurations.getByName(EMBEDDED.configuration)
+            configurations[EMBEDDED.configuration]
                     .files
                     .map { file -> if (file.isDirectory) fileTree(file) else zipTree(file) }
                     .forEach { from(it) }
@@ -80,7 +80,7 @@ fun Project.configureJava() {
             if (project.hasProperty(ARCHIVE_BASE_NAME)) {
                 archiveName = properties[ARCHIVE_BASE_NAME] as String
             }
-            archiveFileName.set("$archiveName-${project.version}$JAR_EXTENSION")
+            archiveFileName.set("$archiveName-${project.version}$DOT$JAR_EXTENSION")
             doFirst {
                 if (projectExtension().mainClass.isBlank()) {
                     determineMainClass()?.let(projectExtension()::mainClass)

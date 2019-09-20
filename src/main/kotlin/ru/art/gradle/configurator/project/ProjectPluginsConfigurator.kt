@@ -18,7 +18,6 @@
 
 package ru.art.gradle.configurator.project
 
-import com.github.lkishalmi.gradle.gatling.*
 import com.google.protobuf.gradle.*
 import me.champeau.gradle.*
 import org.gradle.api.*
@@ -35,7 +34,6 @@ fun Project.applyGroovyPlugin() = pluginManager.apply(GroovyPlugin::class.java).
 fun Project.applyJavaLibraryPlugin() = pluginManager.apply(JavaLibraryPlugin::class.java).run { success("JavaLibrary plugin applied") }
 fun Project.applyCheckStylePlugin() = pluginManager.apply(CheckstylePlugin::class.java).run { success("Checkstyle plugin applied") }
 fun Project.applyJmhPlugin() = pluginManager.apply(JMHPlugin::class.java).run { success("JMH plugin applied") }
-fun Project.applyGatlingPlugin() = pluginManager.apply(GatlingPlugin::class.java).run { success("Gatling plugin applied") }
 fun Project.applyKotlinPlugin() = pluginManager.apply(KotlinPlatformJvmPlugin::class.java).run { success("Kotlin plugin applied") }
 fun Project.applyScalaPlugin() = pluginManager.apply(ScalaPlugin::class.java).run { success("Scala plugin applied") }
 fun Project.applyProtobufPlugin() = pluginManager.apply(ProtobufPlugin::class.java).run { success("Protobuf generator plugin applied") }
