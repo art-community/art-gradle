@@ -22,6 +22,7 @@ import java.io.File.*
 
 val GATLING_SOURCE_SET_DIR = "src${separator}gatling"
 val RUN_GATLING_SIMULATION_TASK = { simulation: String -> "run${simulation.capitalize().replace(DOT, EMPTY_STRING)}" }
+val GATLING_REPORTS = "reports${separator}gatling"
 const val GATLING_MAIN_CLASS = "io.gatling.app.Gatling"
 const val SIMULATION_MARKER = "extends Simulation"
 const val SCALA_EXTENSION = "scala"

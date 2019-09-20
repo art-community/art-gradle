@@ -101,6 +101,7 @@ private fun Project.gatlingExec(simulation: String, createGatling: Jar) = javaex
         jvmArgs(GATLING_JVM_ARGS)
         args("-bf", scalaBinariesDirectory,
                 "-rsf", gatlingSourceSet.output.resourcesDir,
+                "-rf", "${project.buildDir}$separator$GATLING_REPORTS",
                 "-s", simulation)
         main = GATLING_MAIN_CLASS
         classpath = gatlingSourceSet.output + mainSourceSet.output + testSourceSet.output + files(createGatling.archiveFile.get().asFile)
