@@ -71,6 +71,7 @@ fun Project.addKotlinTestsDependency() {
 }
 
 fun Project.addScalaTestsDependency() {
+    addDependency(COMPILE_CLASSPATH, scala())
     addDependency(TEST_COMPILE_CLASSPATH, scala())
     addDependency(TEST_RUNTIME_CLASSPATH, scala())
 }

@@ -25,7 +25,7 @@ import ru.art.gradle.constants.*
 import javax.inject.*
 
 open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, val project: Project) {
-    var gatlingConfiguration = objectFactory.newInstance(GatlingConfiguration::class.java)
+    var gatlingConfiguration = objectFactory.newInstance(GatlingConfiguration::class.java, objectFactory, project)
         private set
     var groovyConfiguration = objectFactory.newInstance(GroovyConfiguration::class.java)
         private set

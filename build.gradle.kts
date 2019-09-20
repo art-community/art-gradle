@@ -103,7 +103,6 @@ dependencies {
     compileOnly("io.github.art", "application-generator", "1+")
 
     embedded("org.eclipse.jgit", "org.eclipse.jgit", "5.3.1.201904271842-r")
-    embedded("gradle.plugin.com.github.lkishalmi.gatling", "gradle-gatling-plugin", "3.0.+")
     embedded("me.champeau.gradle", "jmh-gradle-plugin", "0.4.+")
     embedded("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.3.31")
     embedded("com.google.protobuf", "protobuf-gradle-plugin", "0.8+")

@@ -20,6 +20,7 @@ package ru.art.gradle.constants
 
 object IdeaScopes {
     const val COMPILE = "COMPILE"
+    const val TEST = "TEST"
 }
 
 object IdeaScopeOperations {

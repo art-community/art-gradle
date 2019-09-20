@@ -67,7 +67,7 @@ object DefaultDependencyVersions {
     const val RSOCKET_VERSION = "0.12.+"
     const val KOTLIN_VERSION = "1.3.31"
     const val SCALA_VERSION = "2.12.+"
-    const val GATLING_VERSION = "3.0.3"
+    const val GATLING_VERSION = "3.2.1"
     const val KAFKA_VERSION = "2.2.+"
     const val KAFKA_LOG4J_APPENDER_VERSION = "0.9.0.0"
     const val JUNIT_VERSION = "4.12"

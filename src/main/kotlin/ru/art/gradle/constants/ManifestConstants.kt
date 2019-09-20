@@ -19,4 +19,5 @@
 package ru.art.gradle.constants
 
 const val MAIN_CLASS_ATTRIBUTE = "Main-Class"
+const val CLASS_PATH_ATTRIBUTE = "Class-Path"
 val MANIFEST_EXCLUSIONS = listOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")

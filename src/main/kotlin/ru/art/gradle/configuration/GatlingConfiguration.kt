@@ -18,6 +18,16 @@
 
 package ru.art.gradle.configuration
 
-open class GatlingConfiguration {
+import org.gradle.api.*
+import org.gradle.api.model.*
+import javax.inject.*
+
+open class GatlingConfiguration @Inject constructor(objectFactory: ObjectFactory, val project: Project) {
     var enabled: Boolean? = null
+    var modulesConfiguration = objectFactory.newInstance(ModulesCombinationConfiguration::class.java, project)
+        private set
+
+    fun modules(action: Action<in ModulesCombinationConfiguration> = Action {}) {
+        action.execute(modulesConfiguration)
+    }
 }

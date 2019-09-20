@@ -20,8 +20,26 @@ package ru.art.gradle.constants
 
 import java.io.File.*
 
-const val SIMULATIONS_DIR = "simulations"
-val SIMULATIONS_PATH = "src${separator}gatling${separator}simulations"
 val GATLING_SOURCE_SET_DIR = "src${separator}gatling"
-const val SIMULATIONS_PREFIX = "simulations"
-const val SCALA_POSTFIX = ".scala"
+val RUN_GATLING_SIMULATION_TASK = { simulation: String -> "run${simulation.capitalize().replace(DOT, EMPTY_STRING)}" }
+val GATLING_REPORTS = "reports${separator}gatling"
+const val GATLING_MAIN_CLASS = "io.gatling.app.Gatling"
+const val SIMULATION_MARKER = "extends Simulation"
+const val SCALA_EXTENSION = "scala"
+const val CREATE_GATLING_LAUNCHER_TASK = "createGatlingLauncher"
+const val GATLING_LAUNCHER = "gatlingLauncher"
+const val RUN_ALL_GATLING_SIMULATIONS_TASK = "runAllGatlingSimulations"
+const val GATLING_GROUP = "gatling"
+val GATLING_JVM_ARGS = listOf("-server",
+        "-Xmx1G",
+        "-XX:+UseG1GC",
+        "-XX:MaxGCPauseMillis=30",
+        "-XX:G1HeapRegionSize=16m",
+        "-XX:InitiatingHeapOccupancyPercent=75",
+        "-XX:+ParallelRefProcEnabled",
+        "-XX:+PerfDisableSharedMem",
+        "-XX:+AggressiveOpts",
+        "-XX:+OptimizeStringConcat",
+        "-XX:+HeapDumpOnOutOfMemoryError",
+        "-Djava.net.preferIPv4Stack=true",
+        "-Djava.net.preferIPv6Addresses=false")

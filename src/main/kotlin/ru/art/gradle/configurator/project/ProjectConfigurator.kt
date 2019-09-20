@@ -69,7 +69,6 @@ fun Project.configureProject() {
             auxiliaryInformation().hasCheckstyle = true
         }
         if (projectExtension.gatlingConfiguration.enabled == true) {
-            applyGatlingPlugin()
             applyScalaPlugin()
             configureGatling()
             auxiliaryInformation().hasGatling = true
@@ -102,7 +101,6 @@ fun Project.configureProject() {
         }
         with(determineSourceSets()) {
             if (hasGatling && projectExtension.gatlingConfiguration.enabled == null) {
-                applyGatlingPlugin()
                 applyScalaPlugin()
                 configureGatling()
                 auxiliaryInformation().hasGatling = hasGatling

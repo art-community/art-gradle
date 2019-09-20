@@ -35,7 +35,5 @@ enum class DependencyConfiguration(val configuration: String) {
     TEST_COMPILE_ONLY("testCompileOnly"),
     CLASSPATH("classpath"),
     GATLING("gatling"),
-    GATLING_COMPILE("gatlingCompile"),
-    GATLING_RUNTIME("gatlingRuntime"),
     API("api")
 }

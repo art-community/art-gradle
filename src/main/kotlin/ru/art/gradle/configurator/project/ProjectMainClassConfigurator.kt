@@ -20,6 +20,7 @@ package ru.art.gradle.configurator.project
 
 import org.gradle.api.*
 import org.gradle.api.plugins.*
+import org.gradle.kotlin.dsl.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.exception.*
 import java.io.File.*
@@ -27,7 +28,7 @@ import java.lang.reflect.Modifier.*
 import java.net.*
 
 fun Project.determineMainClass() = with(convention.getPlugin(JavaPluginConvention::class.java)) {
-    val mainSourceSet = sourceSets.getByName(MAIN_SOURCE_SET)
+    val mainSourceSet = sourceSets[MAIN_SOURCE_SET]
     val classes = mainSourceSet.output
             .classesDirs
             .asFileTree

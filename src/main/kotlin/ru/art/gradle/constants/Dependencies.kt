@@ -79,3 +79,9 @@ fun Project.gatlingCore() = Dependency(
         version = projectExtension().externalDependencyVersionsConfiguration.gatlingVersion,
         exclusions = setOf(logbackClassic()))
 
+fun Project.gatlingHighCharts() = Dependency(
+        group = "io.gatling.highcharts",
+        artifact = "gatling-charts-highcharts",
+        version = projectExtension().externalDependencyVersionsConfiguration.gatlingVersion,
+        exclusions = setOf(logbackClassic()))
+

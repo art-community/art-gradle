@@ -24,6 +24,7 @@ import org.gradle.api.plugins.*
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
+import org.gradle.kotlin.dsl.*
 import ru.art.gradle.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
@@ -68,8 +69,7 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
         doLast {
             val visitableURLClassLoader = ProjectPlugin::class.java.classLoader as VisitableURLClassLoader
             visitableURLClassLoader.addURL(mainSourceSet.java.outputDir.toURI().toURL())
-            configurations
-                    .getByName(COMPILE_CLASSPATH.configuration)
+            configurations[COMPILE_CLASSPATH.configuration]
                     .files
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             val packagePath = projectExtension().generatorConfiguration.packageName.replace(DOT, separator)
@@ -103,8 +103,7 @@ private fun Project.createGenerateSpecificationTask(type: SpecificationType, pac
         with(task) {
             this.group = group
             doLast {
-                configurations
-                        .getByName(COMPILE_CLASSPATH.configuration)
+                configurations[COMPILE_CLASSPATH.configuration]
                         .files
                         .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
                 if (mainSourceSet.java.outputDir.listFiles().isNullOrEmpty()) {
@@ -143,11 +142,11 @@ private fun Project.createCompileTask(type: GeneratorType, mainSourceSet: Source
         MAPPING -> projectExtension().generatorConfiguration
                 .compileModelsSourcePackages
                 .map { source -> fileTree(packageDir + separator + source) }
-                .let { sources -> sources.reduce(FileTree::plus) }
+                .reduce(FileTree::plus)
         SPECIFICATION -> projectExtension().generatorConfiguration
                 .compileServiceSourcePackages
                 .map { source -> fileTree(packageDir + separator + source) }
-                .let { sources -> sources.reduce(FileTree::plus) }
+                .reduce(FileTree::plus)
     }
 
     return tasks.create(name, JavaCompile::class.java) { task ->
@@ -155,12 +154,12 @@ private fun Project.createCompileTask(type: GeneratorType, mainSourceSet: Source
             group = GENERATOR_GROUP
             options.isIncremental = false
             options.isFork = true
-            options.annotationProcessorPath = configurations.getByName(ANNOTATION_PROCESSOR.configuration)
+            options.annotationProcessorPath = configurations[ANNOTATION_PROCESSOR.configuration]
             options.isFailOnError = false
             source = packages
-            classpath = configurations.getByName(COMPILE_CLASSPATH.configuration) +
-                    configurations.getByName(RUNTIME_CLASSPATH.configuration) +
-                    configurations.getByName(ANNOTATION_PROCESSOR.configuration)
+            classpath = configurations[COMPILE_CLASSPATH.configuration] +
+                    configurations[RUNTIME_CLASSPATH.configuration] +
+                    configurations[ANNOTATION_PROCESSOR.configuration]
             destinationDir = mainSourceSet.java.outputDir
         }
     }

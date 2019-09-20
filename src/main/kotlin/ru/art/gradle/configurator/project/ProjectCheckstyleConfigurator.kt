@@ -21,6 +21,7 @@ package ru.art.gradle.configurator.project
 import org.gradle.api.*
 import org.gradle.api.plugins.*
 import org.gradle.api.plugins.quality.*
+import org.gradle.kotlin.dsl.*
 import ru.art.gradle.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.context.Context.projectExtension
@@ -37,8 +38,8 @@ fun Project.addCheckstyle() {
     }
 
     with(convention.getPlugin(JavaPluginConvention::class.java)) {
-        checkstyleMainTask().source = sourceSets.getByName(MAIN_SOURCE_SET).allSource
-        checkstyleTestTask().source = sourceSets.getByName(TEST_SOURCE_SET).allSource
+        checkstyleMainTask().source = sourceSets[MAIN_SOURCE_SET].allSource
+        checkstyleTestTask().source = sourceSets[TEST_SOURCE_SET].allSource
     }
 
     buildTask().dependsOn(checkstyleMainTask())
