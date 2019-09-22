@@ -19,9 +19,8 @@
 package ru.art.gradle.configuration
 
 import org.gradle.api.*
-import org.gradle.api.artifacts.*
 import ru.art.gradle.context.Context.projectExtension
-import ru.art.gradle.dependency.Dependency
+import ru.art.gradle.dependency.*
 import javax.inject.*
 
 open class DependencySubstitutionConfiguration @Inject constructor(val project: Project) {
@@ -50,13 +49,13 @@ open class DependencySubstitutionConfiguration @Inject constructor(val project: 
     }
 }
 
-fun Project.substituteWithCode(dependency: ExternalModuleDependency) {
+fun Project.substituteWithCode(dependency: org.gradle.api.artifacts.Dependency) {
     projectExtension()
             .dependencySubstitutionConfiguration
             .substituteWithCode(dependency.group ?: return, dependency.name)
 }
 
-fun Project.substituteWithArtifact(dependency: ExternalModuleDependency) {
+fun Project.substituteWithArtifact(dependency: org.gradle.api.artifacts.Dependency) {
     projectExtension()
             .dependencySubstitutionConfiguration
             .substituteWithArtifact(dependency.group ?: return, dependency.name)
