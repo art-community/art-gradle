@@ -18,11 +18,11 @@
 
 package ru.art.gradle.configuration
 
-import org.gradle.api.Project
-import ru.art.gradle.constants.ART_MODULE_GROUP
-import ru.art.gradle.constants.ArtVersion.LATEST
-import ru.art.gradle.dependency.Dependency
-import javax.inject.Inject
+import org.gradle.api.*
+import ru.art.gradle.constants.*
+import ru.art.gradle.constants.ArtVersion.*
+import ru.art.gradle.dependency.*
+import javax.inject.*
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
@@ -119,6 +119,10 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
 
     protected open fun applicationJson(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         addModule("application-json", dependencyModifiers)
+    }
+
+    protected open fun applicationMessagePack(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        addModule("application-message-pack", dependencyModifiers)
     }
 
     protected open fun applicationKafkaClient(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
@@ -329,6 +333,10 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
 
     public override fun applicationJson(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
         super.applicationJson(dependencyModifiers)
+    }
+
+    public override fun applicationMessagePack(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
+        super.applicationMessagePack(dependencyModifiers)
     }
 
     public override fun applicationKafkaClient(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
@@ -672,6 +680,7 @@ open class ProtocolsConfiguration @Inject constructor(project: Project) : Module
         applicationXml(dependencyModifiers)
         applicationProtobufGenerated(dependencyModifiers)
         applicationRsocket(dependencyModifiers)
+        applicationMessagePack(dependencyModifiers)
     }
 
     fun soapServer(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
@@ -734,6 +743,13 @@ open class DataFormatsConfiguration @Inject constructor(project: Project) : Modu
         applicationJson(dependencyModifiers)
     }
 
+    fun messagePack(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
+        applicationCore(dependencyModifiers)
+        applicationEntity(dependencyModifiers)
+        applicationLogging(dependencyModifiers)
+        applicationMessagePack(dependencyModifiers)
+    }
+
     fun xml(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         applicationCore(dependencyModifiers)
         applicationEntity(dependencyModifiers)
@@ -769,7 +785,8 @@ open class DatabasesConfiguration @Inject constructor(project: Project) : Module
         applicationEntity(dependencyModifiers)
         applicationLogging(dependencyModifiers)
         applicationProtobuf(dependencyModifiers)
-        applicationProtobufGenerated(dependencyModifiers)
+        applicationProtobuf(dependencyModifiers)
+        applicationMessagePack(dependencyModifiers)
         applicationRocksDb(dependencyModifiers)
     }
 }

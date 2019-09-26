@@ -50,17 +50,6 @@ fun Project.configureGenerator() {
         createGenerateMappersTask(mainSourceSet).dependsOn(createCompileTask(MAPPING, mainSourceSet, packageDir))
         success("Created '$GENERATE_MAPPERS_TASK' task depends on '$COMPILE_MODELS_TASK' task, running mappers generator")
     }
-    if (!file("$packageDir$separator$SERVICE_PACKAGE").exists()) return
-    val services = file("$packageDir$separator$SERVICE_PACKAGE")
-            .walkTopDown()
-            .maxDepth(1)
-            .filter { file -> file.isFile }
-            .map { file -> file.name.removeSuffix(JAVA_FILE_EXTENSION) }
-            .toList()
-    val compileServicesTask = createCompileTask(SPECIFICATION, mainSourceSet, packageDir)
-    services.flatMap { serviceName ->
-        SpecificationType.values().map { type -> createGenerateSpecificationTask(type, packageDir, serviceName) }
-    }.onEach { task -> task.dependsOn(compileServicesTask) }
 }
 
 private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = tasks.create(GENERATE_MAPPERS_TASK) { task ->
@@ -76,59 +65,6 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
             val sourcesPath = mainSourceSet.java.outputDir.absolutePath
             visitableURLClassLoader.loadClass(MappersGenerator::class.java.name)
             MappersGenerator.performGeneration("$sourcesPath$separator$packagePath", MODEL_PACKAGE, MAPPING_PACKAGE)
-        }
-    }
-}
-
-private fun Project.createGenerateSpecificationTask(type: SpecificationType, packageDir: String, service: String): Task {
-    val mainSourceSet = convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getAt(MAIN_SOURCE_SET)
-    val name = when (type) {
-        HTTP -> GENERATE_HTTP_SPECIFICATION_TASK(service)
-        HTTP_COMMUNICATION -> GENERATE_HTTP_PROXY_SPECIFICATION_TASK(service)
-        GRPC -> GENERATE_GRPC_SPECIFICATION_TASK(service)
-        RSOCKET -> GENERATE_RSOCKET_SPECIFICATION_TASK(service)
-        SOAP -> GENERATE_SOAP_SPECIFICATION_TASK(service)
-    }
-    val group = when (type) {
-        HTTP -> GENERATOR_HTTP_GROUP
-        HTTP_COMMUNICATION -> GENERATOR_HTTP_GROUP
-        GRPC -> GENERATOR_GRPC_GROUP
-        RSOCKET -> GENERATOR_RSOCKET_GROUP
-        SOAP -> GENERATOR_SOAP_GROUP
-    }
-    val visitableURLClassLoader = ProjectPlugin::class.java.classLoader as VisitableURLClassLoader
-    visitableURLClassLoader.addURL(mainSourceSet.java.outputDir.toURI().toURL())
-    success("Created '$name' task depends on '$COMPILE_SERVICES_TASK' task, running service specification generator for service $service")
-    return tasks.create(name) { task ->
-        with(task) {
-            this.group = group
-            doLast {
-                configurations[COMPILE_CLASSPATH.configuration]
-                        .files
-                        .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
-                if (mainSourceSet.java.outputDir.listFiles().isNullOrEmpty()) {
-                    return@doLast
-                }
-                val serviceClass = mainSourceSet.java.outputDir
-                        .walkTopDown()
-                        .first { it.nameWithoutExtension == service }
-                        .absolutePath
-                        .substringAfter("$MAIN_SOURCE_SET$separator")
-                        .removeSuffix(CLASS_FILE_EXTENSION)
-                        .replace(separator, DOT)
-                when (type) {
-                    HTTP -> {
-                        visitableURLClassLoader.loadClass(HttpSpecificationsGenerator::class.java.name)
-                        HttpSpecificationsGenerator.performGeneration(packageDir, visitableURLClassLoader.loadClass(serviceClass))
-                    }
-                    HTTP_COMMUNICATION -> {
-                        visitableURLClassLoader.loadClass(HttpCommunicationSpecificationsGenerator::class.java.name)
-                        HttpCommunicationSpecificationsGenerator.performGeneration(packageDir, visitableURLClassLoader.loadClass(serviceClass))
-                    }
-                    else -> {
-                    }
-                }
-            }
         }
     }
 }
