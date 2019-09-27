@@ -50,6 +50,7 @@ import ru.art.gradle.constants.DefaultDependencyVersions.LOG4J_VERSION_JDK6
 import ru.art.gradle.constants.DefaultDependencyVersions.LOGBACK_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.LOGBOOK_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.LOMBOK_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.MESSAGE_PACK_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.METRICS_DROPWIZ_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.MICROMETER_JVM_EXTRAS_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.MICROMETER_PROMETHEUS_VERSION
@@ -128,4 +129,5 @@ open class ExternalDependencyVersionsConfiguration {
     var junitVersion = JUNIT_VERSION
     var tarantoolConnectorVersion = TARANTOOL_CONNECTOR_VERSION
     var zeroTurnaroundVersion = ZERO_TURNAROUND_VERSION
+    var messagePackVersion = MESSAGE_PACK_VERSION
 }
