@@ -73,4 +73,5 @@ object DefaultDependencyVersions {
     const val JUNIT_VERSION = "4.12"
     const val TARANTOOL_CONNECTOR_VERSION = "1.9.+"
     const val ZERO_TURNAROUND_VERSION = "1.+"
+    const val MESSAGE_PACK_VERSION = "0.8.+"
 }
