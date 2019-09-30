@@ -28,5 +28,4 @@ open class GeneratorConfiguration @Inject constructor(val project: Project) {
     var version = LATEST.version
     var packageName = EMPTY_STRING
     var compileModelsSourcePackages = DEFAULT_COMPILE_MODELS_SOURCES
-    var compileServiceSourcePackages = DEFAULT_COMPILE_SERVICES_SOURCES
 }

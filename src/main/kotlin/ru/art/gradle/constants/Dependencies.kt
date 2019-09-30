@@ -62,11 +62,6 @@ fun Project.junit() = Dependency(
         artifact = "junit",
         version = projectExtension().externalDependencyVersionsConfiguration.junitVersion)
 
-fun Project.generator() = Dependency(
-        group = projectExtension().generatorConfiguration.group,
-        artifact = "application-generator",
-        version = projectExtension().generatorConfiguration.version)
-
 fun Project.gatlingHttp() = Dependency(
         group = "io.gatling",
         artifact = "gatling-http",

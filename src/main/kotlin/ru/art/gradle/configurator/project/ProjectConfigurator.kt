@@ -43,7 +43,6 @@ fun Project.configureProject() {
             configureTests()
         }
         if (projectExtension.generatorConfiguration.packageName.isNotEmpty()) {
-            addGeneratorDependency()
             configureGenerator()
             auxiliaryInformation().hasGenerator = true
         }
