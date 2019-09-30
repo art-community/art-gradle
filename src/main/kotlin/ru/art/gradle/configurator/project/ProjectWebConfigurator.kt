@@ -68,7 +68,7 @@ fun Project.configureWeb() = ignoreException {
 
     projectExtension().resourcesConfiguration.resourceDirs.add(projectExtension().webConfiguration.webBuildDirectory)
 
-    success("Configuring Web:\n" + message("""
+    var message = """
         (!) prepareWeb task runs 'npm install' command
         (!) buildWeb task runs 'npm run production' command
         (!) cleanWeb will delete '${projectExtension().webConfiguration.webSourcesDirectory}' 
@@ -77,13 +77,17 @@ fun Project.configureWeb() = ignoreException {
         (!) jar depends on buildWeb
         (!) clean depends on cleanWeb
         (!) build depends on buildWeb
-    """.replaceIndent(ADDITIONAL_LOGGING_MESSAGE_INDENT), PURPLE_BOLD))
+    """
 
     if (projectExtension().ideaConfiguration.enabled == true && projectExtension().webConfiguration.removeWebBuildDirectoryFromIdeaIndexingScanning) {
         extensions.configure(IdeaModel::class.java) { model ->
             model.module { module ->
-                module.excludeDirs.add(file(projectExtension().webConfiguration.webBuildDirectory))
+                val dirs = module.excludeDirs.toMutableSet()
+                dirs.add(file(projectExtension().webConfiguration.webBuildDirectory))
+                module.excludeDirs = dirs
+                message += """  (!) Add '${projectExtension().webConfiguration.webBuildDirectory}' to IDEA exclusion"""
             }
         }
     }
+    success("Configuring Web:\n" + message(message.replaceIndent(ADDITIONAL_LOGGING_MESSAGE_INDENT), PURPLE_BOLD))
 }

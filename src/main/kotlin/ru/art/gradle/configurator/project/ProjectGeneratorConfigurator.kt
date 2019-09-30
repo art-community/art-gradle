@@ -28,14 +28,10 @@ import org.gradle.kotlin.dsl.*
 import ru.art.gradle.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
-import ru.art.gradle.constants.GeneratorType.*
-import ru.art.gradle.constants.SpecificationType.*
 import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import java.io.File.*
 import ru.art.generator.mapper.Generator as MappersGenerator
-import ru.art.generator.spec.http.proxyspec.Generator as HttpCommunicationSpecificationsGenerator
-import ru.art.generator.spec.http.servicespec.Generator as HttpSpecificationsGenerator
 
 fun Project.configureGenerator() {
     val mainSourceSet = this@configureGenerator.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getAt(MAIN_SOURCE_SET)
@@ -47,7 +43,7 @@ fun Project.configureGenerator() {
     val packagePath = projectExtension().generatorConfiguration.packageName.replace(DOT, separator)
     val packageDir = "${sourceDirectories.first().absolutePath}$separator$packagePath"
     if (file("$packageDir$separator$MODEL_PACKAGE").exists()) {
-        createGenerateMappersTask(mainSourceSet).dependsOn(createCompileTask(MAPPING, mainSourceSet, packageDir))
+        createGenerateMappersTask(mainSourceSet).dependsOn(createCompileTask(mainSourceSet, packageDir))
         success("Created '$GENERATE_MAPPERS_TASK' task depends on '$COMPILE_MODELS_TASK' task, running mappers generator")
     }
 }
@@ -69,34 +65,21 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
     }
 }
 
-private fun Project.createCompileTask(type: GeneratorType, mainSourceSet: SourceSet, packageDir: String): JavaCompile {
-    val name = when (type) {
-        MAPPING -> COMPILE_MODELS_TASK
-        SPECIFICATION -> COMPILE_SERVICES_TASK
-    }
-    val packages = when (type) {
-        MAPPING -> projectExtension().generatorConfiguration
-                .compileModelsSourcePackages
-                .map { source -> fileTree(packageDir + separator + source) }
-                .reduce(FileTree::plus)
-        SPECIFICATION -> projectExtension().generatorConfiguration
-                .compileServiceSourcePackages
-                .map { source -> fileTree(packageDir + separator + source) }
-                .reduce(FileTree::plus)
-    }
-
-    return tasks.create(name, JavaCompile::class.java) { task ->
-        with(task) {
-            group = GENERATOR_GROUP
-            options.isIncremental = false
-            options.isFork = true
-            options.annotationProcessorPath = configurations[ANNOTATION_PROCESSOR.configuration]
-            options.isFailOnError = false
-            source = packages
-            classpath = configurations[COMPILE_CLASSPATH.configuration] +
-                    configurations[RUNTIME_CLASSPATH.configuration] +
-                    configurations[ANNOTATION_PROCESSOR.configuration]
-            destinationDir = mainSourceSet.java.outputDir
+private fun Project.createCompileTask(mainSourceSet: SourceSet, packageDir: String): JavaCompile =
+        tasks.create(COMPILE_MODELS_TASK, JavaCompile::class.java) { task ->
+            with(task) {
+                group = GENERATOR_GROUP
+                options.isIncremental = false
+                options.isFork = true
+                options.annotationProcessorPath = configurations[ANNOTATION_PROCESSOR.configuration]
+                options.isFailOnError = false
+                source = projectExtension().generatorConfiguration
+                        .compileModelsSourcePackages
+                        .map { source -> fileTree(packageDir + separator + source) }
+                        .reduce(FileTree::plus)
+                classpath = configurations[COMPILE_CLASSPATH.configuration] +
+                        configurations[RUNTIME_CLASSPATH.configuration] +
+                        configurations[ANNOTATION_PROCESSOR.configuration]
+                destinationDir = mainSourceSet.java.outputDir
+            }
         }
-    }
-}

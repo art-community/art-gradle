@@ -30,6 +30,12 @@ fun Project.addModules() {
     val providedModulesConfiguration = projectExtension.providedModulesConfiguration
     val testModulesConfiguration = projectExtension.testModulesConfiguration
 
+    if (projectExtension().generatorConfiguration.packageName.isNotBlank()) {
+        providedModulesConfiguration.applicationCore()
+        providedModulesConfiguration.applicationEntity()
+        providedModulesConfiguration.applicationService()
+        providedModulesConfiguration.applicationGenerator({ dependency -> dependency.version = projectExtension().generatorConfiguration.version })
+    }
     val embeddedModules = embeddedModulesConfiguration.modules
     val providedModules = providedModulesConfiguration.modules.filter { !embeddedModules.contains(it) }
     val testModules = testModulesConfiguration.modules.filter { !providedModules.contains(it) }

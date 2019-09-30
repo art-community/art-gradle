@@ -38,14 +38,14 @@ fun Project.calculateVersion() {
 
     if (hasProperty(PROJECT_VERSION)) {
         version = properties[PROJECT_VERSION] as String
-        success("Project version is '${project.version}'(manually set by 'projectVersion' property)")
+        success("Project version is '${project.version}' (manually set by 'projectVersion' property)")
         return
     }
 
     when (projectExtension().projectVersionConfiguration.calculationMode) {
         ROOT_PROJECT -> {
             version = rootProject.version
-            success("Project version is '${project.version}'(calculated from 'rootProject=${rootProject.name}')")
+            success("Project version is '${project.version}' (calculated from 'rootProject=${rootProject.name}')")
         }
         BRANCH -> {
             val git = git()
@@ -57,7 +57,7 @@ fun Project.calculateVersion() {
                 checkoutBranch(git, properties[CHECKOUT_BRANCH] as String)
             }
             version = git.repository.branch
-            success("Project version is '${project.version}'(calculated from 'branch=${git.repository.branch}')")
+            success("Project version is '${project.version}' (calculated from 'branch=${git.repository.branch}')")
         }
     }
 }

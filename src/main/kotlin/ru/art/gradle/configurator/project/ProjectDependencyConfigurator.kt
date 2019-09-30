@@ -75,7 +75,3 @@ fun Project.addScalaTestsDependency() {
     addDependency(TEST_COMPILE_CLASSPATH, scala())
     addDependency(TEST_RUNTIME_CLASSPATH, scala())
 }
-
-fun Project.addGeneratorDependency() {
-    addDependency(PROVIDED, generator())
-}
