@@ -15,7 +15,7 @@ Example:
 
 ```kotlin
 plugins {
-    id("io.github.art.project") version "1.0.77"
+    id("io.github.art.project") version "1.0.78"
 }
 
 art {
