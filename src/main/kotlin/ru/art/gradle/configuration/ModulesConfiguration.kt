@@ -784,8 +784,6 @@ open class DatabasesConfiguration @Inject constructor(project: Project) : Module
         applicationCore(dependencyModifiers)
         applicationEntity(dependencyModifiers)
         applicationLogging(dependencyModifiers)
-        applicationProtobuf(dependencyModifiers)
-        applicationProtobuf(dependencyModifiers)
         applicationMessagePack(dependencyModifiers)
         applicationRocksDb(dependencyModifiers)
     }
