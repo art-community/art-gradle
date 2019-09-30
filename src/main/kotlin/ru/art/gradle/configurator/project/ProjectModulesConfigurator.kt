@@ -33,7 +33,7 @@ fun Project.addModules() {
     if (projectExtension().generatorConfiguration.packageName.isNotBlank()) {
         providedModulesConfiguration.applicationCore()
         providedModulesConfiguration.applicationEntity()
-        providedModulesConfiguration.applicationLogging()
+        providedModulesConfiguration.applicationService()
         providedModulesConfiguration.applicationGenerator({ dependency -> dependency.version = projectExtension().generatorConfiguration.version })
     }
     val embeddedModules = embeddedModulesConfiguration.modules
