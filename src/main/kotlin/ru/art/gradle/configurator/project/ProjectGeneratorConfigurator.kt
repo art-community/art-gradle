@@ -26,12 +26,16 @@ import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
 import org.gradle.kotlin.dsl.*
 import ru.art.gradle.*
+import ru.art.gradle.configuration.SoapGeneratorConfiguration.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import java.io.File.*
+import java.nio.file.*
+import java.nio.file.Files.*
 import ru.art.generator.mapper.Generator as MappersGenerator
+import ru.art.generator.soap.service.SoapGeneratorService as SoapGenerator
 
 fun Project.configureGenerator() {
     val mainSourceSet = this@configureGenerator.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getAt(MAIN_SOURCE_SET)
@@ -41,10 +45,29 @@ fun Project.configureGenerator() {
         return
     }
     val packagePath = projectExtension().generatorConfiguration.packageName.replace(DOT, separator)
-    val packageDir = "${sourceDirectories.first().absolutePath}$separator$packagePath"
-    if (file("$packageDir$separator$MODEL_PACKAGE").exists()) {
-        createGenerateMappersTask(mainSourceSet).dependsOn(createCompileTask(mainSourceSet, packageDir))
+    val packageDirectory = "${sourceDirectories.first().absolutePath}$separator$packagePath"
+    if (file("$packageDirectory$separator$MODEL_PACKAGE").exists()) {
+        createGenerateMappersTask(mainSourceSet).dependsOn(createCompileTask(mainSourceSet, packageDirectory))
         success("Created '$GENERATE_MAPPERS_TASK' task depends on '$COMPILE_MODELS_TASK' task, running mappers generator")
+    }
+}
+
+fun Project.configureSoapGenerator() {
+    val mainSourceSet = this@configureSoapGenerator.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getAt(MAIN_SOURCE_SET)
+    val sourceDirectories = mainSourceSet.java.sourceDirectories
+    if (sourceDirectories.isEmpty) {
+        createDirectories(Paths.get(sourceDirectories.asPath))
+    }
+    val packagePath = projectExtension().generatorConfiguration.soapConfiguration.packageName.replace(DOT, separator)
+    val packageDirPath = "${sourceDirectories.first().absolutePath}$separator$packagePath"
+    val packageDirectory = file("$packageDirPath$separator$MODEL_PACKAGE")
+    if (!packageDirectory.exists()) {
+        createDirectories(Paths.get(packageDirectory.absolutePath))
+        projectExtension().generatorConfiguration
+                .soapConfiguration
+                .generationRequests
+                .forEach { request -> createGenerateSoapEntitiesTask(mainSourceSet, request) }
+        success("Created '$GENERATE_SOAP_ENTITIES_TASK' task, running SOAP models & mappers generator")
     }
 }
 
@@ -61,6 +84,21 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
             val sourcesPath = mainSourceSet.java.outputDir.absolutePath
             visitableURLClassLoader.loadClass(MappersGenerator::class.java.name)
             MappersGenerator.performGeneration("$sourcesPath$separator$packagePath", MODEL_PACKAGE, MAPPING_PACKAGE)
+        }
+    }
+}
+
+private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet, request: WsdlGenerationRequest): Task = tasks.create(GENERATE_SOAP_ENTITIES_TASK) { task ->
+    with(task) {
+        group = GENERATOR_GROUP
+        doLast {
+            val visitableURLClassLoader = ProjectPlugin::class.java.classLoader as VisitableURLClassLoader
+            visitableURLClassLoader.addURL(mainSourceSet.java.outputDir.toURI().toURL())
+            configurations[COMPILE_CLASSPATH.configuration]
+                    .files
+                    .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
+            visitableURLClassLoader.loadClass(SoapGenerator::class.java.name)
+            SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, request.generationMode)
         }
     }
 }

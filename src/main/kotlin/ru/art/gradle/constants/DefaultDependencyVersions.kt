@@ -74,4 +74,5 @@ object DefaultDependencyVersions {
     const val TARANTOOL_CONNECTOR_VERSION = "1.9.+"
     const val ZERO_TURNAROUND_VERSION = "1.+"
     const val MESSAGE_PACK_VERSION = "0.8.+"
+    const val MEMBRANE_SOA_SERVICE_PROXY_CORE_VERSION = "4.6.+"
 }
