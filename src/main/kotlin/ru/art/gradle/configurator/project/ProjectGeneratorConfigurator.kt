@@ -25,8 +25,10 @@ import org.gradle.api.tasks.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
 import org.gradle.kotlin.dsl.*
+import ru.art.generator.soap.model.*
 import ru.art.gradle.*
 import ru.art.gradle.configuration.SoapGeneratorConfiguration.*
+import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.context.Context.projectExtension
@@ -98,7 +100,10 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet, req
                     .files
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             visitableURLClassLoader.loadClass(SoapGenerator::class.java.name)
-            SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, request.generationMode)
+            SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, when (request.generationMode) {
+                CLIENT -> SoapGenerationMode.CLIENT
+                SERVER -> SoapGenerationMode.SERVER
+            })
         }
     }
 }

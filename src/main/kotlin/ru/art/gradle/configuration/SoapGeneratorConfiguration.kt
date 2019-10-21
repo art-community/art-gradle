@@ -17,8 +17,6 @@
 package ru.art.gradle.configuration
 
 import org.gradle.api.*
-import ru.art.generator.soap.model.*
-import ru.art.generator.soap.model.SoapGenerationMode.*
 import ru.art.gradle.constants.*
 
 open class SoapGeneratorConfiguration constructor(val project: Project) {
@@ -26,7 +24,7 @@ open class SoapGeneratorConfiguration constructor(val project: Project) {
 
     var packageName: String = EMPTY_STRING
 
-    var generationMode: SoapGenerationMode = CLIENT
+    var generationMode: GenerationMode = GenerationMode.CLIENT
 
     fun wsdl(url: String) {
         generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
@@ -36,9 +34,14 @@ open class SoapGeneratorConfiguration constructor(val project: Project) {
         generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
     }
 
-    fun wsdl(url: String, packageName: String, generationMode: SoapGenerationMode) {
+    fun wsdl(url: String, packageName: String, generationMode: GenerationMode) {
         generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
     }
 
-    data class WsdlGenerationRequest(val wsdlUrl: String, val packageName: String, val generationMode: SoapGenerationMode)
+    data class WsdlGenerationRequest(val wsdlUrl: String, val packageName: String, val generationMode: GenerationMode)
+
+    enum class GenerationMode {
+        CLIENT,
+        SERVER
+    }
 }
