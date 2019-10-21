@@ -22,5 +22,6 @@ const val MODEL_PACKAGE = "model"
 const val MAPPING_PACKAGE = "mapping"
 const val GENERATOR_GROUP = "generator"
 const val GENERATE_MAPPERS_TASK = "generateValueMappersByModels"
+const val GENERATE_SOAP_ENTITIES_TASK = "generateSoapModelsAndMappers"
 const val COMPILE_MODELS_TASK = "compileModels"
 val DEFAULT_COMPILE_MODELS_SOURCES = mutableSetOf("model", "constants")

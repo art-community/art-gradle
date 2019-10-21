@@ -19,13 +19,21 @@
 package ru.art.gradle.configuration
 
 import org.gradle.api.*
+import org.gradle.api.model.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.ArtVersion.*
 import javax.inject.*
 
-open class GeneratorConfiguration @Inject constructor(val project: Project) {
+open class GeneratorConfiguration @Inject constructor(objectFactory: ObjectFactory, val project: Project) {
     var group = ART_MODULE_GROUP
     var version = LATEST.version
     var packageName = EMPTY_STRING
     var compileModelsSourcePackages = DEFAULT_COMPILE_MODELS_SOURCES
+
+    var soapConfiguration = objectFactory.newInstance(SoapGeneratorConfiguration::class.java, project)
+        private set
+
+    fun soap(action: Action<in SoapGeneratorConfiguration> = Action {}) {
+        action.execute(soapConfiguration)
+    }
 }
