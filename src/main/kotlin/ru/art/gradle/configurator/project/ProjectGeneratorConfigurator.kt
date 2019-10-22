@@ -96,10 +96,12 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Ta
                     .files
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             visitableURLClassLoader.loadClass(SoapGenerator::class.java.name)
+            val sourcesPath = mainSourceSet.java.outputDir.absolutePath
             projectExtension().generatorConfiguration
                     .soapConfiguration
                     .generationRequests
                     .forEach { request ->
+                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(sourcesPath)
                         SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, when (request.generationMode) {
                             CLIENT -> SoapGenerationMode.CLIENT
                             SERVER -> SoapGenerationMode.SERVER
