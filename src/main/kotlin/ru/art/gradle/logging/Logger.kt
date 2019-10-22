@@ -95,10 +95,10 @@ private fun Project.buildAuxiliaryInformationMessage(): String {
         message += "Load testing frameworks:\n"
     }
     if (auxiliaryInformation().hasGatling) {
-        message += message("Gatling\n", GREEN_BOLD)
+        message += message("\tGatling\n", GREEN_BOLD)
     }
     if (auxiliaryInformation().hasJmh) {
-        message += message("JMH\n", GREEN_BOLD)
+        message += message("\tJMH\n", GREEN_BOLD)
     }
 
     message += message("Languages:\n", PURPLE_BOLD)
@@ -146,11 +146,14 @@ private fun Project.buildAuxiliaryInformationMessage(): String {
         message += message("\tLombok\n", GREEN_BOLD)
     }
 
-    if (auxiliaryInformation().hasGenerator || auxiliaryInformation().hasProtobufGenerator) {
+    if (auxiliaryInformation().hasGenerator || auxiliaryInformation().hasProtobufGenerator || auxiliaryInformation().hasSoapGenerator) {
         message += message("Generators:\n", PURPLE_BOLD)
     }
     if (auxiliaryInformation().hasGenerator) {
         message += message("\tART Generator\n", GREEN_BOLD)
+    }
+    if (auxiliaryInformation().hasSoapGenerator) {
+        message += message("\tART SOAP Generator\n", GREEN_BOLD)
     }
     if (auxiliaryInformation().hasProtobufGenerator) {
         message += message("\tProtobuf Generator\n", GREEN_BOLD)

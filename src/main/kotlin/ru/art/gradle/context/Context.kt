@@ -60,6 +60,7 @@ object Context {
                                            var hasCheckstyle: Boolean = false,
                                            var hasProtobufGenerator: Boolean = false,
                                            var hasGenerator: Boolean = false,
+                                           var hasSoapGenerator: Boolean = false,
                                            var hasLombok: Boolean = false,
                                            var hasSpock: Boolean = false
     )

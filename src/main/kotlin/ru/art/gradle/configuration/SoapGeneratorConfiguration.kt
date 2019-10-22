@@ -17,6 +17,7 @@
 package ru.art.gradle.configuration
 
 import org.gradle.api.*
+import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
 import ru.art.gradle.constants.*
 import javax.inject.*
 
@@ -25,7 +26,7 @@ open class SoapGeneratorConfiguration @Inject constructor(val project: Project) 
 
     var packageName: String = EMPTY_STRING
 
-    var generationMode: GenerationMode = GenerationMode.CLIENT
+    var generationMode: GenerationMode = CLIENT
 
     fun wsdl(url: String) {
         generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
@@ -37,6 +38,26 @@ open class SoapGeneratorConfiguration @Inject constructor(val project: Project) 
 
     fun wsdl(url: String, packageName: String, generationMode: GenerationMode) {
         generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
+    }
+
+    fun wsdl(url: String, generationMode: GenerationMode) {
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
+    }
+
+    fun clientWsdl(url: String) {
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = CLIENT))
+    }
+
+    fun serverWsdl(url: String) {
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = SERVER))
+    }
+
+    fun clientWsdl(url: String, packageName: String) {
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = CLIENT))
+    }
+
+    fun serverWsdl(url: String, packageName: String) {
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = SERVER))
     }
 
     data class WsdlGenerationRequest(val wsdlUrl: String, val packageName: String, val generationMode: GenerationMode)
