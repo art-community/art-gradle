@@ -25,8 +25,9 @@ import org.gradle.api.tasks.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
 import org.gradle.kotlin.dsl.*
+import ru.art.generator.soap.model.*
 import ru.art.gradle.*
-import ru.art.gradle.configuration.SoapGeneratorConfiguration.*
+import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.context.Context.projectExtension
@@ -63,12 +64,9 @@ fun Project.configureSoapGenerator() {
     val packageDirectory = file("$packageDirPath$separator$MODEL_PACKAGE")
     if (!packageDirectory.exists()) {
         createDirectories(Paths.get(packageDirectory.absolutePath))
-        projectExtension().generatorConfiguration
-                .soapConfiguration
-                .generationRequests
-                .forEach { request -> createGenerateSoapEntitiesTask(mainSourceSet, request) }
-        success("Created '$GENERATE_SOAP_ENTITIES_TASK' task, running SOAP models & mappers generator")
     }
+    createGenerateSoapEntitiesTask(mainSourceSet)
+    success("Created '$GENERATE_SOAP_ENTITIES_TASK' task, running SOAP models & mappers generator")
 }
 
 private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = tasks.create(GENERATE_MAPPERS_TASK) { task ->
@@ -88,7 +86,7 @@ private fun Project.createGenerateMappersTask(mainSourceSet: SourceSet): Task = 
     }
 }
 
-private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet, request: WsdlGenerationRequest): Task = tasks.create(GENERATE_SOAP_ENTITIES_TASK) { task ->
+private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Task = tasks.create(GENERATE_SOAP_ENTITIES_TASK) { task ->
     with(task) {
         group = GENERATOR_GROUP
         doLast {
@@ -98,7 +96,17 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet, req
                     .files
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             visitableURLClassLoader.loadClass(SoapGenerator::class.java.name)
-            SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, request.generationMode)
+            val sourcesPath = mainSourceSet.java.outputDir.absolutePath
+            projectExtension().generatorConfiguration
+                    .soapConfiguration
+                    .generationRequests
+                    .forEach { request ->
+                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(sourcesPath)
+                        SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, when (request.generationMode) {
+                            CLIENT -> SoapGenerationMode.CLIENT
+                            SERVER -> SoapGenerationMode.SERVER
+                        })
+                    }
         }
     }
 }

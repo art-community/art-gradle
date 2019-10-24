@@ -46,6 +46,10 @@ fun Project.configureProject() {
             configureGenerator()
             auxiliaryInformation().hasGenerator = true
         }
+        if (projectExtension.generatorConfiguration.soapConfiguration.packageName.isNotEmpty()) {
+            configureSoapGenerator()
+            auxiliaryInformation().hasSoapGenerator = true
+        }
         if (projectExtension.lombokConfiguration.enabled == true) {
             addLombokDependency()
             auxiliaryInformation().hasLombok = true
