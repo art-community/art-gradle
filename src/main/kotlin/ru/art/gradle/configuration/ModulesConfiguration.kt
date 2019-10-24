@@ -671,6 +671,7 @@ open class ProtocolsConfiguration @Inject constructor(project: Project) : Module
         applicationHttpXml(dependencyModifiers)
         applicationHttpServer(dependencyModifiers)
         applicationMetricsHttp(dependencyModifiers)
+        applicationInformation(dependencyModifiers)
     }
 
     fun grpcServer(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
