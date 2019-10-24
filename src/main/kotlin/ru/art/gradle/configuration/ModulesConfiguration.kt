@@ -252,6 +252,10 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
     protected open fun applicationXml(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         addModule("application-xml", dependencyModifiers)
     }
+
+    protected open fun applicationInformation(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        addModule("application-information", dependencyModifiers)
+    }
 }
 
 open class PublicModulesConfiguration @Inject constructor(project: Project) : ModulesConfiguration(project) {
@@ -466,6 +470,10 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
     public override fun applicationXml(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
         super.applicationXml(dependencyModifiers)
     }
+
+    public override fun applicationInformation(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
+        super.applicationInformation(dependencyModifiers)
+    }
 }
 
 open class ModulesCombinationConfiguration @Inject constructor(project: Project) : PublicModulesConfiguration(project) {
@@ -547,6 +555,13 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
 
     fun configurator(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         applicationConfigurator(*dependencyModifiers)
+    }
+
+    fun information(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
+        configurationManagement(*dependencyModifiers)
+        protocols {
+            httpServer(*dependencyModifiers)
+        }
     }
 
     fun configuratorApi(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
