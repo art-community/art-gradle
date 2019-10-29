@@ -101,7 +101,7 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Ta
                     .soapConfiguration
                     .generationRequests
                     .forEach { request ->
-                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(project.file("src/main/java).absolutePath)
+                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(project.file("src/main/java").absolutePath)
                         SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, when (request.generationMode) {
                             CLIENT -> SoapGenerationMode.CLIENT
                             SERVER -> SoapGenerationMode.SERVER
