@@ -46,7 +46,7 @@ fun Project.configureProject() {
             configureGenerator()
             auxiliaryInformation().hasGenerator = true
         }
-        if (projectExtension.generatorConfiguration.packageName.isNotEmpty() || projectExtension.generatorConfiguration.soapConfiguration.packageName.isNotEmpty()) {
+        if (projectExtension.generatorConfiguration.packageName.isNotBlank() || projectExtension.generatorConfiguration.soapConfiguration.packageName.isNotBlank()) {
             configureSoapGenerator()
             auxiliaryInformation().hasSoapGenerator = true
         }

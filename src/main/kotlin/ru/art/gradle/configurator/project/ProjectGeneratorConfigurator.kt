@@ -25,7 +25,6 @@ import org.gradle.api.tasks.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
 import org.gradle.kotlin.dsl.*
-import ru.art.generator.mapper.constants.Constants.PathAndPackageConstants.*
 import ru.art.generator.soap.model.*
 import ru.art.gradle.*
 import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
@@ -92,7 +91,6 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Ta
                     .files
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             visitableURLClassLoader.loadClass(SoapGenerator::class.java.name)
-            val sourcesPath = mainSourceSet.java.outputDir.absolutePath
             projectExtension().generatorConfiguration
                     .soapConfiguration
                     .generationRequests
