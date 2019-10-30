@@ -30,7 +30,7 @@ open class GeneratorConfiguration @Inject constructor(objectFactory: ObjectFacto
     var packageName = EMPTY_STRING
     var compileModelsSourcePackages = DEFAULT_COMPILE_MODELS_SOURCES
 
-    var soapConfiguration = objectFactory.newInstance(SoapGeneratorConfiguration::class.java, project)
+    var soapConfiguration = objectFactory.newInstance(SoapGeneratorConfiguration::class.java, project, packageName)
         private set
 
     fun soap(action: Action<in SoapGeneratorConfiguration> = Action {}) {

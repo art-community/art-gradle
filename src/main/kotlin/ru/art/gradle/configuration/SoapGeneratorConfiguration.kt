@@ -18,13 +18,12 @@ package ru.art.gradle.configuration
 
 import org.gradle.api.*
 import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
-import ru.art.gradle.constants.*
 import javax.inject.*
 
-open class SoapGeneratorConfiguration @Inject constructor(val project: Project) {
+open class SoapGeneratorConfiguration @Inject constructor(val project: Project, artGeneratorPackageName: String) {
     var generationRequests = mutableSetOf<WsdlGenerationRequest>()
 
-    var packageName: String = EMPTY_STRING
+    var packageName: String = artGeneratorPackageName
 
     var generationMode: GenerationMode = CLIENT
 
