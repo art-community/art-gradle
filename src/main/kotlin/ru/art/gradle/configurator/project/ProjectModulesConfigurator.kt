@@ -30,7 +30,7 @@ fun Project.addModules() {
     val providedModulesConfiguration = projectExtension.providedModulesConfiguration
     val testModulesConfiguration = projectExtension.testModulesConfiguration
 
-    if (projectExtension().generatorConfiguration.packageName.isNotBlank()) {
+    if (projectExtension().generatorConfiguration.packageName.isNotBlank() || projectExtension().generatorConfiguration.soapConfiguration.packageName.isNotBlank()) {
         providedModulesConfiguration.applicationCore()
         providedModulesConfiguration.applicationEntity()
         providedModulesConfiguration.applicationService()
