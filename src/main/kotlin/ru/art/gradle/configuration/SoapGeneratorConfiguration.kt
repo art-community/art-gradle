@@ -19,6 +19,7 @@ package ru.art.gradle.configuration
 import org.gradle.api.*
 import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
 import ru.art.gradle.constants.*
+import ru.art.gradle.context.Context.projectExtension
 import javax.inject.*
 
 open class SoapGeneratorConfiguration @Inject constructor(val project: Project) {
@@ -29,11 +30,11 @@ open class SoapGeneratorConfiguration @Inject constructor(val project: Project) 
     var generationMode: GenerationMode = CLIENT
 
     fun wsdl(url: String) {
-        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName.ifBlank { project.projectExtension().generatorConfiguration.packageName }, generationMode = generationMode))
     }
 
     fun wsdl(url: String, packageName: String) {
-        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName.ifBlank { project.projectExtension().generatorConfiguration.packageName }, generationMode = generationMode))
     }
 
     fun wsdl(url: String, packageName: String, generationMode: GenerationMode) {
@@ -41,15 +42,15 @@ open class SoapGeneratorConfiguration @Inject constructor(val project: Project) 
     }
 
     fun wsdl(url: String, generationMode: GenerationMode) {
-        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = generationMode))
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName.ifBlank { project.projectExtension().generatorConfiguration.packageName }, generationMode = generationMode))
     }
 
     fun clientWsdl(url: String) {
-        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = CLIENT))
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName.ifBlank { project.projectExtension().generatorConfiguration.packageName }, generationMode = CLIENT))
     }
 
     fun serverWsdl(url: String) {
-        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName, generationMode = SERVER))
+        generationRequests.add(WsdlGenerationRequest(wsdlUrl = url, packageName = packageName.ifBlank { project.projectExtension().generatorConfiguration.packageName }, generationMode = SERVER))
     }
 
     fun clientWsdl(url: String, packageName: String) {
