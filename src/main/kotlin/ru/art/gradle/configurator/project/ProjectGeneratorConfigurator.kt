@@ -25,7 +25,6 @@ import org.gradle.api.tasks.*
 import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
 import org.gradle.kotlin.dsl.*
-import ru.art.generator.mapper.constants.Constants.PathAndPackageConstants.*
 import ru.art.generator.soap.model.*
 import ru.art.gradle.*
 import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
@@ -56,13 +55,8 @@ fun Project.configureGenerator() {
 
 fun Project.configureSoapGenerator() {
     val mainSourceSet = this@configureSoapGenerator.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getAt(MAIN_SOURCE_SET)
-    val sourceDirectories = mainSourceSet.java.sourceDirectories
-    if (sourceDirectories.isEmpty) {
-        createDirectories(Paths.get(sourceDirectories.asPath))
-    }
     val packagePath = projectExtension().generatorConfiguration.soapConfiguration.packageName.replace(DOT, separator)
-    val packageDirPath = "${sourceDirectories.first().absolutePath}$separator$packagePath"
-    val packageDirectory = file("$packageDirPath$separator$MODEL_PACKAGE")
+    val packageDirectory = file("$SRC_MAIN_JAVA$separator$packagePath$separator$MODEL_PACKAGE")
     if (!packageDirectory.exists()) {
         createDirectories(Paths.get(packageDirectory.absolutePath))
     }
@@ -97,12 +91,11 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Ta
                     .files
                     .forEach { file -> visitableURLClassLoader.addURL(file.toURI().toURL()) }
             visitableURLClassLoader.loadClass(SoapGenerator::class.java.name)
-            val sourcesPath = mainSourceSet.java.outputDir.absolutePath
             projectExtension().generatorConfiguration
                     .soapConfiguration
                     .generationRequests
                     .forEach { request ->
-                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(project.file(SRC_MAIN_JAVA).absolutePath)
+                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(file(SRC_MAIN_JAVA).absolutePath)
                         SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, when (request.generationMode) {
                             CLIENT -> SoapGenerationMode.CLIENT
                             SERVER -> SoapGenerationMode.SERVER

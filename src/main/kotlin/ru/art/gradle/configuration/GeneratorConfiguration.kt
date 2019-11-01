@@ -29,11 +29,14 @@ open class GeneratorConfiguration @Inject constructor(objectFactory: ObjectFacto
     var version = LATEST.version
     var packageName = EMPTY_STRING
     var compileModelsSourcePackages = DEFAULT_COMPILE_MODELS_SOURCES
+    var enableSoap = false
+        private set
 
     var soapConfiguration = objectFactory.newInstance(SoapGeneratorConfiguration::class.java, project)
         private set
 
     fun soap(action: Action<in SoapGeneratorConfiguration> = Action {}) {
+        enableSoap = true
         action.execute(soapConfiguration)
     }
 }
