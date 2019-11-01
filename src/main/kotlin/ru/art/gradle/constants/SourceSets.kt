@@ -24,3 +24,5 @@ const val SCALA = "scala"
 const val JMH = "jmh"
 const val GATLING = "gatling"
 const val WEB = "web"
+
+const val SRC_MAIN_JAVA = "src/main/java"
