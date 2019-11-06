@@ -53,10 +53,6 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         addModule("application-config-extensions", dependencyModifiers)
     }
 
-    protected open fun applicationConfigGroovy(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
-        addModule("application-config-groovy", dependencyModifiers)
-    }
-
     protected open fun applicationConfigRemote(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         addModule("application-config-remote", dependencyModifiers)
     }
@@ -256,6 +252,10 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
     protected open fun applicationInformation(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         addModule("application-information", dependencyModifiers)
     }
+
+    protected open fun applicationTemplateEngine(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        addModule("application-template-engine", dependencyModifiers)
+    }
 }
 
 open class PublicModulesConfiguration @Inject constructor(project: Project) : ModulesConfiguration(project) {
@@ -265,10 +265,6 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
 
     public override fun applicationConfigExtensions(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
         super.applicationConfigExtensions(dependencyModifiers)
-    }
-
-    public override fun applicationConfigGroovy(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
-        super.applicationConfigGroovy(dependencyModifiers)
     }
 
     public override fun applicationConfigRemote(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
@@ -474,6 +470,10 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
     public override fun applicationInformation(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
         super.applicationInformation(dependencyModifiers)
     }
+
+    public override fun applicationTemplateEngine(dependencyModifiers: Array<out (dependency: Dependency) -> Unit>) {
+        super.applicationTemplateEngine(dependencyModifiers)
+    }
 }
 
 open class ModulesCombinationConfiguration @Inject constructor(project: Project) : PublicModulesConfiguration(project) {
@@ -530,7 +530,6 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
         logging(*dependencyModifiers)
         applicationConfig(*dependencyModifiers)
         applicationConfigYaml(*dependencyModifiers)
-        applicationConfigGroovy(*dependencyModifiers)
         applicationConfigTypesafe(*dependencyModifiers)
     }
 
@@ -670,6 +669,7 @@ open class ProtocolsConfiguration @Inject constructor(project: Project) : Module
         applicationHttpJson(dependencyModifiers)
         applicationHttpXml(dependencyModifiers)
         applicationHttpServer(dependencyModifiers)
+        applicationTemplateEngine(dependencyModifiers)
         applicationMetricsHttp(dependencyModifiers)
         applicationInformation(dependencyModifiers)
     }
@@ -794,6 +794,7 @@ open class DatabasesConfiguration @Inject constructor(project: Project) : Module
         applicationEntity(dependencyModifiers)
         applicationLogging(dependencyModifiers)
         applicationTarantool(dependencyModifiers)
+        applicationTemplateEngine(dependencyModifiers)
     }
 
     fun rocks(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
