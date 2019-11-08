@@ -23,7 +23,10 @@ import ru.art.gradle.constants.DefaultDependencyVersions.APACHE_HTTP_CLIENT_VERS
 import ru.art.gradle.constants.DefaultDependencyVersions.APACHE_HTTP_CORE_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.CGLIB_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.CHECKSTYLE_VERSION
-import ru.art.gradle.constants.DefaultDependencyVersions.DROPWIZARD_VERSIONS
+import ru.art.gradle.constants.DefaultDependencyVersions.COMMONS_LOGGING_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.DROPWIZARD_METRICS_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.DROPWIZARD_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.EASY_RANDOM_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.GATLING_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.GROOVY_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.GRPC_VERSION
@@ -46,6 +49,7 @@ import ru.art.gradle.constants.DefaultDependencyVersions.MESSAGE_PACK_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.METRICS_DROPWIZ_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.MICROMETER_JVM_EXTRAS_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.MICROMETER_PROMETHEUS_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.NETTY_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.PEBBLE_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.PROJECT_REACTOR_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.PROMETHEUS_DROPWIZARD_SIMPLE_CLIENT
@@ -61,6 +65,7 @@ import ru.art.gradle.constants.DefaultDependencyVersions.STAX_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.TARANTOOL_CONNECTOR_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.TOMCAT_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.TYPESAFE_CONFIG_VERSION
+import ru.art.gradle.constants.DefaultDependencyVersions.VAVR_VERSION
 import ru.art.gradle.constants.DefaultDependencyVersions.ZERO_TURNAROUND_VERSION
 
 open class ExternalDependencyVersionsConfiguration {
@@ -88,8 +93,8 @@ open class ExternalDependencyVersionsConfiguration {
     var spockVersion = SPOCK_VERSION
     var micrometerPrometheusVersion = MICROMETER_PROMETHEUS_VERSION
     var micrometerJvmExtrasVersion = MICROMETER_JVM_EXTRAS_VERSION
-    var prometheusDropwizardSimpleClient = PROMETHEUS_DROPWIZARD_SIMPLE_CLIENT
-    var dropwizardVersions = DROPWIZARD_VERSIONS
+    var prometheusDropwizardSimpleClientVersion = PROMETHEUS_DROPWIZARD_SIMPLE_CLIENT
+    var dropwizardMetricsVersion = DROPWIZARD_METRICS_VERSION
     var hikariVersion = HIKARI_VERSION
     var jooqPluginVersion = JOOQ_PLUGIN_VERSION
     var sl4jVersion = SL4J_VERSION
@@ -108,4 +113,9 @@ open class ExternalDependencyVersionsConfiguration {
     var messagePackVersion = MESSAGE_PACK_VERSION
     var membraneSoaServiceProxyCoreVersion = MEMBRANE_SOA_SERVICE_PROXY_CORE_VERSION
     var pebbleVersion = PEBBLE_VERSION
+    var vavrVersion = VAVR_VERSION
+    var nettyVersion = NETTY_VERSION
+    var easyRandomVersion = EASY_RANDOM_VERSION
+    var dropwizardVersion = DROPWIZARD_VERSION
+    var commonsLoggingVersion = COMMONS_LOGGING_VERSION
 }
