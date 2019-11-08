@@ -86,7 +86,13 @@ fun Project.configureJava() {
                 if (projectExtension().mainClass.isBlank()) {
                     determineMainClass()?.let(projectExtension()::mainClass)
                 }
-                manifest { manifest -> manifest.attributes[MAIN_CLASS_ATTRIBUTE] = projectExtension().mainClass }
+                manifest { manifest ->
+                    manifest.attributes[MAIN_CLASS_ATTRIBUTE] = projectExtension().mainClass
+
+                    if (targetCompatibility.isJava9Compatible) {
+                        manifest.attributes[MULTI_RELEASE_ATTRIBUTE] = true
+                    }
+                }
                 exclude(MANIFEST_EXCLUSIONS)
                 if (projectExtension().mainClass.isNotEmpty()) {
                     attention("Main class: '${projectExtension().mainClass}'")

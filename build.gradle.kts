@@ -17,8 +17,8 @@
  */
 
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.concurrent.TimeUnit.SECONDS
+import org.jetbrains.kotlin.gradle.tasks.*
+import java.util.concurrent.TimeUnit.*
 
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
@@ -135,5 +135,5 @@ with(jar) {
             .filter { !it.name.contains("OutputItemsCollectorImpl") }
             .forEach { from(it) }
 
-    exclude(listOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"))
+    exclude(listOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "**/Log4j2Plugins.dat"))
 }
