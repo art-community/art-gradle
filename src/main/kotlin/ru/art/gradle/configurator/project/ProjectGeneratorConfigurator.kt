@@ -55,11 +55,6 @@ fun Project.configureGenerator() {
 
 fun Project.configureSoapGenerator() {
     val mainSourceSet = this@configureSoapGenerator.convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getAt(MAIN_SOURCE_SET)
-    val packagePath = projectExtension().generatorConfiguration.soapConfiguration.packageName.replace(DOT, separator)
-    val packageDirectory = file("$SRC_MAIN_JAVA$separator$packagePath$separator$MODEL_PACKAGE")
-    if (!packageDirectory.exists()) {
-        createDirectories(Paths.get(packageDirectory.absolutePath))
-    }
     createGenerateSoapEntitiesTask(mainSourceSet)
     success("Created '$GENERATE_SOAP_ENTITIES_TASK' task, running SOAP models & mappers generator")
 }
@@ -85,6 +80,12 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Ta
     with(task) {
         group = GENERATOR_GROUP
         doLast {
+            val packagePath = projectExtension().generatorConfiguration.soapConfiguration.packageName.replace(DOT, separator)
+            val packageDirectory = file("$SRC_MAIN_JAVA$separator$packagePath$separator$MODEL_PACKAGE")
+            if (!packageDirectory.exists()) {
+                createDirectories(Paths.get(packageDirectory.absolutePath))
+            }
+
             val visitableURLClassLoader = ProjectPlugin::class.java.classLoader as VisitableURLClassLoader
             visitableURLClassLoader.addURL(mainSourceSet.java.outputDir.toURI().toURL())
             configurations[COMPILE_CLASSPATH.configuration]
