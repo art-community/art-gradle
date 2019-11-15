@@ -37,7 +37,7 @@ fun Project.configureProtobufGenerator() {
     }
 
     afterEvaluate {
-        val compileJavaTaskDependsOn = compileJavaTask().dependsOn.toMutableSet()
+        val compileJavaTaskDependsOn = compileJavaTask().dependsOn
         if (!projectExtension().protobufGeneratorConfiguration.compileJavaDependsOnExtractIncludeProtoTask) {
             compileJavaTask().setDependsOn(compileJavaTaskDependsOn.filter { task -> task as? String ?: (task as? Task)?.name ?: (task as? TaskProvider<*>)?.name != extractIncludeProtoTask().name ?: true })
         }
