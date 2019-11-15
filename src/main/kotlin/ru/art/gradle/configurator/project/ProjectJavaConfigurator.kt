@@ -22,6 +22,7 @@ import org.gradle.api.*
 import org.gradle.api.file.DuplicatesStrategy.*
 import org.gradle.api.plugins.*
 import org.gradle.kotlin.dsl.*
+import org.jetbrains.kotlin.gradle.utils.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.context.Context.projectExtension
@@ -32,11 +33,11 @@ fun Project.configureJava() {
     val compileJava = compileJavaTask()
     val compileTestJava = compileTestJavaTask()
 
-    if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
+    if (isGradleVersionAtLeast(GRADLE_VERSION_5, GRADLE_VERSION_6)) {
         compileJava.options.annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 
-    if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
+    if (isGradleVersionAtLeast(GRADLE_VERSION_5, GRADLE_VERSION_6)) {
         compileTestJava.options.annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 

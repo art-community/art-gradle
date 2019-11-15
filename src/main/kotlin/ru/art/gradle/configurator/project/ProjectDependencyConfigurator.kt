@@ -21,6 +21,7 @@ package ru.art.gradle.configurator.project
 import org.gradle.api.*
 import org.gradle.api.artifacts.*
 import org.gradle.kotlin.dsl.*
+import org.jetbrains.kotlin.gradle.utils.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.dependency.Dependency
@@ -34,7 +35,7 @@ fun Project.addDependency(configuration: DependencyConfiguration, dependency: De
 }
 
 fun Project.addLombokDependency() {
-    if (gradle.gradleVersion.startsWith(GRADLE_VERSION_5)) {
+    if (isGradleVersionAtLeast(GRADLE_VERSION_5, GRADLE_VERSION_6)) {
         addDependency(ANNOTATION_PROCESSOR, lombok())
     }
     addDependency(COMPILE_ONLY, lombok())

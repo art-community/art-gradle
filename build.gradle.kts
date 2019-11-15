@@ -27,7 +27,7 @@ val embedded: Configuration by configurations.creating
 configurations.compileClasspath.get().extendsFrom(embedded)
 
 plugins {
-    kotlin("jvm") version "1.3.31"
+    kotlin("jvm") version "1.3.50"
     checkstyle
     `java-gradle-plugin`
     java
@@ -40,7 +40,7 @@ plugins {
 group = "io.github.art"
 
 tasks.withType(Wrapper::class.java) {
-    gradleVersion = "5.6"
+    gradleVersion = "6.0"
 }
 
 compileKotlin.kotlinOptions {
@@ -104,7 +104,7 @@ dependencies {
 
     embedded("org.eclipse.jgit", "org.eclipse.jgit", "5.3.1.201904271842-r")
     embedded("me.champeau.gradle", "jmh-gradle-plugin", "0.4.+")
-    embedded("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.3.31")
+    embedded("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.3.50")
     embedded("com.google.protobuf", "protobuf-gradle-plugin", "0.8+")
 }
 
