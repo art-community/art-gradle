@@ -52,7 +52,7 @@ object DefaultDependencyVersions {
     const val JAVA_POET_VERSION = "1.11.+"
     const val PROJECT_REACTOR_VERSION = "3.3.+"
     const val RSOCKET_VERSION = "0.12.+"
-    const val KOTLIN_VERSION = "1.3.31"
+    const val KOTLIN_VERSION = "1.3.50"
     const val SCALA_VERSION = "2.12.+"
     const val GATLING_VERSION = "3.3.+"
     const val KAFKA_VERSION = "2.3.+"

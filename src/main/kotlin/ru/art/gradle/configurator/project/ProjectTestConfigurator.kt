@@ -19,6 +19,7 @@
 package ru.art.gradle.configurator.project
 
 import org.gradle.api.*
+import org.gradle.api.tasks.*
 import org.gradle.api.tasks.testing.*
 import org.gradle.kotlin.dsl.*
 import ru.art.gradle.constants.*
@@ -47,15 +48,15 @@ fun Project.configureTests() {
     }
 
     if (!projectExtension().testsConfiguration.buildDependsOnTest) {
-        buildTask().dependsOn.remove(testTask())
-        checkTask().dependsOn.remove(testTask())
+        buildTask().setDependsOn(buildTask().dependsOn.filter { task -> task as? String ?: (task as? Task)?.name ?: (task as? TaskProvider<*>)?.name != testTask().name ?: true })
+        checkTask().setDependsOn(checkTask().dependsOn.filter { task -> task as? String ?: (task as? Task)?.name ?: (task as? TaskProvider<*>)?.name != testTask().name ?: true })
         additionalAttention("Disable 'test' task before 'build' task")
         additionalAttention("Disable 'test' task before 'check' task")
     }
 
     if (!projectExtension().testsConfiguration.buildDependsOnCheck) {
-        buildTask().dependsOn.remove(checkTask())
-        checkTask().dependsOn.remove(testTask())
+        buildTask().setDependsOn(buildTask().dependsOn.filter { task -> task as? String ?: (task as? Task)?.name ?: (task as? TaskProvider<*>)?.name != testTask().name ?: true })
+        checkTask().setDependsOn(checkTask().dependsOn.filter { task -> task as? String ?: (task as? Task)?.name ?: (task as? TaskProvider<*>)?.name != testTask().name ?: true })
         additionalAttention("Disable 'check' task before 'build' task")
         additionalAttention("Disable 'test' task before 'check' task")
     }
