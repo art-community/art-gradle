@@ -26,6 +26,7 @@ import org.gradle.api.tasks.compile.*
 import org.gradle.internal.classloader.*
 import org.gradle.kotlin.dsl.*
 import ru.art.generator.soap.model.*
+import ru.art.generator.soap.service.SoapGeneratorService.*
 import ru.art.gradle.*
 import ru.art.gradle.configuration.SoapGeneratorConfiguration.GenerationMode.*
 import ru.art.gradle.constants.*
@@ -96,11 +97,17 @@ private fun Project.createGenerateSoapEntitiesTask(mainSourceSet: SourceSet): Ta
                     .soapConfiguration
                     .generationRequests
                     .forEach { request ->
-                        SoapGenerator.SRC_MAIN_JAVA_ABSOLUTE_PATH.set(file(SRC_MAIN_JAVA).absolutePath)
-                        SoapGenerator.performGeneration(request.wsdlUrl, request.packageName, when (request.generationMode) {
-                            CLIENT -> SoapGenerationMode.CLIENT
-                            SERVER -> SoapGenerationMode.SERVER
-                        })
+                        SoapGenerationRequest
+                                .builder()
+                                .wsdlUrl(request.wsdlUrl)
+                                .absolutePathToSrcMainJava(file(SRC_MAIN_JAVA).absolutePath)
+                                .generationMode(when (request.generationMode) {
+                                    CLIENT -> SoapGenerationMode.CLIENT
+                                    SERVER -> SoapGenerationMode.SERVER
+                                })
+                                .packageName(request.packageName)
+                                .build()
+                                .apply(::performGeneration)
                     }
         }
     }
