@@ -15,7 +15,7 @@ Example:
 
 ```kotlin
 plugins {
-    id("io.github.art.project") version "1.0.81"
+    id("io.github.art.project") version "1.0.98"
 }
 
 art {
@@ -117,8 +117,8 @@ art {
 ```
 ## Requirements
 
-- Java 8 - heavy dependence on Java 8 functional APIs
-- Gradle 5.+
+- Java 8+ - heavy dependence on Java 8+ functional APIs
+- Gradle 6.+
 
 ## Bugs and Feedback
 
