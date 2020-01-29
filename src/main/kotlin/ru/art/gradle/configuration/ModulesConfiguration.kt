@@ -129,6 +129,10 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         addModule("application-kafka-broker", dependencyModifiers)
     }
 
+    protected open fun applicationKafkaBrokerApi(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+        addModule("application-kafka-broker-api", dependencyModifiers)
+    }
+
     protected open fun applicationKafkaConsumer(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
         addModule("application-kafka-consumer", dependencyModifiers)
     }
@@ -345,6 +349,10 @@ open class PublicModulesConfiguration @Inject constructor(project: Project) : Mo
 
     public override fun applicationKafkaBroker(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
         super.applicationKafkaBroker(dependencyModifiers)
+    }
+
+    public override fun applicationKafkaBrokerApi(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
+        super.applicationKafkaBrokerApi(dependencyModifiers)
     }
 
     public override fun applicationKafkaConsumer(vararg dependencyModifiers: (dependency: Dependency) -> Unit) {
