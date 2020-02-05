@@ -532,6 +532,7 @@ open class ModulesCombinationConfiguration @Inject constructor(project: Project)
     fun kafkaBroker(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
         logging(*dependencyModifiers)
         applicationKafkaBroker(*dependencyModifiers)
+        applicationKafkaBrokerApi(*dependencyModifiers)
     }
 
     fun localConfigurationManagement(vararg dependencyModifiers: (dependency: Dependency) -> Unit = emptyArray()) {
