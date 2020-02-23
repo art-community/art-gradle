@@ -19,5 +19,10 @@
 package ru.art.gradle.configuration
 
 open class JavaConfiguration {
-    var enabled: Boolean? = null
+    var jarName: String? = null
+        private set
+
+    fun jar(name: String) {
+        jarName = name
+    }
 }

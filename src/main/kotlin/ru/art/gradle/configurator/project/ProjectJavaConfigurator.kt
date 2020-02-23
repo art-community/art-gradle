@@ -78,11 +78,27 @@ fun Project.configureJava() {
                     .files
                     .map { file -> if (file.isDirectory) fileTree(file) else zipTree(file) }
                     .forEach { from(it) }
-            var archiveName = archiveBaseName.get()
+            var jarBaseName = archiveBaseName.get()
             if (project.hasProperty(ARCHIVE_BASE_NAME)) {
-                archiveName = properties[ARCHIVE_BASE_NAME] as String
+                jarBaseName = properties[ARCHIVE_BASE_NAME] as String
             }
-            archiveFileName.set("$archiveName-${project.version}$DOT$JAR_EXTENSION")
+            if (project.hasProperty(JAR_BASE_NAME)) {
+                jarBaseName = properties[JAR_BASE_NAME] as String
+            }
+
+            var jarFullName = "$jarBaseName-${project.version}$DOT$JAR_EXTENSION"
+            if (project.hasProperty(ARCHIVE_FULL_NAME)) {
+                jarFullName = properties[ARCHIVE_FULL_NAME] as String
+            }
+            if (project.hasProperty(JAR_FULL_NAME)) {
+                jarFullName = properties[JAR_FULL_NAME] as String
+            }
+
+            projectExtension().javaConfiguration
+                    .jarName
+                    ?.let(archiveFileName::set)
+                    ?: archiveFileName.set(jarFullName)
+
             doFirst {
                 if (projectExtension().mainClass.isBlank()) {
                     determineMainClass()?.let(projectExtension()::mainClass)

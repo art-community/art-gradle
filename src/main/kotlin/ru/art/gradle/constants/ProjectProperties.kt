@@ -21,3 +21,6 @@ package ru.art.gradle.constants
 const val CHECKOUT_BRANCH = "checkoutBranch"
 const val PROJECT_VERSION = "projectVersion"
 const val ARCHIVE_BASE_NAME = "archiveBaseName"
+const val JAR_BASE_NAME = "jarBaseName"
+const val ARCHIVE_FULL_NAME = "archiveFullName"
+const val JAR_FULL_NAME = "jarFullName"
