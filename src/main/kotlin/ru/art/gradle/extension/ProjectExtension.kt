@@ -29,6 +29,8 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
         private set
     var groovyConfiguration = objectFactory.newInstance(GroovyConfiguration::class.java)
         private set
+    var javaConfiguration = objectFactory.newInstance(JavaConfiguration::class.java)
+        private set
     var ideaConfiguration = objectFactory.newInstance(IdeaConfiguration::class.java)
         private set
     var jmhConfiguration = objectFactory.newInstance(JmhConfiguration::class.java)
@@ -94,6 +96,10 @@ open class ProjectExtension @Inject constructor(objectFactory: ObjectFactory, va
     fun jmh(action: Action<in JmhConfiguration> = Action {}) {
         jmhConfiguration.enabled = true
         action.execute(jmhConfiguration)
+    }
+
+    fun java(action: Action<in JavaConfiguration> = Action {}) {
+        action.execute(javaConfiguration)
     }
 
     fun kotlin(action: Action<in KotlinConfiguration> = Action {}) {
