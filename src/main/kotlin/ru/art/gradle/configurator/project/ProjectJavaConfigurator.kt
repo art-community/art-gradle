@@ -86,7 +86,15 @@ fun Project.configureJava() {
                 jarBaseName = properties[JAR_BASE_NAME] as String
             }
 
-            var jarFullName = "$jarBaseName-${project.version}$DOT$JAR_EXTENSION"
+            var jarFullName = (project.version as String?)?.let { version ->
+                if (version.isBlank()) {
+                    return@let jarBaseName
+                }
+                "$jarBaseName-${version.toLowerCase()
+                        .trim()
+                        .replace(SPACE, DASH)
+                        .replace(SLASH, DASH)}$DOT$JAR_EXTENSION"
+            } ?: jarBaseName
             if (project.hasProperty(ARCHIVE_FULL_NAME)) {
                 jarFullName = properties[ARCHIVE_FULL_NAME] as String
             }
