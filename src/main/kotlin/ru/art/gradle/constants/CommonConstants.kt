@@ -27,6 +27,7 @@ const val COLON  = ":"
 const val SPACE = " "
 const val DASH = "-"
 const val SLASH = "/"
+const val BACKWARD_SLASH = "\\"
 const val GRADLE_VERSION_5 = 5
 const val GRADLE_VERSION_6 = 6
 const val ART_EXTENSION = "art"

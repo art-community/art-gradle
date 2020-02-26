@@ -93,7 +93,8 @@ fun Project.configureJava() {
                 "$jarBaseName-${version.toLowerCase()
                         .trim()
                         .replace(SPACE, DASH)
-                        .replace(SLASH, DASH)}$DOT$JAR_EXTENSION"
+                        .replace(SLASH, DASH)
+                        .replace(BACKWARD_SLASH, DASH)}$DOT$JAR_EXTENSION"
             } ?: jarBaseName
             if (project.hasProperty(ARCHIVE_FULL_NAME)) {
                 jarFullName = properties[ARCHIVE_FULL_NAME] as String
