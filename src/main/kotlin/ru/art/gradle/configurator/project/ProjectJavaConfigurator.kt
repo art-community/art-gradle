@@ -94,7 +94,7 @@ fun Project.configureJava() {
                         .trim()
                         .replace(SPACE, DASH)
                         .replace(SLASH, DASH)}$DOT$JAR_EXTENSION"
-            }
+            } ?: jarBaseName
             if (project.hasProperty(ARCHIVE_FULL_NAME)) {
                 jarFullName = properties[ARCHIVE_FULL_NAME] as String
             }
