@@ -35,7 +35,7 @@ fun Project.addDependency(configuration: DependencyConfiguration, dependency: De
 }
 
 fun Project.addLombokDependency() {
-    if (isGradleVersionAtLeast(GRADLE_VERSION_5, GRADLE_VERSION_6)) {
+    if (isGradleVersionAtLeast(GRADLE_VERSION_5, 0)) {
         addDependency(ANNOTATION_PROCESSOR, lombok())
     }
     addDependency(COMPILE_ONLY, lombok())
