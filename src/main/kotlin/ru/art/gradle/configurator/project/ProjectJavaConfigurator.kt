@@ -25,6 +25,7 @@ import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.utils.*
 import ru.art.gradle.constants.*
 import ru.art.gradle.constants.DependencyConfiguration.*
+import ru.art.gradle.constants.GradleVersion.*
 import ru.art.gradle.context.Context.projectExtension
 import ru.art.gradle.logging.*
 import ru.art.gradle.provider.*
@@ -33,13 +34,13 @@ fun Project.configureJava() {
     val compileJava = compileJavaTask()
     val compileTestJava = compileTestJavaTask()
 
-    if (isGradleVersionAtLeast(GRADLE_VERSION_5, 0)) {
+    if (isGradleVersionAtLeast(GRADLE_4_6.major, GRADLE_4_6.minor)) {
         compileJava
                 .options
                 .annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 
-    if (isGradleVersionAtLeast(GRADLE_VERSION_5, 0)) {
+    if (isGradleVersionAtLeast(GRADLE_4_6.major, GRADLE_4_6.minor)) {
         compileTestJava
                 .options
                 .annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)

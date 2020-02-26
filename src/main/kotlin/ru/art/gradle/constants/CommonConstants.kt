@@ -18,6 +18,10 @@
 
 package ru.art.gradle.constants
 
+enum class GradleVersion(val major: Int, val minor: Int) {
+    GRADLE_4_6(4, 6)
+}
+
 const val EMPTY_STRING = ""
 const val COMMA = ","
 const val DOT = "."
@@ -28,8 +32,7 @@ const val SPACE = " "
 const val DASH = "-"
 const val SLASH = "/"
 const val BACKWARD_SLASH = "\\"
-const val GRADLE_VERSION_5 = 5
-const val GRADLE_VERSION_6 = 6
+const val GRADLE_VERSION_4_6 = 5
 const val ART_EXTENSION = "art"
 const val AFTER_CONFIGURING_ACTION_EXTENSION = "afterConfiguring"
 const val MAIN_SOURCE_SET = "main"
