@@ -33,12 +33,16 @@ fun Project.configureJava() {
     val compileJava = compileJavaTask()
     val compileTestJava = compileTestJavaTask()
 
-    if (isGradleVersionAtLeast(GRADLE_VERSION_5, GRADLE_VERSION_6)) {
-        compileJava.options.annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
+    if (isGradleVersionAtLeast(GRADLE_VERSION_5, 0)) {
+        compileJava
+                .options
+                .annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 
-    if (isGradleVersionAtLeast(GRADLE_VERSION_5, GRADLE_VERSION_6)) {
-        compileTestJava.options.annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
+    if (isGradleVersionAtLeast(GRADLE_VERSION_5, 0)) {
+        compileTestJava
+                .options
+                .annotationProcessorPath = files(configurations[ANNOTATION_PROCESSOR.configuration].files)
     }
 
     with(convention.getPlugin(JavaPluginConvention::class.java)) {
@@ -78,6 +82,7 @@ fun Project.configureJava() {
                     .files
                     .map { file -> if (file.isDirectory) fileTree(file) else zipTree(file) }
                     .forEach { from(it) }
+
             var jarBaseName = archiveBaseName.get()
             if (project.hasProperty(ARCHIVE_BASE_NAME)) {
                 jarBaseName = properties[ARCHIVE_BASE_NAME] as String
@@ -90,12 +95,12 @@ fun Project.configureJava() {
                 if (version.isBlank()) {
                     return@let jarBaseName
                 }
-                "$jarBaseName-${version.toLowerCase()
+                return@let "$jarBaseName-${version.toLowerCase()
                         .trim()
                         .replace(SPACE, DASH)
                         .replace(SLASH, DASH)
                         .replace(BACKWARD_SLASH, DASH)}$DOT$JAR_EXTENSION"
-            } ?: jarBaseName
+            } ?: "jarBaseName$DOT$JAR_EXTENSION"
             if (project.hasProperty(ARCHIVE_FULL_NAME)) {
                 jarFullName = properties[ARCHIVE_FULL_NAME] as String
             }
