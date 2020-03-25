@@ -18,11 +18,11 @@
 
 package ru.art.gradle.configurator.project
 
-import org.gradle.api.*
-import ru.art.gradle.configuration.*
+import org.gradle.api.Project
+import ru.art.gradle.configuration.ModulesCombinationConfiguration
 import ru.art.gradle.constants.DependencyConfiguration.*
 import ru.art.gradle.context.Context.projectExtension
-import ru.art.gradle.dependency.*
+import ru.art.gradle.dependency.Dependency
 
 fun Project.addModules() {
     val projectExtension = projectExtension()
@@ -38,9 +38,15 @@ fun Project.addModules() {
             providedModulesConfiguration.applicationGenerator({ dependency -> dependency.version = projectExtension().generatorConfiguration.version })
         }
     }
-    val embeddedModules = embeddedModulesConfiguration.modules
-    val providedModules = providedModulesConfiguration.modules.filter { !embeddedModules.contains(it) }
-    val testModules = testModulesConfiguration.modules.filter { !providedModules.contains(it) }
+    val embeddedModules = embeddedModulesConfiguration.modules.filter { module ->
+        !embeddedModulesConfiguration.disabledModules.contains(module.artifact)
+    }
+    val providedModules = providedModulesConfiguration.modules.filter { module ->
+        !embeddedModules.contains(module) && !providedModulesConfiguration.disabledModules.contains(module.artifact)
+    }
+    val testModules = testModulesConfiguration.modules.filter { module ->
+        !providedModules.contains(module) && !embeddedModules.contains(module) && !testModulesConfiguration.disabledModules.contains(module.artifact)
+    }
 
     embeddedModules.stream()
             .peek(::substituteModuleWithCode)
@@ -72,7 +78,7 @@ fun Project.setVersion(module: Dependency, configuration: ModulesCombinationConf
     if (projectExtension().dependencySubstitutionConfiguration.codeSubstitutions.contains(module)) {
         return
     }
-    if (module.version.isNullOrBlank() && !configuration.deprecatedModules.contains(module.artifact)) {
+    if (module.version.isNullOrBlank()) {
         module.version = configuration.version
     }
 }

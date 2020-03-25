@@ -26,7 +26,7 @@ import javax.inject.*
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
-    val deprecatedModules: MutableSet<String> = mutableSetOf()
+    val disabledModules: MutableSet<String> = mutableSetOf()
     var version: String = LATEST.version
         private set
 
@@ -34,14 +34,14 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         this.version = version
     }
 
-    private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray(), deprecated: Boolean = false) {
+    private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray(), disabled: Boolean = false) {
         val dependency = Dependency(ART_MODULE_GROUP, module)
         dependencyModifiers.forEach { modifier -> modifier(dependency) }
         modules.find { current -> current.group == dependency.group && current.artifact == dependency.artifact }
                 ?.let { current -> current.version = dependency.version }
                 ?: modules.add(dependency)
-        if (deprecated) {
-            deprecatedModules.add(module)
+        if (disabled) {
+            disabledModules.add(module)
         }
     }
 
@@ -134,7 +134,7 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
     }
 
     protected open fun applicationKafkaBrokerApi(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
-        addModule("application-kafka-broker-api", dependencyModifiers)
+        addModule("application-kafka-broker-api", dependencyModifiers, true)
     }
 
     protected open fun applicationKafkaConsumer(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {

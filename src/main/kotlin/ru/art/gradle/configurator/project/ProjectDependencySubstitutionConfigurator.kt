@@ -18,30 +18,35 @@
 
 package ru.art.gradle.configurator.project
 
-import org.gradle.api.*
-import org.gradle.api.internal.project.*
-import ru.art.gradle.constants.*
+import org.gradle.api.Project
+import org.gradle.api.internal.project.DefaultProject
+import ru.art.gradle.constants.COMPILE_TASK_PREFIX
 import ru.art.gradle.constants.DefaultTasks.BUILD
 import ru.art.gradle.context.Context.projectExtension
-import ru.art.gradle.dependency.*
-import ru.art.gradle.logging.*
+import ru.art.gradle.dependency.Dependency
+import ru.art.gradle.logging.success
+import ru.art.gradle.logging.warning
 
 fun Project.substituteDependencies() {
     val substitutedDependencies = mutableSetOf<Dependency>()
     projectExtension().dependencySubstitutionConfiguration.codeSubstitutions
             .forEach { dependency ->
                 configurations.all { configuration ->
-                    findProject(":${dependency.artifact}") ?: return@all
-                    val dependencyProject = project(":${dependency.artifact}") as DefaultProject
-                    if (dependencyProject.state.isUnconfigured) {
-                        dependencyProject.evaluate()
+                    try {
+                        findProject(":${dependency.artifact}") ?: return@all
+                        val dependencyProject = project(":${dependency.artifact}") as DefaultProject
+                        if (dependencyProject.state.isUnconfigured) {
+                            dependencyProject.evaluate()
+                        }
+                        substitutedDependencies.add(dependency)
+                        val module = configuration.resolutionStrategy.dependencySubstitution.module(dependency.inGradleNotation())
+                        val project = configuration.resolutionStrategy.dependencySubstitution.project(":${dependency.artifact}")
+                        configuration.resolutionStrategy.dependencySubstitution.substitute(module).with(project)
+                        tasks.filter { task -> task.name.startsWith(COMPILE_TASK_PREFIX) }
+                                .forEach { it.dependsOn(":${dependency.artifact}:$BUILD") }
+                    } catch (throwable: Throwable) {
+                        throwable.message?.let { message -> warning(message) }
                     }
-                    substitutedDependencies.add(dependency)
-                    val module = configuration.resolutionStrategy.dependencySubstitution.module(dependency.inGradleNotation())
-                    val project = configuration.resolutionStrategy.dependencySubstitution.project(":${dependency.artifact}")
-                    configuration.resolutionStrategy.dependencySubstitution.substitute(module).with(project)
-                    tasks.filter { task -> task.name.startsWith(COMPILE_TASK_PREFIX) }
-                            .forEach { it.dependsOn(":${dependency.artifact}:$BUILD") }
                 }
             }
     substitutedDependencies.forEach { substitutedDependency ->
