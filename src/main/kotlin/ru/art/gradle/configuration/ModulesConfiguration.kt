@@ -18,15 +18,15 @@
 
 package ru.art.gradle.configuration
 
-import org.gradle.api.*
-import ru.art.gradle.constants.*
-import ru.art.gradle.constants.ArtVersion.*
-import ru.art.gradle.dependency.*
-import javax.inject.*
+import org.gradle.api.Project
+import ru.art.gradle.constants.ART_MODULE_GROUP
+import ru.art.gradle.constants.ArtVersion.LATEST
+import ru.art.gradle.dependency.Dependency
+import javax.inject.Inject
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
-    val disabledModules: MutableSet<String> = mutableSetOf()
+    val excludedModules: MutableSet<String> = mutableSetOf()
     var version: String = LATEST.version
         private set
 
@@ -34,15 +34,19 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         this.version = version
     }
 
-    private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray(), disabled: Boolean = false) {
+    private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray(), exclude: Boolean = false) {
+        if (exclude) {
+            excludedModules.add(module)
+        }
         val dependency = Dependency(ART_MODULE_GROUP, module)
         dependencyModifiers.forEach { modifier -> modifier(dependency) }
         modules.find { current -> current.group == dependency.group && current.artifact == dependency.artifact }
                 ?.let { current -> current.version = dependency.version }
                 ?: modules.add(dependency)
-        if (disabled) {
-            disabledModules.add(module)
-        }
+    }
+
+    fun exclude(module: String) {
+        excludedModules.add(module)
     }
 
     protected open fun applicationCore(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {

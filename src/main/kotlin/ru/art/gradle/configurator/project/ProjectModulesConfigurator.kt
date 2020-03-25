@@ -39,13 +39,13 @@ fun Project.addModules() {
         }
     }
     val embeddedModules = embeddedModulesConfiguration.modules.filter { module ->
-        !embeddedModulesConfiguration.disabledModules.contains(module.artifact)
+        !embeddedModulesConfiguration.excludedModules.contains(module.artifact)
     }
     val providedModules = providedModulesConfiguration.modules.filter { module ->
-        !embeddedModules.contains(module) && !providedModulesConfiguration.disabledModules.contains(module.artifact)
+        !embeddedModules.contains(module) && !providedModulesConfiguration.excludedModules.contains(module.artifact)
     }
     val testModules = testModulesConfiguration.modules.filter { module ->
-        !providedModules.contains(module) && !embeddedModules.contains(module) && !testModulesConfiguration.disabledModules.contains(module.artifact)
+        !providedModules.contains(module) && !embeddedModules.contains(module) && !testModulesConfiguration.excludedModules.contains(module.artifact)
     }
 
     embeddedModules.stream()
