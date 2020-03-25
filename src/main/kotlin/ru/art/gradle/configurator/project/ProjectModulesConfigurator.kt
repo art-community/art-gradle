@@ -72,7 +72,7 @@ fun Project.setVersion(module: Dependency, configuration: ModulesCombinationConf
     if (projectExtension().dependencySubstitutionConfiguration.codeSubstitutions.contains(module)) {
         return
     }
-    if (module.version.isNullOrBlank()) {
+    if (module.version.isNullOrBlank() && !configuration.deprecatedModules.contains(module.artifact)) {
         module.version = configuration.version
     }
 }

@@ -26,6 +26,7 @@ import javax.inject.*
 
 open class ModulesConfiguration @Inject constructor(val project: Project) {
     val modules: MutableSet<Dependency> = mutableSetOf()
+    val deprecatedModules: MutableSet<String> = mutableSetOf()
     var version: String = LATEST.version
         private set
 
@@ -33,12 +34,15 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
         this.version = version
     }
 
-    private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
+    private fun addModule(module: String, dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray(), deprecated: Boolean = false) {
         val dependency = Dependency(ART_MODULE_GROUP, module)
         dependencyModifiers.forEach { modifier -> modifier(dependency) }
         modules.find { current -> current.group == dependency.group && current.artifact == dependency.artifact }
                 ?.let { current -> current.version = dependency.version }
                 ?: modules.add(dependency)
+        if (deprecated) {
+            deprecatedModules.add(module)
+        }
     }
 
     protected open fun applicationCore(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
@@ -186,7 +190,7 @@ open class ModulesConfiguration @Inject constructor(val project: Project) {
     }
 
     protected open fun applicationProtobufGenerated(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
-        addModule("application-protobuf-generated", dependencyModifiers)
+        addModule("application-protobuf-generated", dependencyModifiers, true)
     }
 
     protected open fun applicationReactiveService(dependencyModifiers: Array<out (dependency: Dependency) -> Unit> = emptyArray()) {
