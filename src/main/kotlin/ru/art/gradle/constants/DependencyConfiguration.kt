@@ -21,6 +21,7 @@ package ru.art.gradle.constants
 enum class DependencyConfiguration(val configuration: String) {
     DEFAULT("default"),
     ANNOTATION_PROCESSOR("annotationProcessor"),
+    TEST_ANNOTATION_PROCESSOR("testAnnotationProcessor"),
     COMPILE_CLASSPATH("compileClasspath"),
     COMPILE_ONLY("compileOnly"),
     RUNTIME_CLASSPATH("runtimeClasspath"),
