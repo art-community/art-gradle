@@ -40,7 +40,7 @@ fun Project.addLombokDependency() {
         addDependency(ANNOTATION_PROCESSOR, lombok())
         addDependency(TEST_ANNOTATION_PROCESSOR, lombok())
     }
-    addDependency(COMPILE_ONLY, lombok())
+    addDependency(DependencyConfiguration.COMPILE_ONLY, lombok())
     addDependency(TEST_COMPILE_ONLY, lombok())
 }
 
@@ -56,6 +56,7 @@ fun Project.addGroovyDependency() {
 }
 
 fun Project.addKotlinDependency() {
+    warning("Overriding the Kotlin version can cause problems")
     addDependency(EMBEDDED, kotlin())
 }
 
