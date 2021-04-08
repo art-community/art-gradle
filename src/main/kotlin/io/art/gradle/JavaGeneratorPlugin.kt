@@ -56,7 +56,7 @@ class JavaGeneratorPlugin : Plugin<Project> {
                         "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}"
                 ))
             }
-            compileJava.dependsOn("clean").dependsOn(project(":language-java").tasks["build"])
+            //compileJava.dependsOn("clean").dependsOn(project(":language-java").tasks["build"])
         }
     }
 }
