@@ -54,7 +54,7 @@ class JavaGeneratorPlugin : Plugin<Project> {
                         "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
                         "-Aart.generator.recompilation.classpath=${compileJava.classpath.files.joinToString(",")}",
                         "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
-                        "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.source.asPath}/generated"
+                        "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
                 ))
             }
             //compileJava.dependsOn("clean").dependsOn(project(":language-java").tasks["build"])
