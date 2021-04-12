@@ -26,6 +26,7 @@ plugins {
 }
 
 group = "io.art.gradle"
+version = "1.0.0"
 
 tasks.withType(type = Wrapper::class) {
     gradleVersion = "7.0-rc-2"
@@ -35,15 +36,20 @@ gradlePlugin {
     plugins {
         create("java-generator") {
             id = "java-generator"
-            implementationClass = "io.art.gradle.JavaGeneratorPlugin"
+            implementationClass = "io.art.gradle.external.JavaGeneratorPlugin"
+        }
+        create("art-internal") {
+            id = "art-internal"
+            implementationClass = "io.art.gradle.internal.InternalPlugin"
         }
         create("kotlin-generator") {
             id = "kotlin-generator"
-            implementationClass = "KotlinGeneratorPlugin"
+            implementationClass = "io.art.gradle.external.KotlinGeneratorPlugin"
         }
     }
 }
 
 dependencies {
     implementation(kotlin("gradle-plugin"))
+    implementation("org.eclipse.jgit:org.eclipse.jgit:+")
 }

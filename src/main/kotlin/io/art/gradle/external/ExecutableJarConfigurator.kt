@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+package io.art.gradle.external
+
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.compile.JavaCompile
