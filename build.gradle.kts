@@ -16,23 +16,27 @@
  * limitations under the License.
  */
 
-repositories {
-    mavenCentral()
-}
+import java.util.*
 
 plugins {
     `kotlin-dsl`
     `java-library`
+    `maven-publish`
 }
 
 group = "io.art.gradle"
-version = "1.0.0"
+version = "main"
 
 tasks.withType(type = Wrapper::class) {
     gradleVersion = "7.0-rc-2"
 }
 
+repositories {
+    mavenCentral()
+}
+
 gradlePlugin {
+    isAutomatedPublishing = false
     plugins {
         create("java-generator") {
             id = "java-generator"
@@ -52,4 +56,59 @@ gradlePlugin {
 dependencies {
     implementation(kotlin("gradle-plugin"))
     implementation("org.eclipse.jgit:org.eclipse.jgit:+")
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://nexus.art-platform.io/repository/art-gradle-plugins/")
+            credentials {
+                val properties = Properties().apply { load(projectDir.resolve("local.properties").inputStream()) }
+                username = properties["publisher.username"] as String
+                password = properties["publisher.password"] as String
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>(project.name) {
+            withoutBuildIdentifier()
+            artifactId = project.name
+            groupId = project.group as String
+            from(project.components["java"])
+            suppressAllPomMetadataWarnings()
+            pom {
+                name.set(project.name)
+                url.set("https://github.com/art-community/${project.name}")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        distribution.set("repo")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("anton.bashirov")
+                        name.set("Anton Bashirov")
+                        email.set("anton.sh.local@gmail.com")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/art-community/${project.name}.git")
+                    developerConnection.set("scm:git:ssh://github.com/art-community/${project.name}.git")
+                    url.set("https://github.com/art-community/${project.name}")
+                }
+
+                versionMapping {
+                    usage("java-api") {
+                        fromResolutionResult()
+                    }
+                    usage("java-runtime") {
+                        fromResolutionResult()
+                    }
+                }
+            }
+        }
+    }
 }
