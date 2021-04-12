@@ -58,7 +58,7 @@ dependencies {
     implementation("org.eclipse.jgit:org.eclipse.jgit:+")
 }
 
-publishing {
+if (projectDir.resolve("local.properties").exists()) publishing {
     repositories {
         maven {
             url = uri("https://nexus.art-platform.io/repository/art-gradle-plugins/")
