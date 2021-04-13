@@ -121,7 +121,10 @@ val publishingProperties
     get(): Map<String, String> {
         val propertiesName = "publishing.properties"
         val content = properties[propertiesName] as String?
-                ?: rootDir.parentFile?.resolve(propertiesName)?.readText()
+                ?: rootDir.parentFile
+                        ?.resolve(propertiesName)
+                        ?.takeIf(File::exists)
+                        ?.readText()
                 ?: return emptyMap()
         return Properties()
                 .apply { load(content.reader()) }

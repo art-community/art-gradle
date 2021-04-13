@@ -3,6 +3,8 @@ package io.art.gradle.internal.constants
 import org.gradle.api.Project
 
 const val EMPTY_STRING = ""
+const val NEW_LINE = "\n"
+val LOG_TEMPLATE = { context: String, line: String -> "($context): $line" }
 const val UNSTABLE_MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven-unstable"
 const val STABLE_MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven-stable/"
 const val MAIN_BRANCH = "main"
