@@ -1,8 +1,8 @@
 package io.art.gradle.internal.configurator
 
 import io.art.gradle.internal.constants.*
-import io.art.gradle.internal.service.artifactsRepositoryUrl
 import io.art.gradle.internal.service.loadProperties
+import io.art.gradle.internal.service.publishingRepositoryUrl
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -27,7 +27,7 @@ private fun Project.mavenPublishing(publisherUsername: String, publisherPassword
     with(the<PublishingExtension>()) {
         repositories {
             maven {
-                url = uri(artifactsRepositoryUrl)
+                url = uri(publishingRepositoryUrl)
                 credentials {
                     username = publisherUsername
                     password = publisherPassword
