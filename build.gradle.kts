@@ -58,7 +58,7 @@ dependencies {
     implementation("org.eclipse.jgit:org.eclipse.jgit:+")
 }
 
-fun configurePublishing(publishingUsername: String, publishingPassword: String) = publishing {
+fun configurePublishing(publisherUsername: String, publisherPassword: String) = publishing {
     val communityRepository = "github.com/art-community"
     val communityUrl = "https://$communityRepository/${project.name}"
 
@@ -66,8 +66,8 @@ fun configurePublishing(publishingUsername: String, publishingPassword: String) 
         maven {
             url = uri("https://nexus.art-platform.io/repository/art-gradle-plugins/")
             credentials {
-                username = publishingUsername
-                password = publishingPassword
+                username = publisherUsername
+                password = publisherPassword
             }
         }
     }
