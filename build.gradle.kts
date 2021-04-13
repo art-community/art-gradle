@@ -44,7 +44,7 @@ gradlePlugin {
         }
         create("art-internal") {
             id = "art-internal"
-            implementationClass = "io.art.gradle.internal.InternalPlugin"
+            implementationClass = "io.art.gradle.internal.plugin.InternalPlugin"
         }
         create("kotlin-generator") {
             id = "kotlin-generator"
@@ -58,17 +58,20 @@ dependencies {
     implementation("org.eclipse.jgit:org.eclipse.jgit:+")
 }
 
-if (projectDir.resolve("local.properties").exists()) publishing {
+fun configurePublishing(publishingUsername: String, publishingPassword: String) = publishing {
+    val communityRepository = "github.com/art-community"
+    val communityUrl = "https://$communityRepository/${project.name}"
+
     repositories {
         maven {
             url = uri("https://nexus.art-platform.io/repository/art-gradle-plugins/")
             credentials {
-                val properties = Properties().apply { load(projectDir.resolve("local.properties").inputStream()) }
-                username = properties["publisher.username"] as String
-                password = properties["publisher.password"] as String
+                username = publishingUsername
+                password = publishingPassword
             }
         }
     }
+
     publications {
         create<MavenPublication>(project.name) {
             withoutBuildIdentifier()
@@ -78,14 +81,15 @@ if (projectDir.resolve("local.properties").exists()) publishing {
             suppressAllPomMetadataWarnings()
             pom {
                 name.set(project.name)
-                url.set("https://github.com/art-community/${project.name}")
+                url.set(communityUrl)
+
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
                         url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                        distribution.set("repo")
                     }
                 }
+
                 developers {
                     developer {
                         id.set("anton.bashirov")
@@ -95,9 +99,9 @@ if (projectDir.resolve("local.properties").exists()) publishing {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/art-community/${project.name}.git")
-                    developerConnection.set("scm:git:ssh://github.com/art-community/${project.name}.git")
-                    url.set("https://github.com/art-community/${project.name}")
+                    connection.set("scm:git:git://$communityRepository/${project.name}.git")
+                    developerConnection.set("scm:git:ssh://$communityRepository/${project.name}.git")
+                    url.set(communityUrl)
                 }
 
                 versionMapping {
@@ -111,4 +115,23 @@ if (projectDir.resolve("local.properties").exists()) publishing {
             }
         }
     }
+}
+
+val publishingProperties
+    get(): Map<String, String> {
+        val propertiesName = "publishing.properties"
+        val content = properties[propertiesName] as String?
+                ?: rootDir.parentFile?.resolve(propertiesName)?.readText()
+                ?: return emptyMap()
+        return Properties()
+                .apply { load(content.reader()) }
+                .entries
+                .associate { entry -> "${entry.key}" to "${entry.value}" }
+    }
+
+val publishingUsername = publishingProperties["publisher.username"]
+val publishingPassword = publishingProperties["publisher.password"]
+
+if (!publishingUsername.isNullOrBlank() && !publishingPassword.isNullOrBlank()) {
+    configurePublishing(publishingUsername, publishingPassword)
 }

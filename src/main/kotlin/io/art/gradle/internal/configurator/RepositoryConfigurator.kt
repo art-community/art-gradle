@@ -1,5 +1,6 @@
-package io.art.gradle.internal
+package io.art.gradle.internal.configurator
 
+import io.art.gradle.internal.service.artifactsRepositoryUrl
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.repositories
 
