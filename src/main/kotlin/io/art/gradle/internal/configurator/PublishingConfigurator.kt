@@ -1,7 +1,7 @@
 package io.art.gradle.internal.configurator
 
 import io.art.gradle.internal.constants.*
-import io.art.gradle.internal.service.loadProperties
+import io.art.gradle.internal.service.loadProperty
 import io.art.gradle.internal.service.publishingRepositoryUrl
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -12,9 +12,8 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.the
 
 fun Project.configurePublishing() {
-    val publishingProperties = loadProperties(PUBLISHING_PROPERTIES)
-    val publisherUsername = publishingProperties[PUBLISHER_USERNAME] ?: return
-    val publisherPassword = publishingProperties[PUBLISHER_PASSWORD] ?: return
+    val publisherUsername = loadProperty(PUBLISHER_USERNAME, PUBLISHING_PROPERTIES) ?: return
+    val publisherPassword = loadProperty(PUBLISHER_PASSWORD, PUBLISHING_PROPERTIES) ?: return
     when (rootProject.name) {
         ART_JAVA -> mavenPublishing(publisherUsername, publisherPassword)
         ART_GENERATOR -> mavenPublishing(publisherUsername, publisherPassword)

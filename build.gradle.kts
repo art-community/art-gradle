@@ -119,12 +119,10 @@ fun configurePublishing(publishingUsername: String, publishingPassword: String) 
 
 val publishingProperties
     get(): Map<String, String> {
-        val propertiesName = "publishing.properties"
-        val content = properties[propertiesName] as String?
-                ?: rootDir.parentFile
-                        ?.resolve(propertiesName)
-                        ?.takeIf(File::exists)
-                        ?.readText()
+        val content = rootDir.parentFile
+                ?.resolve("publishing.properties")
+                ?.takeIf(File::exists)
+                ?.readText()
                 ?: return emptyMap()
         return Properties()
                 .apply { load(content.reader()) }
@@ -132,8 +130,8 @@ val publishingProperties
                 .associate { entry -> "${entry.key}" to "${entry.value}" }
     }
 
-val publishingUsername = publishingProperties["publisher.username"]
-val publishingPassword = publishingProperties["publisher.password"]
+val publishingUsername = publishingProperties["publisher.username"] ?: properties["publisher.username"]?.toString()
+val publishingPassword = publishingProperties["publisher.password"] ?: properties["publisher.password"]?.toString()
 
 if (!publishingUsername.isNullOrBlank() && !publishingPassword.isNullOrBlank()) {
     configurePublishing(publishingUsername, publishingPassword)
