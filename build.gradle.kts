@@ -130,9 +130,9 @@ val publishingProperties
                 .associate { entry -> "${entry.key}" to "${entry.value}" }
     }
 
-val publishingUsername = publishingProperties["publisher.username"] ?: properties["publisher.username"]?.toString()
-val publishingPassword = publishingProperties["publisher.password"] ?: properties["publisher.password"]?.toString()
+val publisherUsername = publishingProperties["publisher.username"] ?: properties["publisher.username"]?.toString()
+val publisherPassword = publishingProperties["publisher.password"] ?: properties["publisher.password"]?.toString()
 
-if (!publishingUsername.isNullOrBlank() && !publishingPassword.isNullOrBlank()) {
-    configurePublishing(publishingUsername, publishingPassword)
+if (!publisherUsername.isNullOrBlank() && !publisherPassword.isNullOrBlank()) {
+    configurePublishing(publisherUsername, publisherPassword)
 }
