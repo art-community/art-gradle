@@ -1,4 +1,4 @@
-name: ART Java Build
+name: ART Gradle Build
 on:
   push:
     branches-ignore:

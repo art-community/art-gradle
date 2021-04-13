@@ -1,4 +1,4 @@
-name: ART Java Publish
+name: ART Gradle Publish
 on:
   push:
     branches:
