@@ -24,7 +24,14 @@ open class LuaExtension {
     var executable = LUA
         private set
 
+    var removeInitSuffix = false
+        private set
+
     fun executable(executable: String) {
         this.executable = executable
+    }
+
+    fun removeInitSuffix(removeInitSuffix: Boolean = true) {
+        this.removeInitSuffix = removeInitSuffix
     }
 }

@@ -49,7 +49,7 @@ fun Project.configureLua() {
                 standardOutput = logger(project.name).output()
                 errorOutput = logger(project.name).error()
             }
-            bundleScript.writeContent(bundleScript.toFile().readText().replace(".init", ""))
+            if (luaPlugin.extension.removeInitSuffix) bundleScript.writeContent(bundleScript.toFile().readText().replace(DOT_INIT, EMPTY_STRING))
             attention("Built bundled Lua script: $bundleScript")
         }
     }
