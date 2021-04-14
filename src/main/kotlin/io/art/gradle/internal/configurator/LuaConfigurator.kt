@@ -53,4 +53,8 @@ fun Project.configureLua() {
             attention("Built bundled Lua script: $bundleScript")
         }
     }
+    tasks.register(CLEAN) {
+        group = ART
+        doLast { delete(buildDir) }
+    }
 }
