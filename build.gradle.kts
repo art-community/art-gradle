@@ -42,9 +42,13 @@ gradlePlugin {
             id = "java-generator"
             implementationClass = "io.art.gradle.external.JavaGeneratorPlugin"
         }
-        create("art-internal") {
-            id = "art-internal"
-            implementationClass = "io.art.gradle.internal.plugin.InternalPlugin"
+        create("art-internal-jvm") {
+            id = "art-internal-jvm"
+            implementationClass = "io.art.gradle.internal.plugin.InternalJvmPlugin"
+        }
+        create("art-internal-lua") {
+            id = "art-internal-lua"
+            implementationClass = "io.art.gradle.internal.plugin.InternalLuaPlugin"
         }
         create("kotlin-generator") {
             id = "kotlin-generator"
