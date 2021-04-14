@@ -49,6 +49,7 @@ fun Project.configureLua() {
                 standardOutput = logger(project.name).output()
                 errorOutput = logger(project.name).error()
             }
+            bundleScript.writeContent(bundleScript.toFile().readText().replace(".init", ""))
             attention("Built bundled Lua script: $bundleScript")
         }
     }
