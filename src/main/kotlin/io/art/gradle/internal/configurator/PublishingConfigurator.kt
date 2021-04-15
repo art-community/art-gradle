@@ -18,6 +18,7 @@ fun Project.configurePublishing() {
         ART_JAVA -> mavenPublishing(publisherUsername, publisherPassword)
         ART_GENERATOR -> mavenPublishing(publisherUsername, publisherPassword)
         ART_KOTLIN -> mavenPublishing(publisherUsername, publisherPassword)
+        ART_EXAMPLE -> mavenPublishing(publisherUsername, publisherPassword)
     }
 }
 
