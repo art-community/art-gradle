@@ -21,24 +21,23 @@ package io.art.gradle.external
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.kotlin.dsl.get
 
 class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.afterEvaluate {
-            val compileJava: JavaCompile = tasks["compileJava"] as JavaCompile
-            val runtimeClasspath = configurations["runtimeClasspath"]
-            val compileClasspath = configurations["compileClasspath"]
-
-            configureExecutableJar()
-
-
+        target.run {
+            val classpath = configurations
+                    .filter { configuration -> configuration.isCanBeResolved }
+                    .flatMap { configuration -> configuration.files }
+            val compileJava = tasks.getAt("compileJava") as JavaCompile
             compileJava.options.compilerArgs.addAll(arrayOf(
                     "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
-                    "-Aart.generator.recompilation.classpath=${(runtimeClasspath + compileClasspath).files.joinToString(",")}",
+                    "-Aart.generator.recompilation.classpath=${classpath.joinToString(",")}",
                     "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
                     "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
             ))
+
+            configureExecutableJar()
+
         }
     }
 }
