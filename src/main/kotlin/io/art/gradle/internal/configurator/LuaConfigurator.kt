@@ -3,7 +3,6 @@ package io.art.gradle.internal.configurator
 import io.art.gradle.common.service.touch
 import io.art.gradle.common.service.writeContent
 import io.art.gradle.internal.constants.*
-import io.art.gradle.internal.logger.attention
 import io.art.gradle.internal.logger.logger
 import io.art.gradle.internal.plugin.InternalLuaPlugin
 import io.art.gradle.internal.plugin.luaPlugin
@@ -50,7 +49,6 @@ fun Project.configureLua() {
                 errorOutput = logger(project.name).error()
             }
             if (luaPlugin.extension.removeInitSuffix) bundleScript.writeContent(bundleScript.toFile().readText().replace(DOT_INIT, EMPTY_STRING))
-            attention("Built bundled Lua script: $bundleScript")
         }
     }
     tasks.register(CLEAN) {
