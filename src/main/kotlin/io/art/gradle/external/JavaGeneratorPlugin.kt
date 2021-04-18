@@ -27,12 +27,15 @@ class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.afterEvaluate {
             val compileJava: JavaCompile = tasks["compileJava"] as JavaCompile
+            val runtimeClasspath = configurations["runtimeClasspath"]
+            val compileClasspath = configurations["compileClasspath"]
 
             configureExecutableJar()
 
+
             compileJava.options.compilerArgs.addAll(arrayOf(
                     "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
-                    "-Aart.generator.recompilation.classpath=${compileJava.classpath.files.joinToString(",")}",
+                    "-Aart.generator.recompilation.classpath=${(runtimeClasspath + compileClasspath).files.joinToString(",")}",
                     "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
                     "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
             ))
