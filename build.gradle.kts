@@ -109,10 +109,7 @@ fun configurePublishing(publisherUsername: String, publisherPassword: String) = 
                 }
 
                 versionMapping {
-                    usage("java-api") {
-                        fromResolutionResult()
-                    }
-                    usage("java-runtime") {
+                    allVariants {
                         fromResolutionResult()
                     }
                 }
