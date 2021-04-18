@@ -21,20 +21,22 @@ package io.art.gradle.external
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.process.CommandLineArgumentProvider
 
 class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.run {
-            val classpath = configurations
-                    .filter { configuration -> configuration.isCanBeResolved }
-                    .flatMap { configuration -> configuration.files }
             val compileJava = tasks.getAt("compileJava") as JavaCompile
-            compileJava.options.compilerArgs.addAll(arrayOf(
-                    "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
-                    "-Aart.generator.recompilation.classpath=${classpath.joinToString(",")}",
-                    "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
-                    "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
-            ))
+            compileJava.options.compilerArgumentProviders += object : CommandLineArgumentProvider {
+                val classpath = configurations.getAt("compileClasspath") + configurations.getAt("runtimeClasspath")
+                override fun asArguments(): MutableIterable<String> = mutableListOf(
+                        "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
+                        "-Aart.generator.recompilation.classpath=${classpath.joinToString(",")}",
+                        "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
+                        "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
+                )
+
+            }
 
             configureExecutableJar()
 
