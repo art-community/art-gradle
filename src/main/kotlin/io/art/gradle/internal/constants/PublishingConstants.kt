@@ -32,11 +32,7 @@ fun Project.scm(spec: MavenPomScm) = with(spec) {
 }
 
 fun Project.versionMapping(strategy: VersionMappingStrategy) = with(strategy) {
-    usage("java-api") {
-        fromResolutionResult()
-    }
-
-    usage("java-runtime") {
+    allVariants {
         fromResolutionResult()
     }
 }
