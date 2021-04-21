@@ -23,14 +23,12 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.getByName
 
 fun Project.configureGenerate() {
-    afterEvaluate {
-        tasks.getByName<JavaCompile>("compileJava") {
-            options.compilerArgs.addAll(mutableListOf(
-                    "-Aart.generator.recompilation.destination=${destinationDir.absolutePath}",
-                    "-Aart.generator.recompilation.classpath=${classpath.files.joinToString(",")}",
-                    "-Aart.generator.recompilation.sources=${source.files.joinToString(",")}",
-                    "-Aart.generator.recompilation.generatedSourcesRoot=${options.annotationProcessorGeneratedSourcesDirectory}"
-            ))
-        }
+    tasks.getByName<JavaCompile>("compileJava") {
+        options.compilerArgs.addAll(mutableListOf(
+                "-Aart.generator.recompilation.destination=${destinationDir.absolutePath}",
+                "-Aart.generator.recompilation.classpath=${classpath.files.joinToString(",")}",
+                "-Aart.generator.recompilation.sources=${source.files.joinToString(",")}",
+                "-Aart.generator.recompilation.generatedSourcesRoot=${options.annotationProcessorGeneratedSourcesDirectory}"
+        ))
     }
 }

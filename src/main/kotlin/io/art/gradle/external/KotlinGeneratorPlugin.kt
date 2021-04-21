@@ -20,33 +20,25 @@ package io.art.gradle.external
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 class KotlinGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.run {
-            val compileKotlin: KotlinCompile = tasks["compileKotlin"] as KotlinCompile
+            val compileKotlin: KotlinCompile = tasks.getByName<KotlinCompile>("compileKotlin")
             configureExecutableJar { from(compileKotlin.outputs.files) }
             with(the<KaptExtension>()) {
-                val compileClasspath = configurations["compileClasspath"]
                 includeCompileClasspath = false
                 useBuildCache = false
                 javacOptions {
                     arguments {
-                        arg("art.generator.recompilation.destination", compileKotlin
-                                .destinationDir
-                                .absolutePath)
-                        arg("art.generator.recompilation.classpath", compileClasspath
-                                .files
-                                .toSet()
-                                .joinToString(","))
-                        arg("art.generator.recompilation.sources", compileKotlin
-                                .source
-                                .files
-                                .joinToString(","))
+                        arg("art.generator.recompilation.destination", compileKotlin.destinationDir.absolutePath)
+                        arg("art.generator.recompilation.classpath", compileKotlin.classpath.files.toSet().joinToString(","))
+                        arg("art.generator.recompilation.sources", compileKotlin.source.files.joinToString(","))
                     }
                 }
             }
