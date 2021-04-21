@@ -26,6 +26,7 @@ import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.get
 
 fun Project.configureExecutableJar(additional: Jar.() -> Unit = { }) {
+    tasks.findByPath("executable-jar")?.let { return }
     tasks.register("executable-jar", Jar::class.java) {
         val compileJava: JavaCompile = tasks["compileJava"] as JavaCompile
         val processResources: Task = tasks["processResources"]
