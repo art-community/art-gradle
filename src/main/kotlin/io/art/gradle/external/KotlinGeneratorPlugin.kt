@@ -28,7 +28,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class KotlinGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.run {
+        target.afterEvaluate {
+            dependencies.add("kapt", "io.art.generator:language-kotlin:main")
             val compileKotlin: KotlinCompile = tasks.getByName<KotlinCompile>("compileKotlin")
             configureExecutableJar { from(compileKotlin.outputs.files) }
             with(the<KaptExtension>()) {
