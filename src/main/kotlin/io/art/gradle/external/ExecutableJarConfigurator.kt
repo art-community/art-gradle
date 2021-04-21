@@ -20,14 +20,13 @@ package io.art.gradle.external
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.DuplicatesStrategy.INCLUDE
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.get
 
 fun Project.configureExecutableJar(additional: Jar.() -> Unit = { }) {
-    tasks.register("executable-java", Jar::class.java) {
+    tasks.register("executable-jar", Jar::class.java) {
         val compileJava: JavaCompile = tasks["compileJava"] as JavaCompile
         val processResources: Task = tasks["processResources"]
         val runtimeClasspath = configurations["runtimeClasspath"]

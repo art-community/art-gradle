@@ -20,40 +20,13 @@ package io.art.gradle.external
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaLibraryPlugin
-import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.get
 
 class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.run {
-            val compileJava = tasks.getAt("compileJava") as JavaCompile
-            compileJava.enabled = false
-
-            val compile = tasks.register("generated-compile", JavaCompile::class.java) {
-                val runtimeClasspath = configurations["runtimeClasspath"]
-                val compileClasspath = configurations["compileClasspath"]
-
-                group = "build"
-
-                source(compileJava.source)
-                classpath = compileJava.classpath
-                destinationDirectory.set(compileJava.destinationDirectory)
-                options.annotationProcessorPath = compileJava.options.annotationProcessorPath
-                options.compilerArgs = mutableListOf(
-                        "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
-                        "-Aart.generator.recompilation.classpath=${(runtimeClasspath + compileClasspath).files.joinToString(",")}",
-                        "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
-                        "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
-                )
-            }
-
-            configureExecutableJar()
-
-            tasks["classes"].dependsOn(compile)
-
             dependencies.add("annotationProcessor", "io.art.generator:language-java:main")
+            configureGenerate()
+            configureExecutableJar()
         }
     }
 }
