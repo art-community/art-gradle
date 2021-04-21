@@ -24,7 +24,7 @@ import org.gradle.api.Project
 class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.run {
-            dependencies.add("annotationProcessor", "io.art.generator:language-java:main")
+            afterEvaluate { dependencies.add("annotationProcessor", "io.art.generator:language-java:main") }
             configureGenerate()
             configureExecutableJar()
         }

@@ -18,33 +18,25 @@
 
 package io.art.gradle.external
 
+import org.gradle.api.Named
 import org.gradle.api.Project
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.kotlin.dsl.get
+import org.gradle.process.CommandLineArgumentProvider
 
 fun Project.configureGenerate() {
-    val compileJava = tasks.getAt("compileJava") as JavaCompile
-    compileJava.enabled = false
+    val compileJava = tasks.findByPath("compileJava") as? JavaCompile ?: return
 
-    val generate = tasks.register("generate-java", JavaCompile::class.java) {
-        val runtimeClasspath = configurations["runtimeClasspath"]
-        val compileClasspath = configurations["compileClasspath"]
+    class CompileJavaGeneratorOptionsProvider : CommandLineArgumentProvider, Named {
+        @Internal
+        override fun getName(): String = CompileJavaGeneratorOptionsProvider::class.simpleName!!
 
-        group = "build"
-
-        options.isFork = true
-        options.isIncremental = false
-        source(compileJava.source)
-        classpath = compileJava.classpath
-        destinationDirectory.set(compileJava.destinationDirectory)
-        options.annotationProcessorPath = compileJava.options.annotationProcessorPath
-        options.compilerArgs = mutableListOf(
+        override fun asArguments(): Iterable<String> = mutableListOf(
                 "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
-                "-Aart.generator.recompilation.classpath=${(runtimeClasspath + compileClasspath).files.joinToString(",")}",
+                "-Aart.generator.recompilation.classpath=${compileJava.classpath.files.joinToString(",")}",
                 "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
                 "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
         )
     }
-
-    tasks["classes"].dependsOn(generate)
+    compileJava.options.compilerArgumentProviders += CompileJavaGeneratorOptionsProvider()
 }
