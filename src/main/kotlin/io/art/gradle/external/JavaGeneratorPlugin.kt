@@ -20,7 +20,9 @@ package io.art.gradle.external
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 
 class JavaGeneratorPlugin : Plugin<Project> {
@@ -29,7 +31,7 @@ class JavaGeneratorPlugin : Plugin<Project> {
             val compileJava = tasks.getAt("compileJava") as JavaCompile
             compileJava.enabled = false
 
-            tasks.register("generated-compile", JavaCompile::class.java) {
+            val compile = tasks.register("generated-compile", JavaCompile::class.java) {
                 val runtimeClasspath = configurations["runtimeClasspath"]
                 val compileClasspath = configurations["compileClasspath"]
 
@@ -49,7 +51,9 @@ class JavaGeneratorPlugin : Plugin<Project> {
 
             configureExecutableJar()
 
-            tasks["build"].dependsOn("generated-compile")
+            tasks["classes"].dependsOn(compile)
+
+            dependencies.add("annotationProcessor", "io.art.generator:language-java:main")
         }
     }
 }
