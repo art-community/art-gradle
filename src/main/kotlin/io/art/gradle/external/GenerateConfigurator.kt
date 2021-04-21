@@ -18,25 +18,19 @@
 
 package io.art.gradle.external
 
-import org.gradle.api.Named
 import org.gradle.api.Project
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.process.CommandLineArgumentProvider
+import org.gradle.kotlin.dsl.getByName
 
 fun Project.configureGenerate() {
-    val compileJava = tasks.findByPath("compileJava") as? JavaCompile ?: return
-
-    class CompileJavaGeneratorOptionsProvider : CommandLineArgumentProvider, Named {
-        @Internal
-        override fun getName(): String = CompileJavaGeneratorOptionsProvider::class.simpleName!!
-
-        override fun asArguments(): Iterable<String> = mutableListOf(
-                "-Aart.generator.recompilation.destination=${compileJava.destinationDir.absolutePath}",
-                "-Aart.generator.recompilation.classpath=${compileJava.classpath.files.joinToString(",")}",
-                "-Aart.generator.recompilation.sources=${compileJava.source.files.joinToString(",")}",
-                "-Aart.generator.recompilation.generatedSourcesRoot=${compileJava.options.annotationProcessorGeneratedSourcesDirectory}"
-        )
+    afterEvaluate {
+        tasks.getByName<JavaCompile>("compileJava") {
+            options.compilerArgs.addAll(mutableListOf(
+                    "-Aart.generator.recompilation.destination=${destinationDir.absolutePath}",
+                    "-Aart.generator.recompilation.classpath=${classpath.files.joinToString(",")}",
+                    "-Aart.generator.recompilation.sources=${source.files.joinToString(",")}",
+                    "-Aart.generator.recompilation.generatedSourcesRoot=${options.annotationProcessorGeneratedSourcesDirectory}"
+            ))
+        }
     }
-    compileJava.options.compilerArgumentProviders += CompileJavaGeneratorOptionsProvider()
 }
