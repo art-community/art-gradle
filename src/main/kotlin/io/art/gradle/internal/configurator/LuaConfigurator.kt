@@ -13,14 +13,13 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 import java.io.File.separator
 
 fun Project.configureLua() {
+    val logger = logger(project.name)
     val sourcesDirectory = projectDir.resolve(LUA_SOURCE_SET)
     val destinationDirectory = buildDir.resolve(DESTINATION)
+
     pluginManager.apply(IdeaPlugin::class.java)
-    with(the<IdeaModel>()) {
-        module {
-            sourceDirs.add(sourcesDirectory)
-        }
-    }
+    with(the<IdeaModel>()) { module { sourceDirs.add(sourcesDirectory) } }
+
     tasks.register(BUILD) {
         group = ART
         doLast {
@@ -29,7 +28,7 @@ fun Project.configureLua() {
                     .filter { file -> file.isFile && file.extension == LUA }
                     .map { file -> sourcesDirectory.toPath().relativize(file.toPath()).toString().removeSuffix(DOT_LUA).replace(separator, DOT) }
                     .toList()
-            val bundler = InternalLuaPlugin::class.java.classLoader.getResourceAsStream(BUNDLER_RELATIVE_PATH)
+            val amalg = InternalLuaPlugin::class.java.classLoader.getResourceAsStream(AMALG_RELATIVE_PATH)
                     ?.bufferedReader()
                     ?.readText()
                     ?: return@doLast
@@ -38,19 +37,23 @@ fun Project.configureLua() {
                 into(temporaryDir)
                 from(sourcesDirectory)
             }
-            val bundleScript = destinationDirectory.toPath().touch().resolve("${project.name}$DOT_LUA")
+            val builtScript = destinationDirectory.toPath().touch().resolve("${project.name}$DOT_LUA")
             exec {
                 commandLine(luaPlugin.extension.executable)
-                val bundlerScript = temporaryDir.resolve(BUNDLER_NAME).toPath().writeContent(bundler).toAbsolutePath().toString()
-                args(bundlerScript, "-o", bundleScript)
+                args(temporaryDir.resolve(ALAMG_LUA).toPath().writeContent(amalg).toAbsolutePath().toString())
+                args("-o", builtScript)
                 args(sourcesString)
                 workingDir(temporaryDir)
-                standardOutput = logger(project.name).output()
-                errorOutput = logger(project.name).error()
+                standardOutput = logger.output()
+                errorOutput = logger.error()
             }
-            if (luaPlugin.extension.removeInitSuffix) bundleScript.writeContent(bundleScript.toFile().readText().replace(DOT_INIT, EMPTY_STRING))
+            if (luaPlugin.extension.removeInitSuffix) {
+                builtScript.writeContent(builtScript.toFile().readText().replace(DOT_INIT, EMPTY_STRING))
+            }
+            delete(temporaryDir)
         }
     }
+
     tasks.register(CLEAN) {
         group = ART
         doLast { delete(buildDir) }
