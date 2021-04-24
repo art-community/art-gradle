@@ -18,7 +18,6 @@
 
 package io.art.gradle.external
 
-import org.gradle.api.JavaVersion
 import org.gradle.api.JavaVersion.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -27,7 +26,10 @@ class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.runCatching {
             afterEvaluate {
-                dependencies.add("annotationProcessor", "io.art.generator:language-java-${current()}:main")
+                when {
+                    current().isJava11Compatible -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_11:main")
+                    else -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_1_8:main")
+                }
                 configureGenerate()
                 configureExecutableJar()
             }
