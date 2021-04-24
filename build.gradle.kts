@@ -50,8 +50,8 @@ gradlePlugin {
             id = "art-internal-lua"
             implementationClass = "io.art.gradle.internal.plugin.InternalLuaPlugin"
         }
-        create("kotlin-generator") {
-            id = "kotlin-generator"
+        create("art-kotlin-generator") {
+            id = "art-kotlin-generator"
             implementationClass = "io.art.gradle.external.KotlinGeneratorPlugin"
         }
     }
