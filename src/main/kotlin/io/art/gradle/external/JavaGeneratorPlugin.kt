@@ -26,11 +26,7 @@ class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.runCatching {
             afterEvaluate {
-                when {
-                    current().isJava11Compatible -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_11:main")
-                    else -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_1_8:main")
-                }
-                configureGenerate()
+                configureGenerator()
                 configureExecutableJar()
             }
         }.onFailure { error -> target.logger.error(error.message, error) }

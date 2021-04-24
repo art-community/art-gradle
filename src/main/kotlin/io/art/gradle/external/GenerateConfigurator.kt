@@ -18,12 +18,16 @@
 
 package io.art.gradle.external
 
-import org.gradle.api.JavaVersion
+import org.gradle.api.JavaVersion.*
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.getByName
 
-fun Project.configureGenerate() {
+fun Project.configureGenerator() {
+    when {
+        current().isJava11Compatible -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_11:main")
+        else -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_1_8:main")
+    }
     tasks.getByName<JavaCompile>("compileJava") {
         with(options) {
             compilerArgs.addAll(mutableListOf(
@@ -32,7 +36,7 @@ fun Project.configureGenerate() {
                     "-Aart.generator.recompilation.sources=${source.files.joinToString(",")}",
                     "-Aart.generator.recompilation.generatedSourcesRoot=${options.annotationProcessorGeneratedSourcesDirectory}"
             ))
-            if (!JavaVersion.current().isJava8) {
+            if (!current().isJava8) {
                 compilerArgs.addAll(arrayOf(
                         "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
                         "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
