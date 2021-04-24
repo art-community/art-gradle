@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-package io.art.gradle.internal.logger
+package io.art.gradle.common.logger
 
-import io.art.gradle.internal.constants.LOG_TEMPLATE
-import io.art.gradle.internal.logger.LogMessageColor.*
+import io.art.gradle.common.constants.LOG_TEMPLATE
+import io.art.gradle.common.logger.LogMessageColor.*
 import org.gradle.api.Project
-
 
 const val ANSI_RESET = "\u001B[0m"
 
@@ -46,7 +45,7 @@ enum class LogMessageColor(val code: String) {
 
 fun message(message: String, color: LogMessageColor) = "${color.code}$message$ANSI_RESET"
 
-fun Project.logger(context: String) = ContextualLogger(context, this)
+fun Project.logger(context: String) = ContextLogger(context, this)
 
 fun Project.quiet(message: String, context: String = project.name, color: LogMessageColor = BLACK) {
     logger.quiet("${color.code}${LOG_TEMPLATE(context, message)}$ANSI_RESET")

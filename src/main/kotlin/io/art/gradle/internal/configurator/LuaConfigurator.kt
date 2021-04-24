@@ -1,9 +1,10 @@
 package io.art.gradle.internal.configurator
 
+import io.art.gradle.common.constants.EMPTY_STRING
+import io.art.gradle.common.logger.logger
 import io.art.gradle.common.service.touch
 import io.art.gradle.common.service.writeContent
 import io.art.gradle.internal.constants.*
-import io.art.gradle.internal.logger.logger
 import io.art.gradle.internal.plugin.InternalLuaPlugin
 import io.art.gradle.internal.plugin.luaPlugin
 import org.gradle.api.Project
@@ -40,7 +41,7 @@ fun Project.configureLua() {
             val builtScript = destinationDirectory.toPath().touch().resolve("${project.name}$DOT_LUA")
             exec {
                 commandLine(luaPlugin.extension.executable)
-                args(temporaryDir.resolve(ALAMG_LUA).toPath().writeContent(amalg).toAbsolutePath().toString())
+                args(temporaryDir.resolve(AMALG_LUA).toPath().writeContent(amalg).toAbsolutePath().toString())
                 args("-o", builtScript)
                 args(sourcesString)
                 workingDir(temporaryDir)
