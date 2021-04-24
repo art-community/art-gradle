@@ -23,12 +23,12 @@ import org.gradle.api.Project
 
 class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.run {
+        target.runCatching {
             afterEvaluate {
                 dependencies.add("annotationProcessor", "io.art.generator:language-java:main")
                 configureGenerate()
                 configureExecutableJar()
             }
-        }
+        }.onFailure { error -> target.logger.error(error.message, error) }
     }
 }
