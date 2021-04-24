@@ -38,8 +38,8 @@ repositories {
 gradlePlugin {
     isAutomatedPublishing = false
     plugins {
-        create("java-generator") {
-            id = "java-generator"
+        create("art-java-generator") {
+            id = "art-java-generator"
             implementationClass = "io.art.gradle.external.JavaGeneratorPlugin"
         }
         create("art-internal-jvm") {
