@@ -41,7 +41,7 @@ private fun Project.mavenPublishing(publisherUsername: String, publisherPassword
                         withoutBuildIdentifier()
                         artifactId = project.name
                         groupId = rootProject.group as String
-                        version = project.version as String
+                        version = rootProject.version as String
                         from(project.components[JAVA])
                         pom {
                             name.set(project.name)
