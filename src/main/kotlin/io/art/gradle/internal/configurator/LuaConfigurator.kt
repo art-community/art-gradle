@@ -22,7 +22,7 @@ fun Project.configureLua() {
     with(the<IdeaModel>()) { module { sourceDirs.add(sourcesDirectory) } }
 
     tasks.register(BUILD) {
-        group = ART
+        group = BUILD
         doLast {
             val sourcesString = sourcesDirectory
                     .walkTopDown()
@@ -56,7 +56,7 @@ fun Project.configureLua() {
     }
 
     tasks.register(CLEAN) {
-        group = ART
+        group = BUILD
         doLast { delete(buildDir) }
     }
 }
