@@ -10,5 +10,5 @@ fun Project.resolveVersion(): String = when {
             && version != DEFAULT_VERSION
             && version.toString().trim() != EMPTY_STRING
     -> version.toString()
-    else -> branch ?: DEFAULT_VERSION
+    else -> branch ?: rootProject.branch ?: DEFAULT_VERSION
 }
