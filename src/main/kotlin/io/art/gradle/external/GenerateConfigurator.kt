@@ -26,7 +26,6 @@ import org.gradle.kotlin.dsl.getByName
 fun Project.configureGenerate() {
     tasks.getByName<JavaCompile>("compileJava") {
         with(options) {
-            isFork = true
             compilerArgs.addAll(mutableListOf(
                     "-Aart.generator.recompilation.destination=${destinationDir.absolutePath}",
                     "-Aart.generator.recompilation.classpath=${classpath.files.joinToString(",")}",
