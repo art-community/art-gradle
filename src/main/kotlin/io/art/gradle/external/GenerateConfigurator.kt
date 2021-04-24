@@ -18,9 +18,11 @@
 
 package io.art.gradle.external
 
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.getByName
+import org.gradle.kotlin.dsl.withType
 
 fun Project.configureGenerate() {
     tasks.getByName<JavaCompile>("compileJava") {
@@ -30,5 +32,17 @@ fun Project.configureGenerate() {
                 "-Aart.generator.recompilation.sources=${source.files.joinToString(",")}",
                 "-Aart.generator.recompilation.generatedSourcesRoot=${options.annotationProcessorGeneratedSourcesDirectory}"
         ))
+        if (!JavaVersion.current().isJava8) {
+            options.compilerArgs.addAll(arrayOf(
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+                    "--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED"
+            ))
+        }
     }
 }
