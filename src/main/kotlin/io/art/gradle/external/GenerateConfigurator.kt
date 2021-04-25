@@ -20,6 +20,7 @@ package io.art.gradle.external
 
 import org.gradle.api.JavaVersion.*
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.getByName
 
@@ -29,11 +30,13 @@ fun Project.configureGenerator() {
         else -> dependencies.add("annotationProcessor", "io.art.generator:language-java-$VERSION_1_8:main")
     }
     tasks.getByName<JavaCompile>("compileJava") {
+        val sourceSet = with(project.convention.getPlugin(JavaPluginConvention::class.java)) { this.sourceSets }
         with(options) {
             compilerArgs.addAll(mutableListOf(
                     "-Aart.generator.recompilation.destination=${destinationDir.absolutePath}",
                     "-Aart.generator.recompilation.classpath=${classpath.files.joinToString(",")}",
                     "-Aart.generator.recompilation.sources=${source.files.joinToString(",")}",
+                    "-Aart.generator.recompilation.sourcesRoot=${sourceSet.getByName("main").java.srcDirs.first()}",
                     "-Aart.generator.recompilation.generatedSourcesRoot=${options.annotationProcessorGeneratedSourcesDirectory}"
             ))
             if (!current().isJava8) {
