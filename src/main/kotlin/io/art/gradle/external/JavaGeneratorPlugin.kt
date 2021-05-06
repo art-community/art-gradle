@@ -20,14 +20,21 @@ package io.art.gradle.external
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
 
 class JavaGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.runCatching {
+            extensions.create<JavaGeneratorExtension>("art")
             afterEvaluate {
                 configureGenerator()
                 configureExecutableJar()
             }
         }.onFailure { error -> target.logger.error(error.message, error) }
     }
+}
+
+
+open class JavaGeneratorExtension {
+
 }
