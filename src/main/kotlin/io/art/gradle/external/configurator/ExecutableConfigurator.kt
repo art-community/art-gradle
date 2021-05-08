@@ -29,6 +29,8 @@ import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
+import org.gradle.kotlin.dsl.creating
+import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.support.unzipTo
 import java.lang.Boolean.TRUE
 import java.nio.file.Paths
@@ -40,7 +42,7 @@ fun Project.configureExecutable() {
 
 fun Project.addEmbeddedConfiguration() {
     val implementation: Configuration = configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME) ?: return
-    val embedded = configurations.maybeCreate(EMBEDDED_CONFIGURATION_NAME)
+    val embedded: Configuration by configurations.creating { implementation.extendsFrom(this) }
     if (!implementation.extendsFrom.contains(embedded)) {
         implementation.extendsFrom(embedded)
     }
@@ -163,11 +165,11 @@ private fun Project.configureNative() {
                             """-H:JNIConfigurationFiles=${graalPath.resolve("configuration").resolve("jni-config.json").toAbsolutePath()}""",
                             """-H:ReflectionConfigurationFiles=${graalPath.resolve("configuration").resolve("reflect-config.json").toAbsolutePath()}""",
                             """-H:ResourceConfigurationFiles=${graalPath.resolve("configuration").resolve("resource-config.json").toAbsolutePath()}""",
-                    ) + GRAAL_MANDATORY_OPTIONS + native.graalAddtionalOptions
+                    ) + GRAAL_MANDATORY_OPTIONS + native.graalAdditionalOptions
 
                     val windowsPath = Paths.get("D:/Development/Microsoft Visual Studio/VC/Auxiliary/Build/vcvars64.bat")
                     graalPath.resolve("native-build-windows.ps1").apply {
-                        toFile().writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(windowsPath, options))
+                        toFile().writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, windowsPath, options))
                         commandLine("powershell", toFile().absolutePath)
                     }
                 }
@@ -178,12 +180,20 @@ private fun Project.configureNative() {
         tasks.findByPath(RUN_EXECUTABLE_NATIVE_TASK)?.let { return }
 
         tasks.register(RUN_EXECUTABLE_NATIVE_TASK, Exec::class.java) {
-            dependsOn(buildNative)
             group = ART
-            commandLine(directory.resolve(executableName))
             when {
-                OperatingSystem.current().isWindows -> args(directory.resolve("$executableName.exe"))
-                else -> args(directory.resolve(executableName))
+                OperatingSystem.current().isWindows -> {
+                    if (!directory.resolve("$executableName.exe").toFile().exists()) {
+                        dependsOn(buildNative)
+                    }
+                    commandLine(directory.resolve("$executableName.exe").toFile())
+                }
+                else -> {
+                    if (!directory.resolve(executableName).toFile().exists()) {
+                        dependsOn(buildNative)
+                    }
+                    commandLine(directory.resolve(executableName).toFile())
+                }
             }
         }
     }

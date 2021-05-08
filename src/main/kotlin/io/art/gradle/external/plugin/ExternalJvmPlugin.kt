@@ -43,8 +43,6 @@ class ExternalJvmPlugin : Plugin<Project> {
         extension = target.extensions.create(ART)
         target.runCatching {
             addEmbeddedConfiguration()
-            beforeEvaluate {
-            }
             afterEvaluate {
                 configureModules()
                 configureExecutable()

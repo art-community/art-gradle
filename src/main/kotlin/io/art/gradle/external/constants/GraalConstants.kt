@@ -77,9 +77,14 @@ var GRAAL_MANDATORY_OPTIONS = listOf(
 )
 
 
-val GRAAL_WINDOWS_LAUNCH_SCRIPT = { visualStudioVarsPath: Path, graalOptions: List<String> ->
+val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath: Path, graalOptions: List<String> ->
     """
-            cmd.exe /c "call `"${visualStudioVarsPath.toFile().absolutePath}`" && set > %temp%\vcvars.txt"
-            Get-Content "${DOLLAR}env:temp\vcvars.txt" | Foreach-Object { if (${DOLLAR}_-match "^(.*?)=(.*)${DOLLAR}") { Set-Content "env:\${DOLLAR}(${DOLLAR}matches[1])"${DOLLAR}matches[2] } }; . ${graalOptions.joinToString(" ")} 
+            cmd.exe /c "call `"${visualStudioVarsPath.toFile().absolutePath}`" && set > ${workingDirectory.resolve("vcvars.environment").toAbsolutePath()}"
+            Get-Content "${workingDirectory.resolve("vcvars.environment").toAbsolutePath()}" | Foreach-Object { 
+                if (${DOLLAR}_-match "^(.*?)=(.*)${DOLLAR}") { 
+                    Set-Content "env:\${DOLLAR}(${DOLLAR}matches[1])"${DOLLAR}matches[2] 
+                } 
+            }
+            . ${graalOptions.joinToString(" ")} 
     """.trimIndent()
 }

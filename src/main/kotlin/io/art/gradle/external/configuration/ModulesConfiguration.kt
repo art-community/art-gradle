@@ -39,11 +39,11 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
     var version = MAIN.version
         private set
 
-    fun use(action: Action<in ModuleDependenciesConfiguration>) {
+    fun used(action: Action<in ModuleDependenciesConfiguration>) {
         modules.named(IMPLEMENTATION_CONFIGURATION_NAME, action)
     }
 
-    fun embed(action: Action<in ModuleDependenciesConfiguration>) {
+    fun embedded(action: Action<in ModuleDependenciesConfiguration>) {
         modules.named(EMBEDDED_CONFIGURATION_NAME, action)
     }
 

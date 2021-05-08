@@ -148,6 +148,6 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         var graalDirectory: Path? = null
             private set
 
-        val graalAddtionalOptions: MutableList<String> = mutableListOf()
+        val graalAdditionalOptions: MutableList<String> = mutableListOf()
     }
 }
