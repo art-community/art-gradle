@@ -18,15 +18,20 @@
 
 package io.art.gradle.external.configuration
 
-import io.art.gradle.external.constants.EXECUTABLE
-import io.art.gradle.external.constants.MANIFEST_EXCLUSIONS
+import io.art.gradle.external.constants.*
+import io.art.gradle.external.constants.GraalArchitectureName.AMD
+import io.art.gradle.external.constants.GraalArchitectureName.ARM
+import io.art.gradle.external.constants.ProcessorArchitectures.AARCH64
+import io.art.gradle.external.constants.ProcessorArchitectures.X86_64
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Action
+import org.gradle.api.GradleException
 import org.gradle.api.JavaVersion.VERSION_1_9
 import org.gradle.api.JavaVersion.current
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.DuplicatesStrategy.EXCLUDE
 import org.gradle.api.model.ObjectFactory
+import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.process.JavaExecSpec
@@ -36,7 +41,7 @@ import javax.inject.Inject
 open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFactory) {
     var mainClass: String? = null
         private set
-    var name: String = externalPlugin.project.name
+    var executableName: String = externalPlugin.project.name
         private set
     var directory: Path = externalPlugin.project.buildDir.resolve(EXECUTABLE).toPath()
         private set
@@ -54,7 +59,7 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
 
 
     fun name(name: String) {
-        this.name = name
+        this.executableName = name
     }
 
     fun directory(directory: Path) {
@@ -116,5 +121,33 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
     }
 
     open class NativeExecutableConfiguration {
+        var graalVersion: GraalVersion = GraalVersion.LATEST
+            private set
+
+        var graalJavaVersion: GraalJavaVersion = when {
+            current().isCompatibleWith(VERSION_1_9) -> GraalJavaVersion.JAVA_11
+            else -> GraalJavaVersion.JAVA_8
+        }
+
+        var graalPlatform: GraalPlatformName = when {
+            OperatingSystem.current().isWindows -> GraalPlatformName.WINDOWS
+            OperatingSystem.current().isLinux -> GraalPlatformName.LINUX
+            OperatingSystem.current().isMacOsX -> GraalPlatformName.DARWIN
+            else -> throw GradleException("Unsupported GraalVM OS: ${OperatingSystem.current()}")
+        }
+
+        var graalArchitecture: GraalArchitectureName = when {
+            X86_64.architecture.names().any(System.getProperty(OS_ARCH_PROPERTY)::contains) -> AMD
+            AARCH64.architecture.names().any(System.getProperty(OS_ARCH_PROPERTY)::contains) -> ARM
+            else -> throw GradleException("Unsupported GraalVM architecture: ${System.getProperty(OS_ARCH_PROPERTY)}")
+        }
+
+        var graalExecutable: Path? = null
+            private set
+
+        var graalDirectory: Path? = null
+            private set
+
+        val graalAddtionalOptions: MutableList<String> = mutableListOf()
     }
 }

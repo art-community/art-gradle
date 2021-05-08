@@ -50,8 +50,9 @@ fun Project.configureModules() {
                     }
                 }
             }
+
             if (externalPlugin.extension.executable.nativeEnabled) {
-                add(EMBEDDED_CONFIGURATION_NAME, "$JAVA_GROUP:$GRAAL_JAVA_MODULE:$version")
+                add(EMBEDDED_CONFIGURATION_NAME, "$JAVA_GROUP:$GRAAL:$version")
             }
         }
     }

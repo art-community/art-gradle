@@ -24,12 +24,14 @@ import io.art.gradle.external.constants.IMPLEMENTATION_CONFIGURATION_NAME
 import io.art.gradle.external.constants.JAVA_MODULES
 import org.gradle.api.Action
 import org.gradle.api.Named
+import org.gradle.api.NamedDomainObjectSet
 import org.gradle.api.model.ObjectFactory
+import org.gradle.kotlin.dsl.namedDomainObjectSet
 import org.gradle.kotlin.dsl.newInstance
 import javax.inject.Inject
 
 open class ModulesConfiguration @Inject constructor(private val objectFactory: ObjectFactory) {
-    val modules = objectFactory.namedDomainObjectSet(ModuleDependenciesConfiguration::class.java).apply {
+    val modules: NamedDomainObjectSet<ModuleDependenciesConfiguration> = objectFactory.namedDomainObjectSet(ModuleDependenciesConfiguration::class).apply {
         add(objectFactory.newInstance(IMPLEMENTATION_CONFIGURATION_NAME))
         add(objectFactory.newInstance(EMBEDDED_CONFIGURATION_NAME))
     }
