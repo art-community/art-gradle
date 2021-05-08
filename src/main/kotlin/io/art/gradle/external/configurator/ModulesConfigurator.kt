@@ -19,10 +19,7 @@
 package io.art.gradle.external.configurator
 
 import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
-import io.art.gradle.external.constants.GRAAL_JAVA_MODULE
-import io.art.gradle.external.constants.JAVA_GROUP
-import io.art.gradle.external.constants.KOTLIN_GROUP
-import io.art.gradle.external.constants.KOTLIN_JVM_PLUGIN
+import io.art.gradle.external.constants.*
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
@@ -32,7 +29,7 @@ import org.gradle.kotlin.dsl.repositories
 
 fun Project.configureModules() {
     with(externalPlugin.extension.modules) {
-        configuration ?: return
+        if (modules.isEmpty()) return
 
         repositories {
             maven {
@@ -41,21 +38,20 @@ fun Project.configureModules() {
         }
 
         dependencies {
-            if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java)) {
-                javaModules.forEach { module ->
-                    add(configuration!!.name, "$JAVA_GROUP:$module:$version")
+            this@with.modules.asMap.forEach { module ->
+                if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java)) {
+                    module.value.java.modules.forEach { name ->
+                        add(module.key, "$JAVA_GROUP:${name}:$version")
+                    }
+                }
+                if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
+                    module.value.kotlin.modules.forEach { name ->
+                        add(module.key, "$KOTLIN_GROUP:${name}:$version")
+                    }
                 }
             }
-
-            if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN)) {
-                kotlinModules.forEach { module ->
-                    add(configuration!!.name, "$KOTLIN_GROUP:$module:$version")
-                }
-            }
-            externalPlugin.extension.executable.mainClass ?: return@dependencies
-
             if (externalPlugin.extension.executable.nativeEnabled) {
-                add(configuration!!.name, "$JAVA_GROUP:$GRAAL_JAVA_MODULE:$version")
+                add(EMBEDDED_CONFIGURATION_NAME, "$JAVA_GROUP:$GRAAL_JAVA_MODULE:$version")
             }
         }
     }

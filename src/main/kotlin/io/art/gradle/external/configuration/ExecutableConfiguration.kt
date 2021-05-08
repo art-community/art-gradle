@@ -78,8 +78,6 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
     open class JarExecutableConfiguration @Inject constructor() {
         var classedDuplicateStrategy: DuplicatesStrategy = EXCLUDE
             private set
-        var mainClass: String? = null
-            private set
         var multiRelease = current().isCompatibleWith(VERSION_1_9)
             private set
         var runConfigurator: JavaExecSpec.() -> Unit = {}

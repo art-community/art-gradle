@@ -19,6 +19,7 @@
 package io.art.gradle.external.plugin
 
 import io.art.gradle.common.constants.ART
+import io.art.gradle.external.configurator.addEmbeddedConfiguration
 import io.art.gradle.external.configurator.configureExecutable
 import io.art.gradle.external.configurator.configureGenerator
 import io.art.gradle.external.configurator.configureModules
@@ -41,6 +42,7 @@ class ExternalJvmPlugin : Plugin<Project> {
         project = target
         extension = target.extensions.create(ART)
         target.runCatching {
+            addEmbeddedConfiguration()
             afterEvaluate {
                 configureModules()
                 configureExecutable()

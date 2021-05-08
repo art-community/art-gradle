@@ -30,11 +30,10 @@ import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
 
 fun Project.configureExecutable() {
-    configureEmbeddedDependencies()
     configureJar()
 }
 
-private fun Project.configureEmbeddedDependencies() {
+fun Project.addEmbeddedConfiguration() {
     val implementation: Configuration = configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME) ?: return
     val embedded = configurations.maybeCreate(EMBEDDED_CONFIGURATION_NAME)
     if (!implementation.extendsFrom.contains(embedded)) {

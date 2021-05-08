@@ -79,4 +79,4 @@ val KOTLIN_MODULES = setOf<String>()
 
 const val GRAAL_JAVA_MODULE = "graal"
 
-const val KOTLIN_JVM_PLUGIN = "org.jetbrains.kotlin.jvm"
+const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
