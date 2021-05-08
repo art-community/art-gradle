@@ -31,53 +31,8 @@
     ]
   },
   {
-    "name": "sun.management.DiagnosticCommandArgumentInfo",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "java.lang.String",
-          "java.lang.String",
-          "java.lang.String",
-          "java.lang.String",
-          "boolean",
-          "boolean",
-          "boolean",
-          "int"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "sun.management.DiagnosticCommandArgumentInfo[]"
-  },
-  {
-    "name": "sun.management.DiagnosticCommandInfo",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "java.lang.String",
-          "java.lang.String",
-          "java.lang.String",
-          "java.lang.String",
-          "java.lang.String",
-          "java.lang.String",
-          "boolean",
-          "java.util.List"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "sun.management.DiagnosticCommandInfo[]"
-  },
-  {
     "name": "sun.management.VMManagementImpl",
     "fields": [
-      {
-        "name": "bootClassPathSupport"
-      },
       {
         "name": "compTimeMonitoringSupport"
       },

@@ -873,10 +873,6 @@
     "name": "javax.management.openmbean.TabularData"
   },
   {
-    "name": "jdk.Exported",
-    "allPublicMethods": true
-  },
-  {
     "name": "jdk.management.jfr.ConfigurationInfo",
     "allPublicMethods": true
   },
@@ -1602,16 +1598,8 @@
     "allPublicConstructors": true
   },
   {
-    "name": "sun.management.HotSpotDiagnostic",
-    "allPublicConstructors": true
-  },
-  {
     "name": "sun.management.ManagementFactoryHelper$1",
     "allPublicConstructors": true
-  },
-  {
-    "name": "sun.management.ManagementFactoryHelper$LoggingMXBean",
-    "allPublicMethods": true
   },
   {
     "name": "sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
@@ -1630,25 +1618,12 @@
     "allPublicConstructors": true
   },
   {
-    "name": "sun.management.OperatingSystemImpl",
-    "allPublicConstructors": true
-  },
-  {
     "name": "sun.management.RuntimeImpl",
     "allPublicConstructors": true
   },
   {
     "name": "sun.management.ThreadImpl",
     "allPublicConstructors": true
-  },
-  {
-    "name": "sun.misc.Cleaner",
-    "methods": [
-      {
-        "name": "clean",
-        "parameterTypes": []
-      }
-    ]
   },
   {
     "name": "sun.misc.Unsafe",
@@ -1682,26 +1657,6 @@
           "java.lang.Object",
           "long",
           "java.lang.Object"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "sun.misc.VM",
-    "methods": [
-      {
-        "name": "maxDirectMemory",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "sun.reflect.Reflection",
-    "methods": [
-      {
-        "name": "getCallerClass",
-        "parameterTypes": [
-          "int"
         ]
       }
     ]
