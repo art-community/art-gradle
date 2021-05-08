@@ -1,7 +1,7 @@
 package io.art.gradle.internal.service
 
+import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
 import io.art.gradle.internal.constants.MAIN_BRANCH
-import io.art.gradle.internal.constants.STABLE_MAVEN_REPOSITORY
 import io.art.gradle.internal.constants.UNSTABLE_MAVEN_REPOSITORY
 import org.eclipse.jgit.api.Git
 import org.gradle.api.Project

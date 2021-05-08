@@ -38,9 +38,9 @@ repositories {
 gradlePlugin {
     isAutomatedPublishing = false
     plugins {
-        create("art-java-generator") {
-            id = "art-java-generator"
-            implementationClass = "io.art.gradle.external.JavaGeneratorPlugin"
+        create("art-jvm") {
+            id = "art-jvm"
+            implementationClass = "io.art.gradle.external.plugin.ExternalJvmPlugin"
         }
         create("art-internal-jvm") {
             id = "art-internal-jvm"
@@ -50,15 +50,10 @@ gradlePlugin {
             id = "art-internal-lua"
             implementationClass = "io.art.gradle.internal.plugin.InternalLuaPlugin"
         }
-        create("art-kotlin-generator") {
-            id = "art-kotlin-generator"
-            implementationClass = "io.art.gradle.external.KotlinGeneratorPlugin"
-        }
     }
 }
 
 dependencies {
-    implementation(kotlin("gradle-plugin"))
     implementation("org.eclipse.jgit:org.eclipse.jgit:+")
 }
 

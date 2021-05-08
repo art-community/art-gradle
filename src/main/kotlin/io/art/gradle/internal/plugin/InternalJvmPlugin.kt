@@ -11,8 +11,6 @@ class InternalJvmPlugin : Plugin<Project> {
         target.runCatching {
             configureRepositories()
             configurePublishing()
-        }.onFailure { error ->
-            target.error(error)
-        }
+        }.onFailure(target::error)
     }
 }

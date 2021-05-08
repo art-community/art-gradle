@@ -42,7 +42,7 @@ fun Project.configureLua() {
             exec {
                 commandLine(luaPlugin.extension.executable)
                 args(temporaryDir.resolve(AMALG_LUA).toPath().writeContent(amalg).toAbsolutePath().toString())
-                args("-o", builtScript)
+                args(LUA_OUTPUT_FLAG, builtScript)
                 args(sourcesString)
                 workingDir(temporaryDir)
                 standardOutput = logger.output()
