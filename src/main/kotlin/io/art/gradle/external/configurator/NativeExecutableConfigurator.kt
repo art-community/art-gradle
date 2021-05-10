@@ -101,17 +101,22 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
         classpath(jarTask.outputs.files)
         workingDir(directory.toFile())
 
-        var agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION=" + when (native.agentConfiguration.outputMode) {
-            OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(directory.resolve(outputPath))
-            MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(directory.resolve(outputPath))
+        native.agentConfiguration.apply {
+            val agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION="
+            val options = mutableListOf<String>()
+            options += when (outputMode) {
+                OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(directory.resolve(outputPath))
+                MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(directory.resolve(outputPath))
+            }
+
+            configurationWritePeriod?.let { period -> options += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
+            configurationWriteInitialDelay?.let { delay -> options += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
+            agentOptions.forEach { option -> options += ",$option" }
+
+            jvmArgs = listOf(agentArgument + agentOptionsReplacer(agentOptions).joinToString(" "))
+
+            runConfigurator(this@register)
         }
-
-        native.agentConfiguration.configurationWritePeriod?.let { period -> agentArgument += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
-        native.agentConfiguration.configurationWriteInitialDelay?.let { delay -> agentArgument += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
-
-        jvmArgs = listOf(agentArgument)
-
-        native.agentConfiguration.runConfigurator(this)
     }
 }
 

@@ -160,6 +160,12 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         var configurationWriteInitialDelay: Duration? = null
             private set
 
+        var agentOptions = mutableListOf<String>()
+            private set
+
+        var agentOptionsReplacer: (current: List<String>) -> List<String> = { it }
+            private set
+
         var runConfigurator: JavaExec.() -> Unit = {}
             private set
 
@@ -183,6 +189,14 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
         fun executableClass(name: String) {
             executableClass = name
+        }
+
+        fun replaceAgentOptions(options: (current: List<String>) -> List<String>) {
+            agentOptionsReplacer = options
+        }
+
+        fun addAgentOptions(vararg options: String) {
+            this.agentOptions.addAll(options)
         }
 
         fun configureRun(configurator: JavaExec.() -> Unit) {
