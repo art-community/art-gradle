@@ -159,7 +159,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
         }
 
         if (!graalDirectory.exists()) {
-            graalDirectory.mkdir()
+            graalDirectory.mkdirs()
         }
 
         if (!archiveFile.exists()) {
