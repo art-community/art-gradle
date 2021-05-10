@@ -29,6 +29,7 @@ import org.gradle.api.tasks.Exec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.support.unzipTo
 import java.io.File
+import java.nio.file.Paths
 
 fun Project.configureNative() {
     with(externalPlugin.extension.executable) {
@@ -140,7 +141,9 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
                 GRAAL_RESOURCE_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_RESOURCE_CONFIGURATION))
         ) + native.graalOptions
 
-        val scriptPath = native.graalWindowsVcVarsPath ?: throw graalWindowsVSVarsPathIsEmpty()
+        val scriptPath = native.graalWindowsVcVarsPath
+                ?: project.property(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
+                ?: throw graalWindowsVSVarsPathIsEmpty()
 
         writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, options))
 

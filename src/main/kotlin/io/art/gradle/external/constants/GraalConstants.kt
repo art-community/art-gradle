@@ -85,6 +85,8 @@ val GRAAL_JNI_CONFIGURATION_OPTION = { path: Path -> "-H:JNIConfigurationFiles=$
 val GRAAL_REFLECTION_CONFIGURATION_OPTION = { path: Path -> "-H:ReflectionConfigurationFiles=${path.toAbsolutePath()}" }
 val GRAAL_RESOURCE_CONFIGURATION_OPTION = { path: Path -> "-H:ResourceConfigurationFiles=${path.toAbsolutePath()}" }
 
+const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY = "windowsVisualStudioVarsScript"
+
 val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath: Path, graalOptions: List<String> ->
     """
             cmd.exe /c "call `"${visualStudioVarsPath.toFile().absolutePath}`" && set > ${workingDirectory.resolve("vcvars.environment").toAbsolutePath()}"
