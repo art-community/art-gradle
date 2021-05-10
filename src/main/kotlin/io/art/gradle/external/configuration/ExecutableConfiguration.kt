@@ -30,9 +30,11 @@ import org.gradle.api.JavaVersion.current
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.DuplicatesStrategy.EXCLUDE
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.tasks.Exec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.newInstance
+import org.gradle.process.ExecSpec
 import org.gradle.process.JavaExecSpec
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -90,9 +92,11 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         var buildConfigurator: Jar.() -> Unit = {}
             private set
 
-        val manifestAdditionalAttributes = mutableMapOf<String, String>()
+        var manifestAdditionalAttributes = mutableMapOf<String, String>()
+            private set
 
-        val exclusions = MANIFEST_EXCLUSIONS.toMutableSet()
+        var exclusions = MANIFEST_EXCLUSIONS.toMutableSet()
+            private set
 
 
         fun resolveDuplicateClasses(strategy: DuplicatesStrategy) {
@@ -103,12 +107,20 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             this.multiRelease = multiRelease
         }
 
-        fun manifestAttributes(attributes: Map<String, String>) {
+        fun addManifestAttributes(attributes: Map<String, String>) {
             manifestAdditionalAttributes += attributes
         }
 
-        fun exclusions(exclusions: Set<String>) {
+        fun replaceManifestAttributes(attributes: Map<String, String>) {
+            manifestAdditionalAttributes = attributes.toMutableMap()
+        }
+
+        fun addExclusions(exclusions: Set<String>) {
             this.exclusions += exclusions
+        }
+
+        fun replaceExclusions(exclusions: Set<String>) {
+            this.exclusions = exclusions.toMutableSet()
         }
 
         fun configureRun(runConfigurator: JavaExecSpec.() -> Unit) {
@@ -121,6 +133,11 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
     }
 
     open class NativeExecutableConfiguration {
+        var runConfigurator: Exec.() -> Unit = {}
+            private set
+        var buildConfigurator: Exec.() -> Unit = {}
+            private set
+
         var graalVersion: String = GraalVersion.LATEST.version
             private set
 
@@ -144,19 +161,61 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             }
         }
 
-        var graalExecutable: Path? = null
-            private set
-
         var graalDirectory: Path? = null
             private set
 
-        val graalOptions: MutableList<String> = GRAAL_MANDATORY_OPTIONS.toMutableList()
+        var graalOptions: MutableList<String> = GRAAL_MANDATORY_OPTIONS.toMutableList()
+            private set
 
         var graalWindowsVcVarsPath: Path? = null
             private set
 
         fun windowsVisualStudioVarsScript(script: String) {
             graalWindowsVcVarsPath = Paths.get(script)
+        }
+
+        fun graalVersion(version: String) {
+            this.graalVersion = version
+        }
+
+        fun graalVersion(version: GraalVersion) {
+            this.graalVersion = version.version
+        }
+
+        fun graalJavaVersion(version: GraalJavaVersion) {
+            this.graalJavaVersion = version
+        }
+
+        fun graalPlatform(platformName: GraalPlatformName) {
+            this.graalPlatform = platformName
+        }
+
+        fun graalArchitecture(architectureName: GraalArchitectureName) {
+            this.graalArchitecture = architectureName
+        }
+
+        fun graalDirectory(directory: String) {
+            this.graalDirectory = Paths.get(directory)
+        }
+
+        fun replaceGraalOptions(options: List<String>) {
+            this.graalOptions = options.toMutableList()
+        }
+
+        fun addGraalOptions(options: List<String>) {
+            this.graalOptions += options
+        }
+
+        fun graalWindowsVcVarsPath() {
+            this.graalWindowsVcVarsPath = graalWindowsVcVarsPath
+        }
+
+        fun configureRun(runConfigurator: Exec.() -> Unit) {
+            this.runConfigurator = runConfigurator
+        }
+
+        fun configureBuild(buildConfigurator: Exec.() -> Unit) {
+            this.buildConfigurator = buildConfigurator
         }
     }
 }

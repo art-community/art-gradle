@@ -65,6 +65,8 @@ fun Project.configureNative() {
                 OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths)
                 else -> useUnixBuilder(this@with, graalPaths)
             }
+
+            native.buildConfigurator(this)
         }
 
         tasks.findByPath(RUN_EXECUTABLE_NATIVE_TASK)?.let { return@let }
@@ -79,6 +81,8 @@ fun Project.configureNative() {
                 OperatingSystem.current().isWindows -> commandLine(directory.resolve("$executableName$DOT_EXE").toFile())
                 else -> commandLine(directory.resolve(executableName).toFile())
             }
+
+            native.runConfigurator(this)
         }
     }
 }
