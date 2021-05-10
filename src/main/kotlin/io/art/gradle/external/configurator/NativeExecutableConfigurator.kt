@@ -252,6 +252,8 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
         writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, listOf(executable) + native.graalOptionsReplacer(options)))
 
         commandLine(POWERSHELL, "-noexit", """& ""$absolutePath""""")
+
+        doFirst { project.attention("Running: $commandLine") }
     }
 }
 
@@ -269,6 +271,8 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     ) + native.graalOptions
 
     args(native.graalOptionsReplacer(options))
+
+    doFirst { project.attention("Running: $commandLine") }
 }
 
 private data class GraalPaths(val base: File, val binary: File, val nativeImage: File)
