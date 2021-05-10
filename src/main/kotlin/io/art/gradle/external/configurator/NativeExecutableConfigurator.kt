@@ -21,6 +21,8 @@ package io.art.gradle.external.configurator
 import io.art.gradle.common.constants.ART
 import io.art.gradle.common.constants.EMPTY_STRING
 import io.art.gradle.common.constants.JAVA
+import io.art.gradle.common.logger.attention
+import io.art.gradle.common.logger.logger
 import io.art.gradle.common.logger.quiet
 import io.art.gradle.external.configuration.ExecutableConfiguration
 import io.art.gradle.external.configuration.NativeExecutableConfiguration
@@ -81,7 +83,7 @@ fun Project.configureNative() {
 
             native.runConfigurator(this)
 
-            project.quiet("Running: $commandLine")
+            attention("Running: $commandLine")
         }
     }
 }
@@ -151,7 +153,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
                 exec {
                     commandLine(binariesDirectory!!.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
                     args(GRAAL_UPDATE_LLVM_ARGUMENTS)
-                    project.quiet("Running: $commandLine")
+                    attention("Running: $commandLine")
                 }
             }
 
@@ -186,7 +188,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
                 commandLine(TAR)
                 args(TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile)
                 args(TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile)
-                project.quiet("Running: $commandLine")
+                attention("Running: $commandLine")
             }
         }
 
@@ -201,7 +203,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
         exec {
             commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)
             args(GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS)
-            project.quiet("Running: $commandLine")
+            attention("Running: $commandLine")
         }
 
         return GraalPaths(
