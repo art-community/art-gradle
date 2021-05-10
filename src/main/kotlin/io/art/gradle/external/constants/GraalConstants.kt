@@ -46,6 +46,7 @@ val GRAAL_BASE_RESOURCE_CONFIGURATION_PATH = { javaVersion: GraalJavaVersion, re
 }
 
 var GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS = listOf("install", "native-image")
+var GRAAL_UPDATE_LLVM_ARGUMENTS = listOf("install", "llvm-toolchain")
 
 const val GRAALVM_RELEASES_BASE_URL = "https://github.com/graalvm/graalvm-ce-builds/releases/download"
 
@@ -76,6 +77,12 @@ val GRAAL_CONFIGURATION_FILES = listOf(
 
 var GRAAL_MANDATORY_OPTIONS = listOf(
         "-H:+ReportExceptionStackTraces",
+        "--enable-http",
+        "--enable-https",
+        "--enable-url-protocols",
+        "--enable-url-protocols",
+        "--install-exit-handlers",
+        "--no-server",
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
@@ -132,3 +139,6 @@ enum class GraalJavaVersion(val version: String) {
 enum class GraalVersion(val version: String) {
     LATEST("21.1.0"),
 }
+
+const val GRAAL_LLVM_OPTION = "-H:CompilerBackend=llvm"
+const val GRAAL_MUSL_OPTION = "--libc=musl"

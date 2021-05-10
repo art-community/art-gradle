@@ -42,6 +42,7 @@ fun Project.configureNative() {
 
             val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
             dependsOn(jarTask)
+            inputs.files(jarTask.outputs.files)
 
             val graalPaths = downloadGraal(native)
             directory.resolve(GRAAL).toFile().apply {
@@ -99,6 +100,13 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
                 ?.parentFile
 
         if (graalDirectory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
+            if (llvm) {
+                exec {
+                    commandLine(binariesDirectory!!.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
+                    args(GRAAL_UPDATE_LLVM_ARGUMENTS)
+                }
+            }
+
             return GraalPaths(
                     base = graalDirectory,
                     binary = binariesDirectory,
@@ -186,14 +194,13 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     val configurationPath = graalPath.resolve(CONFIGURATION)
 
     commandLine(paths.nativeImage.absolutePath)
-
-    args(native.graalOptions)
     args(JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString())
     args(executablePath.absolutePath)
     args(GRAAL_PROXY_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_PROXY_CONFIGURATION)))
     args(GRAAL_JNI_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_JNI_CONFIGURATION)))
     args(GRAAL_REFLECTION_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_REFLECTION_CONFIGURATION)))
     args(GRAAL_RESOURCE_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_RESOURCE_CONFIGURATION)))
+    args(native.graalOptions)
 }
 
 private data class GraalPaths(val base: File, val binary: File, val nativeImage: File)

@@ -111,16 +111,20 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             manifestAdditionalAttributes.putAll(attributes)
         }
 
-        fun replaceManifestAttributes(attributes: Map<String, String>) {
-            manifestAdditionalAttributes = attributes.toMutableMap()
+        fun addManifestAttribute(name: String, value: String) {
+            manifestAdditionalAttributes.put(name, value)
         }
 
-        fun addExclusions(exclusions: Set<String>) {
+        fun replaceManifestAttributes(attributes: (current: Map<String, String>) -> Map<String, String>) {
+            manifestAdditionalAttributes = attributes(manifestAdditionalAttributes).toMutableMap()
+        }
+
+        fun addExclusions(vararg exclusions: String) {
             this.exclusions.addAll(exclusions)
         }
 
-        fun replaceExclusions(exclusions: Set<String>) {
-            this.exclusions = exclusions.toMutableSet()
+        fun replaceExclusions(exclusions: (current: Set<String>) -> Set<String>) {
+            this.exclusions = exclusions(this.exclusions).toMutableSet()
         }
 
         fun buildDependsOn(buildDependsOn: Boolean = true) {
@@ -141,7 +145,6 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             private set
         var buildConfigurator: Exec.() -> Unit = {}
             private set
-
         var graalVersion: String = GraalVersion.LATEST.version
             private set
 
@@ -174,6 +177,9 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         var graalWindowsVcVarsPath: Path? = null
             private set
 
+        var llvm = false
+            private set
+
         fun windowsVisualStudioVarsScript(script: String) {
             graalWindowsVcVarsPath = Paths.get(script)
         }
@@ -202,16 +208,25 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             this.graalDirectory = Paths.get(directory)
         }
 
-        fun replaceGraalOptions(options: List<String>) {
-            this.graalOptions = options.toMutableList()
+        fun replaceGraalOptions(options: (current: List<String>) -> List<String>) {
+            this.graalOptions = options(graalOptions).toMutableList()
         }
 
-        fun addGraalOptions(options: List<String>) {
+        fun addGraalOptions(vararg options: String) {
             this.graalOptions.addAll(options)
         }
 
         fun graalWindowsVcVarsPath() {
             this.graalWindowsVcVarsPath = graalWindowsVcVarsPath
+        }
+
+        fun useLlvm(use: Boolean = true) {
+            llvm = use
+            graalOptions.add(GRAAL_LLVM_OPTION)
+        }
+
+        fun musl(use: Boolean = true) {
+            graalOptions.add(GRAAL_MUSL_OPTION)
         }
 
         fun configureRun(runConfigurator: Exec.() -> Unit) {
