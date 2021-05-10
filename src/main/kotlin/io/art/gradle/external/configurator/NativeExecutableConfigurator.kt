@@ -245,7 +245,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         ) + native.graalOptions
 
-        val scriptPath = project.property(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
+        val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
                 ?: throw graalWindowsVSVarsPathIsEmpty()
 
