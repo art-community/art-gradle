@@ -92,7 +92,8 @@ var GRAAL_MANDATORY_OPTIONS = listOf(
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
-        "--initialize-at-run-time=reactor.netty,io.netty,io.rsocket,io.tarantool,org.apache.logging.log4j,io.art,com.google"
+        "--initialize-at-build-time=org.apache.logging.log4j",
+        "--initialize-at-run-time=reactor.netty,io.netty,io.rsocket,io.tarantool,org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"
 )
 
 val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
