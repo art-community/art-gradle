@@ -25,6 +25,7 @@ import io.art.gradle.external.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
 import java.net.URL
 import java.nio.file.Path
+import java.time.Duration.ofMinutes
 
 const val GRAAL = "graal"
 
@@ -159,3 +160,5 @@ val GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION = { seconds: Long -> "config-write-in
 val GRAAL_AGENT_ACCESS_FILTER_OPTION = { path: Path -> "access-filter-file=${path.toAbsolutePath()}" }
 val GRAAL_AGENT_CALLER_FILTER_OPTION = { path: Path -> "caller-filter-file=${path.toAbsolutePath()}" }
 const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"
+
+val GRAAL_DOWNLOAD_TIMEOUT = ofMinutes(10)

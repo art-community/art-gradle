@@ -6,43 +6,52 @@ import io.art.gradle.external.constants.GraalPlatformName.*
 import io.art.gradle.external.model.GraalPaths
 import org.gradle.api.Project
 import java.io.File
-import java.nio.channels.FileChannel.open
-import java.nio.channels.FileLock
-import java.nio.file.StandardOpenOption.SYNC
+import java.lang.Thread.interrupted
+import java.time.LocalTime.now
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
-fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths {
+val lock = ReentrantLock()
+
+fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths = lock.withLock {
     val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
-    val binariesDirectory = graalDirectory
-            .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-            .walkTopDown()
-            .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-            ?.parentFile
-
-    if (graalDirectory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
-        if (configuration.llvm) {
-            exec {
-                commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
-                args(GRAAL_UPDATE_LLVM_ARGUMENTS)
+    val lockFile = graalDirectory.apply { if (!exists()) mkdirs() }.resolve("$GRAAL$DOT_LOCK").apply { deleteOnExit() }
+    val time = now().plus(GRAAL_DOWNLOAD_TIMEOUT)
+    try {
+        while (lockFile.exists() && !interrupted()) {
+            if (now().isAfter(time)) {
+                throw graalDownloadTimeout()
             }
         }
 
-        return GraalPaths(
-                base = graalDirectory,
-                binary = binariesDirectory,
-                nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
-        )
-    }
-
-    open(graalDirectory.resolve("$GRAAL$DOT_LOCK").toPath(), SYNC).use { channel ->
-        var lock: FileLock? = null
-        try {
-            do {
-                lock = runCatching { channel.tryLock() }.getOrNull()
-            } while (lock?.isValid != true)
-            return processDownloading(configuration, graalDirectory)
-        } finally {
-            lock?.release()
+        if (!lockFile.createNewFile()) {
+            throw unableToLockGraalDownloader()
         }
+
+        val binariesDirectory = graalDirectory
+                .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
+                .walkTopDown()
+                .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
+                ?.parentFile
+
+        if (graalDirectory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
+            if (configuration.llvm) {
+                exec {
+                    commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
+                    args(GRAAL_UPDATE_LLVM_ARGUMENTS)
+                }
+            }
+
+            return GraalPaths(
+                    base = graalDirectory,
+                    binary = binariesDirectory,
+                    nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
+            )
+        }
+
+        return processDownloading(configuration, graalDirectory)
+    } finally {
+        lockFile.delete()
     }
 }
 
