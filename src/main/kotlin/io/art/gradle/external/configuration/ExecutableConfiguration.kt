@@ -222,11 +222,21 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
 
         fun useLlvm(use: Boolean = true) {
             llvm = use
-            graalOptions.add(GRAAL_LLVM_OPTION)
+
+            if (use) {
+                graalOptions.add(GRAAL_LLVM_OPTION)
+                return
+            }
+
+            graalOptions.remove(GRAAL_LLVM_OPTION)
         }
 
-        fun musl(use: Boolean = true) {
-            graalOptions.add(GRAAL_MUSL_OPTION)
+        fun useMusl(use: Boolean = true) {
+            if (use) {
+                graalOptions.add(GRAAL_MUSL_OPTION)
+                return
+            }
+            graalOptions.remove(GRAAL_MUSL_OPTION)
         }
 
         fun configureRun(runConfigurator: Exec.() -> Unit) {
