@@ -178,12 +178,12 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         var runConfigurator: JavaExec.() -> Unit = {}
             private set
 
-        fun output(path: Path) {
+        fun output(path: Path? = null) {
             configurationPath = path
             outputMode = OVERWRITE
         }
 
-        fun merge(path: Path) {
+        fun merge(path: Path? = null) {
             configurationPath = path
             outputMode = MERGE
         }
