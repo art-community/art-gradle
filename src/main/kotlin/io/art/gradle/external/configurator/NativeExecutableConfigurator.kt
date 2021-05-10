@@ -253,7 +253,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
 
         writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, listOf(executable) + native.graalOptionsReplacer(options)))
 
-        commandLine(POWERSHELL, "-noexit", """& ""$absolutePath""""")
+        commandLine(POWERSHELL, absolutePath)
 
         doFirst { project.attention("Running: $commandLine") }
     }
