@@ -21,6 +21,7 @@ package io.art.gradle.external.configurator
 import io.art.gradle.common.constants.ART
 import io.art.gradle.common.constants.EMPTY_STRING
 import io.art.gradle.common.constants.JAVA
+import io.art.gradle.common.constants.SPACE
 import io.art.gradle.common.logger.attention
 import io.art.gradle.external.configuration.ExecutableConfiguration
 import io.art.gradle.external.configuration.NativeExecutableConfiguration
@@ -239,12 +240,13 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
         val executable = paths.nativeImage.absolutePath
 
-        val options = listOf(
+        val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
+        val defaultOptions = listOf(
                 JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
-        ) + native.graalOptions
-
+        )
+        val options = defaultOptions + native.graalOptions + optionsByProperty
         val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
                 ?: throw graalWindowsVSVarsPathIsEmpty()
@@ -264,11 +266,14 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
 
     commandLine(paths.nativeImage.absolutePath)
 
-    val options = listOf(
+    val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
+
+    val defaultOptions = listOf(
             JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
             executablePath.absolutePath,
-            GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
-    ) + native.graalOptions
+            GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath))
+
+    val options = defaultOptions + native.graalOptions + optionsByProperty
 
     args(native.graalOptionsReplacer(options))
 

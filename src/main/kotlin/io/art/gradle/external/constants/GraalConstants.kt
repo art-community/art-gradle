@@ -99,6 +99,7 @@ var GRAAL_MANDATORY_OPTIONS = listOf(
 val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
 
 const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY = "windowsVisualStudioVarsScript"
+const val GRAAL_OPTIONS_PROPERTY = "native-options"
 
 val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath: Path, graalOptions: List<String> ->
     """
