@@ -49,22 +49,6 @@
   "allPublicMethods":true
 },
 {
-  "name":"com.sun.management.internal.GarbageCollectorExtImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"com.sun.management.internal.HotSpotDiagnostic",
-  "allPublicConstructors":true
-},
-{
-  "name":"com.sun.management.internal.HotSpotThreadImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"com.sun.management.internal.OperatingSystemImpl",
-  "allPublicConstructors":true
-},
-{
   "name":"com.sun.xml.internal.stream.XMLInputFactoryImpl",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -372,7 +356,6 @@
 },
 {
   "name":"java.nio.Bits",
-  "fields":[{"name":"UNALIGNED"}],
   "methods":[{"name":"unaligned","parameterTypes":[] }]
 },
 {
@@ -437,10 +420,6 @@
 },
 {
   "name":"javax.management.openmbean.TabularData"
-},
-{
-  "name":"jdk.internal.misc.Unsafe",
-  "methods":[{"name":"getUnsafe","parameterTypes":[] }]
 },
 {
   "name":"jdk.management.jfr.ConfigurationInfo",
@@ -893,8 +872,14 @@
   "methods":[
     {"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] }, 
     {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] }, 
-    {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] }, 
-    {"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] }
+    {
+      "name": "getAndSetObject",
+      "parameterTypes": [
+        "java.lang.Object",
+        "long",
+        "java.lang.Object"
+      ]
+    }
   ]
 },
 {
