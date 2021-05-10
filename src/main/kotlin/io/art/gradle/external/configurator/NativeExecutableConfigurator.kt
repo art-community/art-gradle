@@ -113,7 +113,7 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
             configurationWriteInitialDelay?.let { delay -> options += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
             agentOptions.forEach { option -> options += ",$option" }
 
-            jvmArgs = listOf(agentArgument + agentOptionsReplacer(agentOptions).joinToString(" "))
+            jvmArgs = listOf(agentArgument + agentOptionsReplacer(options).joinToString(" "))
 
             runConfigurator(this@register)
         }
