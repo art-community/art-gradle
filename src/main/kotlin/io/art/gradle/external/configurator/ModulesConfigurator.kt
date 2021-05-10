@@ -24,6 +24,7 @@ import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaLibraryPlugin
+import org.gradle.api.plugins.JavaPlatformPlugin
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.repositories
 
@@ -39,7 +40,7 @@ fun Project.configureModules() {
 
         dependencies {
             this@with.modules.asMap.forEach { module ->
-                if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java)) {
+                if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
                     module.value.java.modules.forEach { name ->
                         add(module.key, "$JAVA_GROUP:${name}:$version")
                     }

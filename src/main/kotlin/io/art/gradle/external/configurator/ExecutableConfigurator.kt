@@ -18,11 +18,8 @@
 
 package io.art.gradle.external.configurator
 
-import io.art.gradle.external.constants.IMPLEMENTATION_CONFIGURATION_NAME
+import io.art.gradle.external.constants.EMBEDDED_CONFIGURATION_NAME
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
-import org.gradle.kotlin.dsl.creating
-import org.gradle.kotlin.dsl.getValue
 
 fun Project.configureExecutable() {
     configureJar()
@@ -30,7 +27,5 @@ fun Project.configureExecutable() {
 }
 
 fun Project.addEmbeddedConfiguration() {
-    val embedded: Configuration by configurations.creating {
-        configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME)?.extendsFrom(this)
-    }
+    configurations.create(EMBEDDED_CONFIGURATION_NAME)
 }

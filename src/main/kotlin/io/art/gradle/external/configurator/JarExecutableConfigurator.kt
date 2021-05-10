@@ -44,8 +44,6 @@ fun Project.configureJar() {
             val processResourcesTask = tasks.findByPath(PROCESS_RESOURCES) ?: return@register
             dependsOn(jarTask, compileTasks, processResourcesTask)
 
-            inputs.files(jarTask.outputs.files + compileTasks.flatMap { task -> task.outputs.files } + processResourcesTask.outputs)
-
             group = ART
 
             isZip64 = true
@@ -67,8 +65,6 @@ fun Project.configureJar() {
 
             archiveFileName.set("${this@with.executableName}.${archiveExtension.get()}")
 
-            outputs.files(destinationDirectory.get().asFile.resolve("${this@with.executableName}.${archiveExtension.get()}"))
-
             jar.buildConfigurator(this)
         }
 
@@ -77,7 +73,6 @@ fun Project.configureJar() {
         tasks.register(RUN_EXECUTABLE_JAR_TASK, JavaExec::class.java) {
             dependsOn(buildJar)
             classpath(buildJar.get().outputs.files)
-            inputs.file(buildJar.get().outputs)
             mainClass.set(this@with.mainClass)
             group = ART
             jar.runConfigurator(this)

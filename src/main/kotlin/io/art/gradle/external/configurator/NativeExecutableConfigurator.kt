@@ -44,8 +44,6 @@ fun Project.configureNative() {
             val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
             dependsOn(jarTask)
 
-            inputs.files(jarTask.outputs)
-
             val graalPaths = downloadGraal(native)
             directory.resolve(GRAAL).toFile().apply {
                 mkdirs()
@@ -74,8 +72,6 @@ fun Project.configureNative() {
         tasks.register(RUN_EXECUTABLE_NATIVE_TASK, Exec::class.java) {
             group = ART
             dependsOn(buildNative)
-
-            inputs.files(buildNative.get().outputs)
 
             when {
                 OperatingSystem.current().isWindows -> commandLine(directory.resolve("$executableName$DOT_EXE").toFile())
@@ -155,8 +151,6 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
 
         commandLine(POWERSHELL, absolutePath)
     }
-
-    outputs.files(executablePath)
 }
 
 private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: GraalPaths) = with(configuration) {
@@ -173,8 +167,6 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     args(GRAAL_JNI_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_JNI_CONFIGURATION)))
     args(GRAAL_REFLECTION_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_REFLECTION_CONFIGURATION)))
     args(GRAAL_RESOURCE_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_RESOURCE_CONFIGURATION)))
-
-    outputs.files(executablePath)
 }
 
 private data class GraalPaths(val base: File, val binary: File, val nativeImage: File)
