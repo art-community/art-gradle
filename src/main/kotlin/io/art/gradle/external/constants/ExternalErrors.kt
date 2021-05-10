@@ -26,7 +26,7 @@ fun unsupportedGraalOs(os: OperatingSystem) = GradleException("Unsupported Graal
 fun unsupportedGraalArchitecture(architecture: String) = GradleException("Unsupported GraalVM architecture: $architecture")
 
 fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
-    You are using GraalVM on Windows. Please, specify windowsVisualStudioVarsScript(<path>) in section 'art { executable { native {} } }' or pass path with property -PwindowsVisualStudioVarsScript=<path>
+    You are using GraalVM on Windows. Please, specify windowsVisualStudioVarsScript(<existed path>) in section 'art { executable { native {} } }' or pass path with property -PwindowsVisualStudioVarsScript=<existed path>
     Example: 
         art {
             executable {
@@ -42,3 +42,5 @@ fun unableToFindGraalUpdater() = GradleException("Unable to find 'gu' executable
 fun unableToLockGraalDownloader() = GradleException("Unable to create lock file for GraalVM downloader")
 
 fun graalDownloadTimeout() = GradleException("Unable to download GraalVM during $GRAAL_DOWNLOAD_TIMEOUT")
+
+const val GRAAL_VM_JDK_8_DARWIN_WARING = "GraalVM for JDK 8 on MacOS not supported"

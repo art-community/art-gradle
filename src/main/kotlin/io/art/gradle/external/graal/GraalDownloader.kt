@@ -11,9 +11,9 @@ import java.time.LocalTime.now
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
-val lock = ReentrantLock()
+private val LOCK = ReentrantLock()
 
-fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths = lock.withLock {
+fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths = LOCK.withLock {
     val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
     val lockFile = graalDirectory.apply { if (!exists()) mkdirs() }.resolve("$GRAAL$DOT_LOCK").apply { deleteOnExit() }
     val time = now().plus(GRAAL_DOWNLOAD_TIMEOUT)

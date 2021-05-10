@@ -22,11 +22,12 @@ import io.art.gradle.common.constants.ART
 import io.art.gradle.common.constants.EMPTY_STRING
 import io.art.gradle.common.constants.JAVA
 import io.art.gradle.common.constants.SPACE
-import io.art.gradle.common.logger.attention
+import io.art.gradle.common.logger.warning
 import io.art.gradle.external.configuration.ExecutableConfiguration
 import io.art.gradle.external.constants.*
 import io.art.gradle.external.constants.GraalAgentOutputMode.MERGE
 import io.art.gradle.external.constants.GraalAgentOutputMode.OVERWRITE
+import io.art.gradle.external.constants.GraalJavaVersion.JAVA_8
 import io.art.gradle.external.constants.GraalPlatformName.*
 import io.art.gradle.external.graal.downloadGraal
 import io.art.gradle.external.model.GraalPaths
@@ -43,6 +44,11 @@ fun Project.configureNative() {
     with(externalPlugin.extension.executable) {
         if (!nativeEnabled) return
         mainClass ?: return
+
+        if (native.graalJavaVersion == JAVA_8 && native.graalPlatform == DARWIN) {
+            warning(GRAAL_VM_JDK_8_DARWIN_WARING)
+            return
+        }
 
         if (native.enableAgent) {
             configureAgent(this)
@@ -82,8 +88,6 @@ fun Project.configureNative() {
             }
 
             native.runConfigurator(this)
-
-            doFirst { attention("Running: $commandLine") }
         }
     }
 }
@@ -138,14 +142,17 @@ private fun ExecutableConfiguration.extractGraalConfigurations(path: Path) {
             if (!exists()) {
                 mkdirs()
             }
+
             if (resolve(json).exists()) {
                 return@forEach
             }
+
             val bytes = externalPlugin
                     .javaClass
                     .classLoader
                     .getResourceAsStream(GRAAL_BASE_RESOURCE_CONFIGURATION_PATH(native.graalJavaVersion, json))!!
                     .readBytes()
+
             resolve(json).writeBytes(bytes)
         }
     }
@@ -160,21 +167,26 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
         val executable = paths.nativeImage.absolutePath
 
         val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
+
         val defaultOptions = listOf(
                 JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
+
         val options = defaultOptions + native.graalOptions + optionsByProperty
+
         val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
                 ?: throw graalWindowsVSVarsPathIsEmpty()
 
+        if (!scriptPath.toFile().exists()) {
+            throw graalWindowsVSVarsPathIsEmpty()
+        }
+
         writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, listOf(executable) + native.graalOptionsReplacer(options)))
 
         commandLine(POWERSHELL, absolutePath)
-
-        doFirst { project.attention("Running: $commandLine") }
     }
 }
 
@@ -195,6 +207,4 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     val options = defaultOptions + native.graalOptions + optionsByProperty
 
     args(native.graalOptionsReplacer(options))
-
-    doFirst { project.attention("Running: $commandLine") }
 }
