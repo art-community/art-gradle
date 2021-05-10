@@ -24,17 +24,18 @@ import io.art.gradle.common.constants.JAVA
 import io.art.gradle.common.constants.SPACE
 import io.art.gradle.common.logger.attention
 import io.art.gradle.external.configuration.ExecutableConfiguration
-import io.art.gradle.external.configuration.NativeExecutableConfiguration
 import io.art.gradle.external.constants.*
 import io.art.gradle.external.constants.GraalAgentOutputMode.MERGE
 import io.art.gradle.external.constants.GraalAgentOutputMode.OVERWRITE
 import io.art.gradle.external.constants.GraalPlatformName.*
+import io.art.gradle.external.graal.downloadGraal
+import io.art.gradle.external.model.GraalPaths
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
-import java.io.File
+import java.nio.channels.FileChannel.*
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -88,15 +89,15 @@ fun Project.configureNative() {
 }
 
 private fun Project.configureAgent(executableConfiguration: ExecutableConfiguration) = with(executableConfiguration) {
-    project.tasks.findByPath(RUN_WITH_NATIVE_IMAGE_AGENT)?.let { return@with }
+    tasks.findByPath(RUN_WITH_NATIVE_IMAGE_AGENT)?.let { return@with }
 
-    project.tasks.register(RUN_WITH_NATIVE_IMAGE_AGENT, JavaExec::class.java) {
+    tasks.register(RUN_WITH_NATIVE_IMAGE_AGENT, JavaExec::class.java) {
         group = ART
-        val jarTask = project.tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
+        val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
         dependsOn(jarTask)
         inputs.files(jarTask.outputs.files)
 
-        val graalPaths = project.downloadGraal(native)
+        val graalPaths = downloadGraal(native)
         val outputPath = native.agentConfiguration.configurationPath ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
         extractGraalConfigurations(outputPath)
 
@@ -128,88 +129,6 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
 
             runConfigurator(this@register)
         }
-    }
-}
-
-private fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths {
-    configuration.apply {
-        val graalDirectory = graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
-        val archiveName = GRAAL_ARCHIVE_NAME(
-                graalPlatform,
-                graalJavaVersion,
-                graalArchitecture,
-                graalVersion
-        )
-        val archiveFile = graalDirectory.resolve(archiveName)
-        var binariesDirectory = graalDirectory
-                .resolve(GRAAL_UNPACKED_NAME(graalJavaVersion, graalVersion))
-                .walkTopDown()
-                .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-                ?.parentFile
-
-        if (graalDirectory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
-            if (llvm) {
-                exec {
-                    commandLine(binariesDirectory!!.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
-                    args(GRAAL_UPDATE_LLVM_ARGUMENTS)
-                    attention("Running: $commandLine")
-                }
-            }
-
-            return GraalPaths(
-                    base = graalDirectory,
-                    binary = binariesDirectory,
-                    nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
-            )
-        }
-
-        if (!graalDirectory.exists()) {
-            graalDirectory.mkdirs()
-        }
-
-        if (!archiveFile.exists()) {
-            GRAAL_DOWNLOAD_URL(archiveName, graalVersion).openStream().use { input ->
-                archiveFile.outputStream().use { output ->
-                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 2)
-                    var read: Int
-                    while (input.read(buffer, 0, DEFAULT_BUFFER_SIZE * 2).also { read = it } >= 0) {
-                        output.write(buffer, 0, read)
-                    }
-                }
-            }
-        }
-        when (graalPlatform) {
-            WINDOWS -> copy {
-                from(zipTree(archiveFile))
-                into(graalDirectory)
-            }
-            LINUX, DARWIN -> exec {
-                commandLine(TAR)
-                args(TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile)
-                args(TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile)
-                attention("Running: $commandLine")
-            }
-        }
-
-        archiveFile.delete()
-
-        binariesDirectory = graalDirectory
-                .resolve(GRAAL_UNPACKED_NAME(graalJavaVersion, graalVersion))
-                .walkTopDown()
-                .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-                ?.parentFile ?: throw unableToFindGraalUpdater()
-
-        exec {
-            commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)
-            args(GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS)
-            attention("Running: $commandLine")
-        }
-
-        return GraalPaths(
-                base = graalDirectory,
-                binary = binariesDirectory,
-                nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
-        )
     }
 }
 
@@ -279,5 +198,3 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
 
     doFirst { project.attention("Running: $commandLine") }
 }
-
-private data class GraalPaths(val base: File, val binary: File, val nativeImage: File)
