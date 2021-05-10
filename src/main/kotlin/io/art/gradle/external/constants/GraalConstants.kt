@@ -89,7 +89,6 @@ var GRAAL_MANDATORY_OPTIONS = listOf(
         "--enable-url-protocols",
         "--enable-all-security-services",
         "--install-exit-handlers",
-        "--no-server",
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
