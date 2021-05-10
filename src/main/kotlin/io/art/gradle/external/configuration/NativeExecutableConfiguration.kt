@@ -56,6 +56,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var graalOptions: MutableList<String> = GRAAL_MANDATORY_OPTIONS.toMutableList()
         private set
 
+    var graalOptionsReplacer: (current: List<String>) -> List<String> = { it }
+        private set
+
     var graalWindowsVcVarsPath: Path? = null
         private set
 
@@ -68,8 +71,8 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var buildConfigurator: Exec.() -> Unit = {}
         private set
 
-    fun windowsVisualStudioVarsScript(script: String) {
-        graalWindowsVcVarsPath = Paths.get(script)
+    fun windowsVisualStudioVarsScript(absoluteScriptPath: String) {
+        graalWindowsVcVarsPath = Paths.get(absoluteScriptPath)
     }
 
     fun graalVersion(version: String) {
@@ -92,16 +95,16 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         this.graalArchitecture = architectureName
     }
 
-    fun graalDirectory(directory: String) {
-        this.graalDirectory = Paths.get(directory)
+    fun graalDirectory(directory: Path) {
+        this.graalDirectory = directory
     }
 
-    fun graalConfigurationDirectory(directory: String) {
-        this.graalConfigurationDirectory = Paths.get(directory)
+    fun graalConfigurationDirectory(directory: Path) {
+        this.graalConfigurationDirectory = directory
     }
 
     fun replaceGraalOptions(options: (current: List<String>) -> List<String>) {
-        this.graalOptions = options(graalOptions).toMutableList()
+        this.graalOptionsReplacer = options
     }
 
     fun addGraalOptions(vararg options: String) {
@@ -160,6 +163,12 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         var configurationWriteInitialDelay: Duration? = null
             private set
 
+        var accessFilter: Path? = null
+            private set
+
+        var callerFilter: Path? = null
+            private set
+
         var agentOptions = mutableListOf<String>()
             private set
 
@@ -169,13 +178,13 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         var runConfigurator: JavaExec.() -> Unit = {}
             private set
 
-        fun output(path: String) {
-            configurationPath = Paths.get(path)
+        fun output(path: Path) {
+            configurationPath = path
             outputMode = OVERWRITE
         }
 
-        fun merge(path: String) {
-            configurationPath = Paths.get(path)
+        fun merge(path: Path) {
+            configurationPath = path
             outputMode = MERGE
         }
 
@@ -197,6 +206,14 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
         fun addAgentOptions(vararg options: String) {
             this.agentOptions.addAll(options)
+        }
+
+        fun accessFilter(file: Path) {
+            accessFilter = file
+        }
+
+        fun callerFilter(file: Path) {
+            callerFilter = file
         }
 
         fun configureRun(configurator: JavaExec.() -> Unit) {

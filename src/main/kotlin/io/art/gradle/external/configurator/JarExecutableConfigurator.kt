@@ -66,12 +66,14 @@ fun Project.configureJar() {
 
             duplicatesStrategy = jar.duplicateStrategy
 
+            val attributes = mutableMapOf(MAIN_CLASS_MANIFEST_ATTRIBUTE to mainClass!!)
+            if (jar.multiRelease && JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_1_9)) {
+                attributes[MULTI_RELEASE_MANIFEST_ATTRIBUTE] = TRUE.toString()
+            }
+            attributes += jar.manifestAttributes
+
             manifest {
-                attributes(mapOf(MAIN_CLASS_MANIFEST_ATTRIBUTE to mainClass))
-                if (jar.multiRelease && JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_1_9)) {
-                    attributes(mapOf(MULTI_RELEASE_MANIFEST_ATTRIBUTE to TRUE.toString()))
-                }
-                attributes(jar.manifestAdditionalAttributes)
+                attributes(jar.manifestAttributesReplacer(attributes))
             }
 
             from(jarTask.outputs.files.map { if (it.isDirectory) it else zipTree(it) })

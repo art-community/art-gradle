@@ -68,13 +68,17 @@ const val GRAAL_PROXY_CONFIGURATION = "proxy-config.json"
 const val GRAAL_REFLECTION_CONFIGURATION = "reflect-config.json"
 const val GRAAL_RESOURCE_CONFIGURATION = "resource-config.json"
 const val GRAAL_SERIALIZATION_CONFIGURATION = "serialization-config.json"
+const val GRAAL_CALLER_FILTER_CONFIGURATION = "caller-filter.json"
+const val GRAAL_ACCESS_FILTER_CONFIGURATION = "access-filter.json"
 
 val GRAAL_CONFIGURATION_FILES = listOf(
         GRAAL_JNI_CONFIGURATION,
         GRAAL_PROXY_CONFIGURATION,
         GRAAL_REFLECTION_CONFIGURATION,
         GRAAL_RESOURCE_CONFIGURATION,
-        GRAAL_SERIALIZATION_CONFIGURATION
+        GRAAL_SERIALIZATION_CONFIGURATION,
+        GRAAL_CALLER_FILTER_CONFIGURATION,
+        GRAAL_ACCESS_FILTER_CONFIGURATION
 )
 
 var GRAAL_MANDATORY_OPTIONS = listOf(
@@ -151,4 +155,6 @@ val GRAAL_AGENT_OUTPUT_DIR_OPTION = { path: Path -> "config-output-dir=${path.to
 val GRAAL_AGENT_MERGE_DIR_OPTION = { path: Path -> "config-merge-dir=${path.toAbsolutePath()}" }
 val GRAAL_AGENT_WRITE_PERIOD_OPTION = { seconds: Long -> "config-write-period-secs=$seconds" }
 val GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION = { seconds: Long -> "config-write-initial-delay-secs=$seconds" }
+val GRAAL_AGENT_ACCESS_FILTER_OPTION = { path: Path -> "access-filter-file=${path.toAbsolutePath()}" }
+val GRAAL_AGENT_CALLER_FILTER_OPTION = { path: Path -> "caller-filter-file=${path.toAbsolutePath()}" }
 const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"

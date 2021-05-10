@@ -21,7 +21,10 @@ open class JarExecutableConfiguration @Inject constructor() {
     var asBuildDependency: Boolean = true
         private set
 
-    var manifestAdditionalAttributes = mutableMapOf<String, String>()
+    var manifestAttributes = mutableMapOf<String, String>()
+        private set
+
+    var manifestAttributesReplacer: (current: Map<String, String>) -> Map<String, String> = { it }
         private set
 
     var exclusions = MANIFEST_EXCLUSIONS.toMutableSet()
@@ -37,15 +40,15 @@ open class JarExecutableConfiguration @Inject constructor() {
     }
 
     fun addManifestAttributes(attributes: Map<String, String>) {
-        manifestAdditionalAttributes.putAll(attributes)
+        manifestAttributes.putAll(attributes)
     }
 
     fun addManifestAttribute(name: String, value: String) {
-        manifestAdditionalAttributes[name] = value
+        manifestAttributes[name] = value
     }
 
     fun replaceManifestAttributes(attributes: (current: Map<String, String>) -> Map<String, String>) {
-        manifestAdditionalAttributes = attributes(manifestAdditionalAttributes).toMutableMap()
+        manifestAttributesReplacer = attributes
     }
 
     fun addExclusions(vararg exclusions: String) {

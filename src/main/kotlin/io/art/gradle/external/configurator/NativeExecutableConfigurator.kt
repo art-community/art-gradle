@@ -19,6 +19,7 @@
 package io.art.gradle.external.configurator
 
 import io.art.gradle.common.constants.ART
+import io.art.gradle.common.constants.EMPTY_STRING
 import io.art.gradle.common.constants.JAVA
 import io.art.gradle.external.configuration.ExecutableConfiguration
 import io.art.gradle.external.configuration.NativeExecutableConfiguration
@@ -55,7 +56,7 @@ fun Project.configureNative() {
             inputs.files(jarTask.outputs.files)
 
             val graalPaths = downloadGraal(native)
-            val configurations = native.graalConfigurationDirectory ?: Paths.get(GRAAL).resolve(CONFIGURATION)
+            val configurations = native.graalConfigurationDirectory ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
             extractGraalConfigurations(configurations)
 
             when {
@@ -92,7 +93,7 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
         inputs.files(jarTask.outputs.files)
 
         val graalPaths = project.downloadGraal(native)
-        val outputPath = native.agentConfiguration.configurationPath ?: Paths.get(GRAAL).resolve(CONFIGURATION)
+        val outputPath = native.agentConfiguration.configurationPath ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
         extractGraalConfigurations(outputPath)
 
         mainClass.set(native.agentConfiguration.executableClass ?: this@with.mainClass)
@@ -105,15 +106,21 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
             val agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION="
             val options = mutableListOf<String>()
             options += when (outputMode) {
-                OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(directory.resolve(outputPath))
-                MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(directory.resolve(outputPath))
+                OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(outputPath)
+                MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(outputPath)
             }
 
             configurationWritePeriod?.let { period -> options += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
             configurationWriteInitialDelay?.let { delay -> options += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
+
+            val accessFilter = accessFilter ?: outputPath.resolve(GRAAL_ACCESS_FILTER_CONFIGURATION)
+            val callerFilter = callerFilter ?: outputPath.resolve(GRAAL_CALLER_FILTER_CONFIGURATION)
+            accessFilter.let { path -> options += ",${GRAAL_AGENT_ACCESS_FILTER_OPTION(path)}" }
+            callerFilter.let { path -> options += ",${GRAAL_AGENT_CALLER_FILTER_OPTION(path)}" }
+
             agentOptions.forEach { option -> options += ",$option" }
 
-            jvmArgs = listOf(agentArgument + agentOptionsReplacer(options).joinToString(" "))
+            jvmArgs = listOf(agentArgument + agentOptionsReplacer(options).joinToString(EMPTY_STRING))
 
             runConfigurator(this@register)
         }
@@ -201,7 +208,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
 
 private fun ExecutableConfiguration.extractGraalConfigurations(path: Path) {
     GRAAL_CONFIGURATION_FILES.forEach { json ->
-        directory.resolve(path).toFile().apply {
+        path.toFile().apply {
             if (!exists()) {
                 mkdirs()
             }
@@ -224,17 +231,19 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
     val configurationPath = graalPath.resolve(CONFIGURATION)
 
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
+        val executable = paths.nativeImage.absolutePath
+
         val options = listOf(
-                paths.nativeImage.absolutePath,
                 JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
-                GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)) + native.graalOptions
+                GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
+        ) + native.graalOptions
 
         val scriptPath = project.property(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
                 ?: throw graalWindowsVSVarsPathIsEmpty()
 
-        writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, options))
+        writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, listOf(executable) + native.graalOptionsReplacer(options)))
 
         commandLine(POWERSHELL, absolutePath)
     }
@@ -246,10 +255,14 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     val configurationPath = graalPath.resolve(CONFIGURATION)
 
     commandLine(paths.nativeImage.absolutePath)
-    args(JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString())
-    args(executablePath.absolutePath)
-    args(GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath))
-    args(native.graalOptions)
+
+    val options = listOf(
+            JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
+            executablePath.absolutePath,
+            GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
+    ) + native.graalOptions
+
+    args(native.graalOptionsReplacer(options))
 }
 
 private data class GraalPaths(val base: File, val binary: File, val nativeImage: File)
