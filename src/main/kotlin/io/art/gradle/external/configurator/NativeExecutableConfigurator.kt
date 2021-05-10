@@ -22,8 +22,6 @@ import io.art.gradle.common.constants.ART
 import io.art.gradle.common.constants.EMPTY_STRING
 import io.art.gradle.common.constants.JAVA
 import io.art.gradle.common.logger.attention
-import io.art.gradle.common.logger.logger
-import io.art.gradle.common.logger.quiet
 import io.art.gradle.external.configuration.ExecutableConfiguration
 import io.art.gradle.external.configuration.NativeExecutableConfiguration
 import io.art.gradle.external.constants.*
@@ -83,7 +81,7 @@ fun Project.configureNative() {
 
             native.runConfigurator(this)
 
-            attention("Running: $commandLine")
+            doFirst { attention("Running: $commandLine") }
         }
     }
 }
