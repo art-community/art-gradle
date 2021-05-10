@@ -62,6 +62,11 @@ fun Project.configureNative() {
             val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
 
             dependsOn(jarTask)
+
+            if (native.dependsOnAgent) {
+                dependsOn(RUN_WITH_NATIVE_IMAGE_AGENT)
+            }
+
             inputs.files(jarTask.outputs.files)
 
             val graalPaths = downloadGraal(native)
