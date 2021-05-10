@@ -21,11 +21,10 @@ package io.art.gradle.external.configuration
 import io.art.gradle.external.constants.*
 import io.art.gradle.external.constants.GraalArchitectureName.AMD
 import io.art.gradle.external.constants.GraalArchitectureName.ARM
-import io.art.gradle.external.constants.ProcessorArchitectures.AARCH64
+import io.art.gradle.external.constants.ProcessorArchitectures.ARM_V8
 import io.art.gradle.external.constants.ProcessorArchitectures.X86_64
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Action
-import org.gradle.api.GradleException
 import org.gradle.api.JavaVersion.VERSION_1_9
 import org.gradle.api.JavaVersion.current
 import org.gradle.api.file.DuplicatesStrategy
@@ -36,6 +35,7 @@ import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.process.JavaExecSpec
 import java.nio.file.Path
+import java.nio.file.Paths
 import javax.inject.Inject
 
 open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFactory) {
@@ -121,7 +121,7 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
     }
 
     open class NativeExecutableConfiguration {
-        var graalVersion: GraalVersion = GraalVersion.LATEST
+        var graalVersion: String = GraalVersion.LATEST.version
             private set
 
         var graalJavaVersion: GraalJavaVersion = when {
@@ -133,13 +133,15 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             OperatingSystem.current().isWindows -> GraalPlatformName.WINDOWS
             OperatingSystem.current().isLinux -> GraalPlatformName.LINUX
             OperatingSystem.current().isMacOsX -> GraalPlatformName.DARWIN
-            else -> throw GradleException("Unsupported GraalVM OS: ${OperatingSystem.current()}")
+            else -> throw unsupportedGraalOs(OperatingSystem.current())
         }
 
-        var graalArchitecture: GraalArchitectureName = when {
-            X86_64.architecture.names().any(System.getProperty(OS_ARCH_PROPERTY)::contains) -> AMD
-            AARCH64.architecture.names().any(System.getProperty(OS_ARCH_PROPERTY)::contains) -> ARM
-            else -> throw GradleException("Unsupported GraalVM architecture: ${System.getProperty(OS_ARCH_PROPERTY)}")
+        var graalArchitecture: GraalArchitectureName = System.getProperty(OS_ARCH_PROPERTY).let { architecture ->
+            when {
+                X86_64.architecture.names().any(architecture::contains) -> AMD
+                ARM_V8.architecture.names().any(architecture::contains) -> ARM
+                else -> throw unsupportedGraalArchitecture(architecture)
+            }
         }
 
         var graalExecutable: Path? = null
@@ -148,6 +150,13 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         var graalDirectory: Path? = null
             private set
 
-        val graalAdditionalOptions: MutableList<String> = mutableListOf()
+        val graalOptions: MutableList<String> = GRAAL_MANDATORY_OPTIONS.toMutableList()
+
+        var graalWindowsVcVarsPath: Path? = null
+            private set
+
+        fun windowsVisualStudioVarsScript(script: String) {
+            graalWindowsVcVarsPath = Paths.get(script)
+        }
     }
 }

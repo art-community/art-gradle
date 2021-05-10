@@ -35,6 +35,7 @@ const val JAR = "jar"
 const val EXECUTABLE = "executable"
 
 val MANIFEST_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")
+
 enum class ArtVersion(val version: String) {
     MAIN("main")
 }
@@ -78,5 +79,12 @@ val KOTLIN_MODULES = setOf<String>()
 
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
 
-
 const val DOLLAR = "$"
+const val TEMPORARY = "temporary"
+const val BIN = "bin"
+const val OS_ARCH_PROPERTY = "os.arch"
+const val CONFIGURATION = "configuration"
+const val DOT_EXE = ".exe"
+const val DOT_JAR = ".jar"
+const val POWERSHELL = "powershell"
+const val JAR_OPTION = "-jar"
