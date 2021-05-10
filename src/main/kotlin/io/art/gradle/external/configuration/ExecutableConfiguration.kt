@@ -51,7 +51,6 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
 
     val native = objectFactory.newInstance<NativeExecutableConfiguration>()
 
-
     var jarEnabled = false
         private set
 
@@ -67,12 +66,12 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         this.directory = directory
     }
 
-    fun jar(action: Action<in JarExecutableConfiguration> = Action {  }) {
+    fun jar(action: Action<in JarExecutableConfiguration> = Action { }) {
         action.execute(jar)
         jarEnabled = true
     }
 
-    fun native(action: Action<in NativeExecutableConfiguration> = Action {  }) {
+    fun native(action: Action<in NativeExecutableConfiguration> = Action { }) {
         action.execute(native)
         nativeEnabled = true
     }
@@ -82,13 +81,15 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
     }
 
     open class JarExecutableConfiguration @Inject constructor() {
-        var classedDuplicateStrategy: DuplicatesStrategy = EXCLUDE
+        var duplicateStrategy: DuplicatesStrategy = EXCLUDE
             private set
         var multiRelease = current().isCompatibleWith(VERSION_1_9)
             private set
         var runConfigurator: JavaExecSpec.() -> Unit = {}
             private set
         var buildConfigurator: Jar.() -> Unit = {}
+            private set
+        var asBuildDependency: Boolean = true
             private set
 
         var manifestAdditionalAttributes = mutableMapOf<String, String>()
@@ -98,8 +99,8 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
             private set
 
 
-        fun resolveDuplicateClasses(strategy: DuplicatesStrategy) {
-            classedDuplicateStrategy = strategy
+        fun resolveDuplicates(strategy: DuplicatesStrategy) {
+            duplicateStrategy = strategy
         }
 
         fun multiRelease(multiRelease: Boolean = true) {
@@ -120,6 +121,10 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
 
         fun replaceExclusions(exclusions: Set<String>) {
             this.exclusions = exclusions.toMutableSet()
+        }
+
+        fun buildDependsOn(buildDependsOn: Boolean = true) {
+            asBuildDependency = buildDependsOn
         }
 
         fun configureRun(runConfigurator: JavaExecSpec.() -> Unit) {

@@ -32,8 +32,6 @@ const val MULTI_RELEASE_MANIFEST_ATTRIBUTE = "Multi-Release"
 
 const val BUILD = "build"
 const val JAR = "jar"
-const val COMPILE_PREFIX = "compile"
-const val PROCESS_RESOURCES = "processResources"
 const val EXECUTABLE = "executable"
 
 val MANIFEST_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")
@@ -44,7 +42,6 @@ enum class ArtVersion(val version: String) {
 
 const val JAVA_GROUP = "io.art.java"
 const val KOTLIN_GROUP = "io.art.kotlin"
-const val GENERATOR_GROUP = "io.art.generator"
 
 val JAVA_MODULES = setOf(
         "core",
@@ -82,8 +79,6 @@ val KOTLIN_MODULES = setOf<String>()
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
 
 const val DOLLAR = "$"
-const val TEMPORARY = "temporary"
-const val BIN = "bin"
 const val OS_ARCH_PROPERTY = "os.arch"
 const val CONFIGURATION = "configuration"
 const val DOT_EXE = ".exe"

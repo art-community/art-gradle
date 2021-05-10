@@ -22,6 +22,7 @@ import io.art.gradle.external.constants.ArtVersion.MAIN
 import io.art.gradle.external.constants.EMBEDDED_CONFIGURATION_NAME
 import io.art.gradle.external.constants.IMPLEMENTATION_CONFIGURATION_NAME
 import io.art.gradle.external.constants.JAVA_MODULES
+import io.art.gradle.external.constants.KOTLIN_MODULES
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectSet
@@ -177,5 +178,9 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
 
     open class KotlinModulesConfiguration @Inject constructor() {
         val modules = mutableSetOf<String>()
+
+        fun kit() {
+            modules.addAll(KOTLIN_MODULES)
+        }
     }
 }

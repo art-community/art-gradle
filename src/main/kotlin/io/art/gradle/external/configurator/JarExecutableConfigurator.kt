@@ -23,11 +23,10 @@ import io.art.gradle.external.constants.*
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
-import kotlin.let
-import kotlin.to
 import kotlin.with
 
 
@@ -40,15 +39,32 @@ fun Project.configureJar() {
 
         val buildJar = tasks.register(BUILD_EXECUTABLE_JAR_TASK, Jar::class.java) {
             val jarTask = tasks.getByName(JAR)
-            val compileTasks = tasks.filter { task -> task.name.startsWith(COMPILE_PREFIX) }
-            val processResourcesTask = tasks.findByPath(PROCESS_RESOURCES) ?: return@register
-            dependsOn(jarTask, compileTasks, processResourcesTask)
+            val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
+
+            embedded.incoming.resolutionResult.allDependencies {
+                if (from.id is ProjectComponentIdentifier) {
+                    val id = from.id as ProjectComponentIdentifier
+                    gradle.includedBuilds
+                            .filter { build -> id.build.name == build.name }
+                            .forEach { build -> dependsOn(build.task(":${id.projectName}:${JAR}")) }
+                    rootProject
+                            .subprojects
+                            .filter { subProject -> id.build.isCurrentBuild && subProject.name == id.projectName }
+                            .forEach { subProject -> dependsOn(":${subProject.name}:$JAR") }
+                }
+            }
+
+            dependsOn(jarTask)
+
+            if (jar.asBuildDependency) {
+                tasks.getByPath(BUILD).dependsOn(BUILD_EXECUTABLE_JAR_TASK)
+            }
 
             group = ART
 
             isZip64 = true
 
-            duplicatesStrategy = jar.classedDuplicateStrategy
+            duplicatesStrategy = jar.duplicateStrategy
 
             manifest {
                 attributes(mapOf(MAIN_CLASS_MANIFEST_ATTRIBUTE to mainClass))
@@ -59,11 +75,14 @@ fun Project.configureJar() {
             }
 
             from(jarTask.outputs.files.map { if (it.isDirectory) it else zipTree(it) })
-            from(configurations.getByName(EMBEDDED_CONFIGURATION_NAME).map { if (it.isDirectory) it else zipTree(it) })
+
+            from(embedded.map { if (it.isDirectory) it else zipTree(it) })
+
             exclude(jar.exclusions)
+
             destinationDirectory.set(directory.toFile())
 
-            archiveFileName.set("${this@with.executableName}.${archiveExtension.get()}")
+            archiveFileName.set("$executableName.${archiveExtension.get()}")
 
             jar.buildConfigurator(this)
         }
