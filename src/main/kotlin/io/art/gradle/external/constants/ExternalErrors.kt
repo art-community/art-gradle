@@ -20,6 +20,7 @@ package io.art.gradle.external.constants
 
 import org.gradle.api.GradleException
 import org.gradle.internal.os.OperatingSystem
+import java.io.File
 
 fun unsupportedGraalOs(os: OperatingSystem) = GradleException("Unsupported GraalVM OS: $os")
 
@@ -37,3 +38,6 @@ fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
         }
 """.trimIndent())
 
+fun unableToCreateDirectory(path: File) = GradleException("Unable to create directory: $path")
+
+fun unableToFindGraalUpdater() = GradleException("Unable to find 'gu' executable for GraalVM")

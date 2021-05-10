@@ -24,7 +24,6 @@ import io.art.gradle.external.configuration.ExecutableConfiguration.NativeExecut
 import io.art.gradle.external.constants.*
 import io.art.gradle.external.constants.GraalPlatformName.*
 import io.art.gradle.external.plugin.externalPlugin
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.internal.os.OperatingSystem
@@ -108,7 +107,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
         }
 
         if (!graalDirectory.exists()) {
-            if (!graalDirectory.mkdir()) throw GradleException("Unable to create directory: $graalDirectory")
+            if (!graalDirectory.mkdir()) throw unableToCreateDirectory(graalDirectory)
         }
 
         if (!archiveFile.exists()) {
@@ -140,7 +139,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
                 .resolve(GRAAL_UNPACKED_NAME(graalJavaVersion, graalVersion))
                 .walkTopDown()
                 .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-                ?.parentFile ?: throw GradleException("Unable to find 'gu' executable for GraalVM")
+                ?.parentFile ?: throw unableToFindGraalUpdater()
 
         exec {
             commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)
