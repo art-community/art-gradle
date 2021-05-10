@@ -63,7 +63,7 @@ fun Project.configureNative() {
 
             dependsOn(jarTask)
 
-            if (native.dependsOnAgent) {
+            if (native.runAgentBeforeBuild) {
                 dependsOn(RUN_WITH_NATIVE_IMAGE_AGENT)
             }
 

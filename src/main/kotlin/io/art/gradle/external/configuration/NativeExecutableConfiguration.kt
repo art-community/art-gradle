@@ -24,7 +24,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var enableAgent = false
         private set
 
-    var dependsOnAgent = false
+    var runAgentBeforeBuild = false
         private set
 
     var graalVersion: String = GraalVersion.LATEST.version
@@ -137,9 +137,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         graalOptions.remove(GRAAL_MUSL_OPTION)
     }
 
-    fun agent(dependsOn: Boolean = false, action: Action<in NativeImageAgentConfiguration> = Action {}) {
+    fun agent(runBeforeNativeBuild: Boolean = false, action: Action<in NativeImageAgentConfiguration> = Action {}) {
         enableAgent = true
-        dependsOnAgent = dependsOn
+        runAgentBeforeBuild = runBeforeNativeBuild
         action.execute(agentConfiguration)
     }
 
