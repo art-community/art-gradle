@@ -26,7 +26,7 @@ fun unsupportedGraalOs(os: OperatingSystem) = GradleException("Unsupported Graal
 fun unsupportedGraalArchitecture(architecture: String) = GradleException("Unsupported GraalVM architecture: $architecture")
 
 fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
-    You are using GraalVM on Windows. Please, specify windowsVisualStudioVarsScript(<path>) in section 'art { executable { native {} } }'
+    You are using GraalVM on Windows. Please, specify windowsVisualStudioVarsScript(<path>) in section 'art { executable { native {} } }' or pass path with property -PwindowsVisualStudioVarsScript=<path>
     Example: 
         art {
             executable {

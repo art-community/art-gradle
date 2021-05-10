@@ -32,6 +32,8 @@ const val MULTI_RELEASE_MANIFEST_ATTRIBUTE = "Multi-Release"
 
 const val BUILD = "build"
 const val JAR = "jar"
+const val COMPILE_PREFIX = "compile"
+const val PROCESS_RESOURCES = "processResources"
 const val EXECUTABLE = "executable"
 
 val MANIFEST_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")

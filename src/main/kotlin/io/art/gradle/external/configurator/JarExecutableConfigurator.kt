@@ -40,9 +40,11 @@ fun Project.configureJar() {
 
         val buildJar = tasks.register(BUILD_EXECUTABLE_JAR_TASK, Jar::class.java) {
             val jarTask = tasks.getByName(JAR)
-            dependsOn(jarTask)
+            val compileTasks = tasks.filter { task -> task.name.startsWith(COMPILE_PREFIX) }
+            val processResourcesTask = tasks.findByPath(PROCESS_RESOURCES) ?: return@register
+            dependsOn(jarTask, compileTasks, processResourcesTask)
 
-            inputs.files(jarTask.outputs)
+            inputs.files(jarTask.outputs.files + compileTasks.flatMap { task -> task.outputs.files } + processResourcesTask.outputs)
 
             group = ART
 
