@@ -81,20 +81,17 @@ var GRAAL_MANDATORY_OPTIONS = listOf(
         "--enable-https",
         "--enable-url-protocols",
         "--enable-url-protocols",
+        "--enable-all-security-services",
         "--install-exit-handlers",
         "--no-server",
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
-        "--enable-all-security-services",
         "--initialize-at-build-time=org.apache.logging.log4j",
-        "--initialize-at-run-time=reactor.netty,io.netty,io.rsocket,org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"
+        "--initialize-at-run-time=reactor.netty,io.netty,io.rsocket,io.tarantool,org.apache.logging.log4j.core.pattern.JAnsiTextRenderer"
 )
 
-val GRAAL_PROXY_CONFIGURATION_OPTION = { path: Path -> "-H:DynamicProxyConfigurationFiles=${path.toAbsolutePath()}" }
-val GRAAL_JNI_CONFIGURATION_OPTION = { path: Path -> "-H:JNIConfigurationFiles=${path.toAbsolutePath()}" }
-val GRAAL_REFLECTION_CONFIGURATION_OPTION = { path: Path -> "-H:ReflectionConfigurationFiles=${path.toAbsolutePath()}" }
-val GRAAL_RESOURCE_CONFIGURATION_OPTION = { path: Path -> "-H:ResourceConfigurationFiles=${path.toAbsolutePath()}" }
+val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
 
 const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY = "windowsVisualStudioVarsScript"
 

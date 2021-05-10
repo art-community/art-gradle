@@ -180,6 +180,12 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         var llvm = false
             private set
 
+        var graalAgentOutputPath: Path? = null
+            private set
+
+        var graalAgentMergeOutputPath: Path? = null
+            private set
+
         fun windowsVisualStudioVarsScript(script: String) {
             graalWindowsVcVarsPath = Paths.get(script)
         }

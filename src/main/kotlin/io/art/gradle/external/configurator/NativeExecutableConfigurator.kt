@@ -172,11 +172,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
                 paths.nativeImage.absolutePath,
                 JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
-                GRAAL_PROXY_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_PROXY_CONFIGURATION)),
-                GRAAL_JNI_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_JNI_CONFIGURATION)),
-                GRAAL_REFLECTION_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_REFLECTION_CONFIGURATION)),
-                GRAAL_RESOURCE_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_RESOURCE_CONFIGURATION))
-        ) + native.graalOptions
+                GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)) + native.graalOptions
 
         val scriptPath = project.property(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
@@ -196,10 +192,7 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     commandLine(paths.nativeImage.absolutePath)
     args(JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString())
     args(executablePath.absolutePath)
-    args(GRAAL_PROXY_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_PROXY_CONFIGURATION)))
-    args(GRAAL_JNI_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_JNI_CONFIGURATION)))
-    args(GRAAL_REFLECTION_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_REFLECTION_CONFIGURATION)))
-    args(GRAAL_RESOURCE_CONFIGURATION_OPTION(configurationPath.resolve(GRAAL_RESOURCE_CONFIGURATION)))
+    args(GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath))
     args(native.graalOptions)
 }
 
