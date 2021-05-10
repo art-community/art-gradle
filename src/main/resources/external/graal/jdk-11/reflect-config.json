@@ -388,6 +388,9 @@
   "name":"java.security.MessageDigestSpi"
 },
 {
+  "name":"java.security.SecureRandomParameters"
+},
+{
   "name":"java.sql.Date"
 },
 {
