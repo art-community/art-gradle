@@ -1,16 +1,17 @@
 {
   "resources":{
-  "includes":[
-    {"pattern":"\\QMETA-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat\\E"}, 
-    {"pattern":"\\QMETA-INF/services/javax.script.ScriptEngineFactory\\E"}, 
-    {"pattern":"\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"}, 
-    {"pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"}, 
-    {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider\\E"}, 
-    {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.spi.Provider\\E"}, 
-    {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E"}, 
-    {"pattern":"\\Qlog4j2.yml\\E"}, 
-    {"pattern":"\\Qmodule.yml\\E"}, 
-    {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}
-  ]},
+    "includes":[
+      {"pattern":"\\QMETA-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat\\E"},
+      {"pattern":"\\QMETA-INF/services/javax.script.ScriptEngineFactory\\E"},
+      {"pattern":"\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"},
+      {"pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"},
+      {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider\\E"},
+      {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.spi.Provider\\E"},
+      {"pattern":"\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E"},
+      {"pattern":"\\Qlibrocksdbjni-*\\E"},
+      {"pattern":"\\Qlog4j2.yml\\E"},
+      {"pattern":"\\Qmodule.yml\\E"},
+      {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}
+    ]},
   "bundles":[]
 }
