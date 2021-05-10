@@ -90,3 +90,7 @@ const val DOT_EXE = ".exe"
 const val DOT_JAR = ".jar"
 const val POWERSHELL = "powershell"
 const val JAR_OPTION = "-jar"
+
+const val TAR = "tar"
+const val TAR_EXTRACT_ZIP_OPTIONS = "xzf"
+const val TAR_DIRECTORY_OPTION = "-C"

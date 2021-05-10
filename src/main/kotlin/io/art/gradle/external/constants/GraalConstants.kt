@@ -20,6 +20,7 @@ package io.art.gradle.external.constants
 
 import io.art.gradle.external.constants.GraalJavaVersion.JAVA_11
 import io.art.gradle.external.constants.GraalJavaVersion.JAVA_8
+import io.art.gradle.external.constants.GraalPlatformName.*
 import io.art.gradle.external.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
 import java.net.URL
@@ -49,7 +50,10 @@ var GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS = listOf("install", "native-image")
 const val GRAALVM_RELEASES_BASE_URL = "https://github.com/graalvm/graalvm-ce-builds/releases/download"
 
 val GRAAL_ARCHIVE_NAME = { platform: GraalPlatformName, java: GraalJavaVersion, architecture: GraalArchitectureName, version: String ->
-    "graalvm-ce-${java.version}-${platform.platform}-${architecture.architecture}-$version.zip"
+    when (platform) {
+        WINDOWS -> "graalvm-ce-${java.version}-${platform.platform}-${architecture.architecture}-$version.zip"
+        LINUX, DARWIN -> "graalvm-ce-${java.version}-${platform.platform}-${architecture.architecture}-$version.tar.gz"
+    }
 }
 val GRAAL_UNPACKED_NAME = { java: GraalJavaVersion, version: String ->
     "graalvm-ce-${java.version}-$version"

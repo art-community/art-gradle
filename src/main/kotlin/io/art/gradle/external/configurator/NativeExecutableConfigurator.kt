@@ -22,12 +22,12 @@ import io.art.gradle.common.constants.ART
 import io.art.gradle.external.configuration.ExecutableConfiguration
 import io.art.gradle.external.configuration.ExecutableConfiguration.NativeExecutableConfiguration
 import io.art.gradle.external.constants.*
+import io.art.gradle.external.constants.GraalPlatformName.*
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.internal.os.OperatingSystem
-import org.gradle.kotlin.dsl.support.unzipTo
 import java.io.File
 import java.nio.file.Paths
 
@@ -93,11 +93,13 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
                 graalVersion
         )
         val archiveFile = graalDirectory.resolve(archiveName)
-        val binariesDirectory = graalDirectory
+        var binariesDirectory = graalDirectory
                 .resolve(GRAAL_UNPACKED_NAME(graalJavaVersion, graalVersion))
-                .resolve(BIN)
+                .walkTopDown()
+                .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
+                ?.parentFile
 
-        if (graalDirectory.exists() && binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).exists()) {
+        if (graalDirectory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
             return GraalPaths(
                     base = graalDirectory,
                     binary = binariesDirectory,
@@ -106,23 +108,49 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
         }
 
         if (!graalDirectory.exists()) {
-            if (!graalDirectory.mkdir()) throw GradleException()
+            if (!graalDirectory.mkdir()) throw GradleException("Unable to create directory: $graalDirectory")
         }
 
-        val url = GRAAL_DOWNLOAD_URL(archiveName, graalVersion)
-        url.openStream().use { input -> archiveFile.outputStream().use { output -> input.transferTo(output) } }
-        unzipTo(graalDirectory, archiveFile)
+        if (!archiveFile.exists()) {
+            GRAAL_DOWNLOAD_URL(archiveName, graalVersion).openStream().use { input ->
+                archiveFile.outputStream().use { output ->
+                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 2)
+                    var read: Int
+                    while (input.read(buffer, 0, DEFAULT_BUFFER_SIZE * 2).also { read = it } >= 0) {
+                        output.write(buffer, 0, read)
+                    }
+                }
+            }
+        }
+        when (graalPlatform) {
+            WINDOWS -> copy {
+                from(zipTree(archiveFile))
+                into(graalDirectory)
+            }
+            LINUX, DARWIN -> exec {
+                commandLine(TAR)
+                args(TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile)
+                args(TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile)
+            }
+        }
+
         archiveFile.delete()
 
+        binariesDirectory = graalDirectory
+                .resolve(GRAAL_UNPACKED_NAME(graalJavaVersion, graalVersion))
+                .walkTopDown()
+                .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
+                ?.parentFile ?: throw GradleException("Unable to find 'gu' executable for GraalVM")
+
         exec {
-            commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
+            commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)
             args(GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS)
         }
 
         return GraalPaths(
                 base = graalDirectory,
                 binary = binariesDirectory,
-                nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
+                nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
         )
     }
 }
