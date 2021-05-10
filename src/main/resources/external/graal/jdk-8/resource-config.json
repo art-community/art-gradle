@@ -14,7 +14,8 @@
       {"pattern":"\\Qlibrocksdbjni-linux-aarch64.so\\E"},
       {"pattern":"\\Qlibrocksdbjni-linux-ppc64le.so\\E"},
       {"pattern":"\\Qlibrocksdbjni-osx.jnilib\\E"},
-      {"pattern":"\\Qlibrocksdbjni-win64.dll,\\E"},
+      {"pattern":"\\Qlibrocksdbjni-win64.dll\\E"},
+      {"pattern":"\\Qlibrocksdbjni-win32.dll\\E"},
       {"pattern":"\\Qlog4j2.yml\\E"},
       {"pattern":"\\Qmodule.yml\\E"},
       {"pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"}
