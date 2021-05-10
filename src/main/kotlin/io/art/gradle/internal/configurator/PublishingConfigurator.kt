@@ -1,6 +1,7 @@
 package io.art.gradle.internal.configurator
 
 import io.art.gradle.internal.constants.*
+import io.art.gradle.common.constants.*
 import io.art.gradle.internal.service.loadProperty
 import io.art.gradle.internal.service.publishingRepositoryUrl
 import org.gradle.api.Project

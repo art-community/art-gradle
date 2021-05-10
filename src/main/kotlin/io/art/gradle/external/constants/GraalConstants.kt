@@ -137,5 +137,17 @@ enum class GraalVersion(val version: String) {
     LATEST("21.1.0"),
 }
 
+enum class GraalAgentOutputMode {
+    OVERWRITE,
+    MERGE
+}
+
 const val GRAAL_LLVM_OPTION = "-H:CompilerBackend=llvm"
 const val GRAAL_MUSL_OPTION = "--libc=musl"
+
+
+val GRAAL_AGENT_OUTPUT_DIR_OPTION = { path: Path -> "config-output-dir=${path.toAbsolutePath()}" }
+val GRAAL_AGENT_MERGE_DIR_OPTION = { path: Path -> "config-merge-dir=${path.toAbsolutePath()}" }
+val GRAAL_AGENT_WRITE_PERIOD_OPTION = { seconds: Long -> "config-write-period-secs=$seconds" }
+val GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION = { seconds: Long -> "config-write-initial-delay-secs=$seconds" }
+const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"

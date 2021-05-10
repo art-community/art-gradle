@@ -19,23 +19,61 @@
 package io.art.gradle.external.configurator
 
 import io.art.gradle.common.constants.ART
+import io.art.gradle.common.constants.JAVA
 import io.art.gradle.external.configuration.ExecutableConfiguration
-import io.art.gradle.external.configuration.ExecutableConfiguration.NativeExecutableConfiguration
+import io.art.gradle.external.configuration.NativeExecutableConfiguration
 import io.art.gradle.external.constants.*
+import io.art.gradle.external.constants.GraalAgentOutputMode.MERGE
+import io.art.gradle.external.constants.GraalAgentOutputMode.OVERWRITE
 import io.art.gradle.external.constants.GraalPlatformName.*
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import java.io.File
 import java.nio.file.Paths
 
 fun Project.configureNative() {
     with(externalPlugin.extension.executable) {
-        tasks.findByPath(BUILD_EXECUTABLE_NATIVE_TASK)?.let { return }
         if (!nativeEnabled) return
-
         mainClass ?: return
+
+        if (native.enableAgent) {
+            tasks.findByPath(RUN_WITH_NATIVE_IMAGE_AGENT)?.let { return }
+
+            tasks.register(RUN_WITH_NATIVE_IMAGE_AGENT, JavaExec::class.java) {
+                group = ART
+                val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
+                dependsOn(jarTask)
+                inputs.files(jarTask.outputs.files)
+
+                val graalPaths = downloadGraal(native)
+                prepareGraalConfiguration()
+
+                val outputPath = native.agentConfiguration.configurationPath
+                        ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
+                mainClass.set(native.agentConfiguration.executableClass ?: this@with.mainClass)
+
+                executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
+                classpath(jarTask.outputs.files)
+                workingDir(directory.toFile())
+
+                var agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION=" + when (native.agentConfiguration.outputMode) {
+                    OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(outputPath)
+                    MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(outputPath)
+                }
+
+                native.agentConfiguration.configurationWritePeriod?.let { period -> agentArgument += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
+                native.agentConfiguration.configurationWriteInitialDelay?.let { delay -> agentArgument += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
+
+                jvmArgs = listOf(agentArgument)
+
+                native.agentConfiguration.runConfigurator(this)
+            }
+        }
+
+        tasks.findByPath(BUILD_EXECUTABLE_NATIVE_TASK)?.let { return }
 
         val buildNative = tasks.register(BUILD_EXECUTABLE_NATIVE_TASK, Exec::class.java) {
             group = ART
@@ -45,20 +83,8 @@ fun Project.configureNative() {
             inputs.files(jarTask.outputs.files)
 
             val graalPaths = downloadGraal(native)
-            directory.resolve(GRAAL).toFile().apply {
-                mkdirs()
-                GRAAL_CONFIGURATION_FILES.forEach { json ->
-                    resolve(CONFIGURATION).apply {
-                        mkdir()
-                        val bytes = externalPlugin
-                                .javaClass
-                                .classLoader
-                                .getResourceAsStream(GRAAL_BASE_RESOURCE_CONFIGURATION_PATH(native.graalJavaVersion, json))!!
-                                .readBytes()
-                        resolve(json).writeBytes(bytes)
-                    }
-                }
-            }
+            prepareGraalConfiguration()
+
             when {
                 OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths)
                 else -> useUnixBuilder(this@with, graalPaths)
@@ -159,6 +185,23 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
                 binary = binariesDirectory,
                 nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
         )
+    }
+}
+
+private fun ExecutableConfiguration.prepareGraalConfiguration() {
+    directory.resolve(GRAAL).toFile().apply {
+        mkdirs()
+        GRAAL_CONFIGURATION_FILES.forEach { json ->
+            resolve(CONFIGURATION).apply {
+                mkdir()
+                val bytes = externalPlugin
+                        .javaClass
+                        .classLoader
+                        .getResourceAsStream(GRAAL_BASE_RESOURCE_CONFIGURATION_PATH(native.graalJavaVersion, json))!!
+                        .readBytes()
+                resolve(json).writeBytes(bytes)
+            }
+        }
     }
 }
 
