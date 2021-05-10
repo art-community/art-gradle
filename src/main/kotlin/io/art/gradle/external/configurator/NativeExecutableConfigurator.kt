@@ -32,6 +32,7 @@ import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import java.io.File
+import java.nio.file.Path
 import java.nio.file.Paths
 
 fun Project.configureNative() {
@@ -40,37 +41,7 @@ fun Project.configureNative() {
         mainClass ?: return
 
         if (native.enableAgent) {
-            tasks.findByPath(RUN_WITH_NATIVE_IMAGE_AGENT)?.let { return }
-
-            tasks.register(RUN_WITH_NATIVE_IMAGE_AGENT, JavaExec::class.java) {
-                group = ART
-                val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
-                dependsOn(jarTask)
-                inputs.files(jarTask.outputs.files)
-
-                val graalPaths = downloadGraal(native)
-                prepareGraalConfiguration()
-
-                val outputPath = native.agentConfiguration.configurationPath
-                        ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
-                mainClass.set(native.agentConfiguration.executableClass ?: this@with.mainClass)
-
-                executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
-                classpath(jarTask.outputs.files)
-                workingDir(directory.toFile())
-
-                var agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION=" + when (native.agentConfiguration.outputMode) {
-                    OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(outputPath)
-                    MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(outputPath)
-                }
-
-                native.agentConfiguration.configurationWritePeriod?.let { period -> agentArgument += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
-                native.agentConfiguration.configurationWriteInitialDelay?.let { delay -> agentArgument += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
-
-                jvmArgs = listOf(agentArgument)
-
-                native.agentConfiguration.runConfigurator(this)
-            }
+            configureAgent(this)
         }
 
         tasks.findByPath(BUILD_EXECUTABLE_NATIVE_TASK)?.let { return }
@@ -79,11 +50,13 @@ fun Project.configureNative() {
             group = ART
 
             val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
+
             dependsOn(jarTask)
             inputs.files(jarTask.outputs.files)
 
             val graalPaths = downloadGraal(native)
-            prepareGraalConfiguration()
+            val configurations = native.graalConfigurationDirectory ?: Paths.get(GRAAL).resolve(CONFIGURATION)
+            extractGraalConfigurations(configurations)
 
             when {
                 OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths)
@@ -106,6 +79,39 @@ fun Project.configureNative() {
 
             native.runConfigurator(this)
         }
+    }
+}
+
+private fun Project.configureAgent(executableConfiguration: ExecutableConfiguration) = with(executableConfiguration) {
+    project.tasks.findByPath(RUN_WITH_NATIVE_IMAGE_AGENT)?.let { return@with }
+
+    project.tasks.register(RUN_WITH_NATIVE_IMAGE_AGENT, JavaExec::class.java) {
+        group = ART
+        val jarTask = project.tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
+        dependsOn(jarTask)
+        inputs.files(jarTask.outputs.files)
+
+        val graalPaths = project.downloadGraal(native)
+        val outputPath = native.agentConfiguration.configurationPath ?: Paths.get(GRAAL).resolve(CONFIGURATION)
+        extractGraalConfigurations(outputPath)
+
+        mainClass.set(native.agentConfiguration.executableClass ?: this@with.mainClass)
+
+        executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
+        classpath(jarTask.outputs.files)
+        workingDir(directory.toFile())
+
+        var agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION=" + when (native.agentConfiguration.outputMode) {
+            OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(directory.resolve(outputPath))
+            MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(directory.resolve(outputPath))
+        }
+
+        native.agentConfiguration.configurationWritePeriod?.let { period -> agentArgument += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
+        native.agentConfiguration.configurationWriteInitialDelay?.let { delay -> agentArgument += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
+
+        jvmArgs = listOf(agentArgument)
+
+        native.agentConfiguration.runConfigurator(this)
     }
 }
 
@@ -141,7 +147,7 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
         }
 
         if (!graalDirectory.exists()) {
-            if (!graalDirectory.mkdir()) throw unableToCreateDirectory(graalDirectory)
+            graalDirectory.mkdir()
         }
 
         if (!archiveFile.exists()) {
@@ -188,19 +194,21 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
     }
 }
 
-private fun ExecutableConfiguration.prepareGraalConfiguration() {
-    directory.resolve(GRAAL).toFile().apply {
-        mkdirs()
-        GRAAL_CONFIGURATION_FILES.forEach { json ->
-            resolve(CONFIGURATION).apply {
-                mkdir()
-                val bytes = externalPlugin
-                        .javaClass
-                        .classLoader
-                        .getResourceAsStream(GRAAL_BASE_RESOURCE_CONFIGURATION_PATH(native.graalJavaVersion, json))!!
-                        .readBytes()
-                resolve(json).writeBytes(bytes)
+private fun ExecutableConfiguration.extractGraalConfigurations(path: Path) {
+    GRAAL_CONFIGURATION_FILES.forEach { json ->
+        directory.resolve(path).toFile().apply {
+            if (!exists()) {
+                mkdirs()
             }
+            if (resolve(json).exists()) {
+                return@forEach
+            }
+            val bytes = externalPlugin
+                    .javaClass
+                    .classLoader
+                    .getResourceAsStream(GRAAL_BASE_RESOURCE_CONFIGURATION_PATH(native.graalJavaVersion, json))!!
+                    .readBytes()
+            resolve(json).writeBytes(bytes)
         }
     }
 }

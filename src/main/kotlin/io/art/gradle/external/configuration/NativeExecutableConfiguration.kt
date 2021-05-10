@@ -24,7 +24,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var enableAgent = false
         private set
 
-
     var graalVersion: String = GraalVersion.LATEST.version
         private set
 
@@ -49,6 +48,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     var graalDirectory: Path? = null
+        private set
+
+    var graalConfigurationDirectory: Path? = null
         private set
 
     var graalOptions: MutableList<String> = GRAAL_MANDATORY_OPTIONS.toMutableList()
@@ -92,6 +94,10 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
     fun graalDirectory(directory: String) {
         this.graalDirectory = Paths.get(directory)
+    }
+
+    fun graalConfigurationDirectory(directory: String) {
+        this.graalConfigurationDirectory = Paths.get(directory)
     }
 
     fun replaceGraalOptions(options: (current: List<String>) -> List<String>) {
