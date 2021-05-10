@@ -34,7 +34,7 @@ import kotlin.with
 fun Project.configureJar() {
     with(externalPlugin.extension.executable) {
         tasks.findByPath(BUILD_EXECUTABLE_JAR_TASK)?.let { return }
-        if (!jarEnabled) return
+        if (!nativeEnabled && !jarEnabled) return
 
         mainClass ?: return
 

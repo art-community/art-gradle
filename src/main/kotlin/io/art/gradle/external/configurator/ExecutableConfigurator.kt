@@ -30,9 +30,7 @@ fun Project.configureExecutable() {
 }
 
 fun Project.addEmbeddedConfiguration() {
-    val implementation: Configuration = configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME) ?: return
-    val embedded: Configuration by configurations.creating { implementation.extendsFrom(this) }
-    if (!implementation.extendsFrom.contains(embedded)) {
-        implementation.extendsFrom(embedded)
+    val embedded: Configuration by configurations.creating {
+        configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME)?.extendsFrom(this)
     }
 }

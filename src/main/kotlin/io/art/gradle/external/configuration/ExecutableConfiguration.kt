@@ -34,7 +34,6 @@ import org.gradle.api.tasks.Exec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.newInstance
-import org.gradle.process.ExecSpec
 import org.gradle.process.JavaExecSpec
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -68,12 +67,12 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         this.directory = directory
     }
 
-    fun jar(action: Action<in JarExecutableConfiguration>) {
+    fun jar(action: Action<in JarExecutableConfiguration> = Action {  }) {
         action.execute(jar)
         jarEnabled = true
     }
 
-    fun native(action: Action<in NativeExecutableConfiguration>) {
+    fun native(action: Action<in NativeExecutableConfiguration> = Action {  }) {
         action.execute(native)
         nativeEnabled = true
     }
@@ -108,7 +107,7 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         }
 
         fun addManifestAttributes(attributes: Map<String, String>) {
-            manifestAdditionalAttributes += attributes
+            manifestAdditionalAttributes.putAll(attributes)
         }
 
         fun replaceManifestAttributes(attributes: Map<String, String>) {
@@ -116,7 +115,7 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         }
 
         fun addExclusions(exclusions: Set<String>) {
-            this.exclusions += exclusions
+            this.exclusions.addAll(exclusions)
         }
 
         fun replaceExclusions(exclusions: Set<String>) {
@@ -203,7 +202,7 @@ open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFact
         }
 
         fun addGraalOptions(options: List<String>) {
-            this.graalOptions += options
+            this.graalOptions.addAll(options)
         }
 
         fun graalWindowsVcVarsPath() {

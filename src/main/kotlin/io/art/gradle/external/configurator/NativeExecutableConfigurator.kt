@@ -109,7 +109,9 @@ private fun Project.downloadGraal(configuration: NativeExecutableConfiguration):
             )
         }
 
-        if (!graalDirectory.mkdir()) throw GradleException()
+        if (!graalDirectory.exists()) {
+            if (!graalDirectory.mkdir()) throw GradleException()
+        }
 
         val url = GRAAL_DOWNLOAD_URL(archiveName, graalVersion)
         url.openStream().use { input -> archiveFile.outputStream().use { output -> input.transferTo(output) } }
