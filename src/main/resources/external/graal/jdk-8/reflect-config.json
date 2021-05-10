@@ -28,25 +28,29 @@
   "name":"com.sun.management.GarbageCollectorMXBean",
   "allPublicMethods":true
 },
-{
-  "name":"com.sun.management.GcInfo",
-  "allPublicMethods":true
-},
-{
-  "name":"com.sun.management.HotSpotDiagnosticMXBean",
-  "allPublicMethods":true
-},
-{
-  "name":"com.sun.management.ThreadMXBean",
-  "allPublicMethods":true
-},
-{
-  "name":"com.sun.management.UnixOperatingSystemMXBean",
-  "allPublicMethods":true
-},
-{
-  "name":"com.sun.management.VMOption",
-  "allPublicMethods":true
+  {
+    "name": "com.sun.management.GcInfo",
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.HotSpotDiagnosticMXBean",
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.OperatingSystemMXBean",
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.ThreadMXBean",
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.UnixOperatingSystemMXBean",
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.sun.management.VMOption",
+    "allPublicMethods": true
 },
 {
   "name":"com.sun.xml.internal.stream.XMLInputFactoryImpl",
@@ -412,26 +416,30 @@
 {
   "name":"javax.management.openmbean.CompositeData"
 },
-{
-  "name":"javax.management.openmbean.CompositeData[]"
-},
-{
-  "name":"javax.management.openmbean.OpenMBeanOperationInfoSupport"
-},
-{
-  "name":"javax.management.openmbean.TabularData"
-},
-{
-  "name":"jdk.management.jfr.ConfigurationInfo",
-  "allPublicMethods":true
-},
-{
-  "name":"jdk.management.jfr.EventTypeInfo",
-  "allPublicMethods":true
-},
-{
-  "name":"jdk.management.jfr.FlightRecorderMXBean",
-  "allPublicMethods":true
+  {
+    "name": "javax.management.openmbean.CompositeData[]"
+  },
+  {
+    "name": "javax.management.openmbean.OpenMBeanOperationInfoSupport"
+  },
+  {
+    "name": "javax.management.openmbean.TabularData"
+  },
+  {
+    "name": "jdk.Exported",
+    "allPublicMethods": true
+  },
+  {
+    "name": "jdk.management.jfr.ConfigurationInfo",
+    "allPublicMethods": true
+  },
+  {
+    "name": "jdk.management.jfr.EventTypeInfo",
+    "allPublicMethods": true
+  },
+  {
+    "name": "jdk.management.jfr.FlightRecorderMXBean",
+    "allPublicMethods": true
 },
 {
   "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
@@ -827,71 +835,145 @@
   "name":"short[]"
 },
 {
-  "name":"sun.management.ClassLoadingImpl",
-  "allPublicConstructors":true
+  "name": "sun.management.ClassLoadingImpl",
+  "allPublicConstructors": true
 },
-{
-  "name":"sun.management.CompilationImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.GarbageCollectorImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.ManagementFactoryHelper$1",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.MemoryImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.MemoryManagerImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.MemoryPoolImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.RuntimeImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.management.ThreadImpl",
-  "allPublicConstructors":true
-},
-{
-  "name":"sun.misc.Unsafe",
-  "fields":[{"name":"theUnsafe"}],
-  "methods":[
-    {"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] }, 
-    {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] }, 
-    {
-      "name": "getAndSetObject",
-      "parameterTypes": [
-        "java.lang.Object",
-        "long",
-        "java.lang.Object"
-      ]
-    }
-  ]
-},
-{
-  "name":"sun.security.provider.NativePRNG",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.SHA",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.Sun",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-}
+  {
+    "name": "sun.management.CompilationImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.GarbageCollectorImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.HotSpotDiagnostic",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.ManagementFactoryHelper$1",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.ManagementFactoryHelper$LoggingMXBean",
+    "allPublicMethods": true
+  },
+  {
+    "name": "sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.MemoryImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.MemoryManagerImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.MemoryPoolImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.OperatingSystemImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.RuntimeImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.management.ThreadImpl",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.misc.Cleaner",
+    "methods": [
+      {
+        "name": "clean",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.misc.Unsafe",
+    "fields": [
+      {
+        "name": "theUnsafe"
+      }
+    ],
+    "methods": [
+      {
+        "name": "copyMemory",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "java.lang.Object",
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "getAndAddLong",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "long"
+        ]
+      },
+      {
+        "name": "getAndSetObject",
+        "parameterTypes": [
+          "java.lang.Object",
+          "long",
+          "java.lang.Object"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sun.misc.VM",
+    "methods": [
+      {
+        "name": "maxDirectMemory",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.security.provider.NativePRNG",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.security.provider.SHA",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.security.provider.SecureRandom",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "sun.security.provider.Sun",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  }
 ]
