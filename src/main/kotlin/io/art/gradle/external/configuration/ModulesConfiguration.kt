@@ -21,8 +21,9 @@ package io.art.gradle.external.configuration
 import io.art.gradle.external.constants.ArtVersion.MAIN
 import io.art.gradle.external.constants.EMBEDDED_CONFIGURATION_NAME
 import io.art.gradle.external.constants.IMPLEMENTATION_CONFIGURATION_NAME
-import io.art.gradle.external.constants.JAVA_MODULES
-import io.art.gradle.external.constants.KOTLIN_MODULES
+import io.art.gradle.external.constants.JavaModules
+import io.art.gradle.external.constants.JavaModules.*
+import io.art.gradle.external.constants.KotlinModules
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectSet
@@ -32,7 +33,7 @@ import org.gradle.kotlin.dsl.newInstance
 import javax.inject.Inject
 
 open class ModulesConfiguration @Inject constructor(private val objectFactory: ObjectFactory) {
-    val modules: NamedDomainObjectSet<ModuleDependenciesConfiguration> = objectFactory.namedDomainObjectSet(ModuleDependenciesConfiguration::class).apply {
+    val dependencies: NamedDomainObjectSet<ModuleDependenciesConfiguration> = objectFactory.namedDomainObjectSet(ModuleDependenciesConfiguration::class).apply {
         add(objectFactory.newInstance(IMPLEMENTATION_CONFIGURATION_NAME))
         add(objectFactory.newInstance(EMBEDDED_CONFIGURATION_NAME))
     }
@@ -40,13 +41,13 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
     var version = MAIN.version
         private set
 
-    fun used(action: Action<in ModuleDependenciesConfiguration>) {
-        modules.named(IMPLEMENTATION_CONFIGURATION_NAME, action)
+    fun implementation(action: Action<in ModuleDependenciesConfiguration>) {
+        dependencies.named(IMPLEMENTATION_CONFIGURATION_NAME, action)
     }
 
     fun embedded(action: Action<in ModuleDependenciesConfiguration>) {
-        used(action)
-        modules.named(EMBEDDED_CONFIGURATION_NAME, action)
+        implementation(action)
+        dependencies.named(EMBEDDED_CONFIGURATION_NAME, action)
     }
 
     fun version(version: String) {
@@ -69,118 +70,118 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
     }
 
     open class JavaModulesConfiguration @Inject constructor() {
-        val modules = mutableSetOf<String>()
+        val modules = mutableSetOf<JavaModules>()
 
         fun kit() {
-            modules.addAll(JAVA_MODULES)
+            modules.addAll(JavaModules.values())
         }
 
         fun core() {
-            modules.add("core")
+            modules.add(CORE)
         }
 
         fun logging() {
-            modules.add("logging")
+            modules.add(LOGGING)
         }
 
         fun value() {
-            modules.add("value")
+            modules.add(VALUE)
         }
 
         fun scheduler() {
-            modules.add("scheduler")
+            modules.add(SCHEDULER)
         }
 
         fun configurator() {
-            modules.add("configurator")
+            modules.add(CONFIGURATOR)
         }
 
 
         fun xml() {
-            modules.add("xml")
+            modules.add(XML)
         }
 
         fun json() {
-            modules.add("json")
+            modules.add(JSON)
         }
 
         fun protobuf() {
-            modules.add("protobuf")
+            modules.add(PROTOBUF)
         }
 
         fun messagePack() {
-            modules.add("message-pack")
+            modules.add(MESSAGE_PACK)
         }
 
         fun yamlConfiguration() {
-            modules.add("yaml-configuration")
+            modules.add(YAML_CONFIGURATION)
         }
 
         fun yaml() {
-            modules.add("yaml")
+            modules.add(YAML)
         }
 
 
         fun resilience() {
-            modules.add("resilience")
+            modules.add(RESILIENCE)
         }
 
         fun transport() {
-            modules.add("transport")
+            modules.add(TRANSPORT)
         }
 
         fun server() {
-            modules.add("server")
+            modules.add(SERVER)
         }
 
         fun communicator() {
-            modules.add("communicator")
+            modules.add(COMMUNICATOR)
         }
 
         fun http() {
-            modules.add("http")
+            modules.add(HTTP)
         }
 
         fun rsocket() {
-            modules.add("rsocket")
+            modules.add(RSOCKET)
         }
 
 
         fun rocksdb() {
-            modules.add("rocks-db")
+            modules.add(ROCKS_DB)
         }
 
         fun tarantool() {
-            modules.add("tarantool")
+            modules.add(TARANTOOL)
         }
 
 
         fun meta() {
-            modules.add("meta")
+            modules.add(META)
         }
 
         fun graal() {
-            modules.add("graal")
+            modules.add(JavaModules.GRAAL)
         }
 
         fun storage() {
-            modules.add("storage")
+            modules.add(STORAGE)
         }
 
         fun model() {
-            modules.add("model")
+            modules.add(MODEL)
         }
 
         fun launcher() {
-            modules.add("launcher")
+            modules.add(LAUNCHER)
         }
     }
 
     open class KotlinModulesConfiguration @Inject constructor() {
-        val modules = mutableSetOf<String>()
+        val modules = mutableSetOf<KotlinModules>()
 
         fun kit() {
-            modules.addAll(KOTLIN_MODULES)
+            modules.addAll(KotlinModules.values())
         }
     }
 }

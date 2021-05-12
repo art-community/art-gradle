@@ -36,7 +36,6 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
-import java.nio.channels.FileChannel.*
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -181,7 +180,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
 
         val options = defaultOptions + native.graalOptions + optionsByProperty
 
-        val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY)?.let { property -> Paths.get(property as String) }
+        val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
                 ?: throw graalWindowsVSVarsPathIsEmpty()
 

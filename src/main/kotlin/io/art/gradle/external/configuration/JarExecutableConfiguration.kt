@@ -1,6 +1,6 @@
 package io.art.gradle.external.configuration
 
-import io.art.gradle.external.constants.MANIFEST_EXCLUSIONS
+import io.art.gradle.external.constants.DEFAULT_JAR_EXCLUSIONS
 import org.gradle.api.JavaVersion.VERSION_1_9
 import org.gradle.api.JavaVersion.current
 import org.gradle.api.file.DuplicatesStrategy
@@ -27,7 +27,7 @@ open class JarExecutableConfiguration @Inject constructor() {
     var manifestAttributesReplacer: (current: Map<String, String>) -> Map<String, String> = { it }
         private set
 
-    var exclusions = MANIFEST_EXCLUSIONS.toMutableSet()
+    var exclusions = DEFAULT_JAR_EXCLUSIONS.toMutableSet()
         private set
 
 

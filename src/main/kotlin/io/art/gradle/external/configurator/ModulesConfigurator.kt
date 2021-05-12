@@ -30,7 +30,7 @@ import org.gradle.kotlin.dsl.repositories
 
 fun Project.configureModules() {
     with(externalPlugin.extension.modules) {
-        if (modules.isEmpty()) return
+        if (dependencies.isEmpty()) return
 
         repositories {
             maven {
@@ -39,15 +39,15 @@ fun Project.configureModules() {
         }
 
         dependencies {
-            this@with.modules.asMap.forEach { module ->
+            this@with.dependencies.asMap.forEach { dependency ->
                 if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
-                    module.value.java.modules.forEach { name ->
-                        add(module.key, "$JAVA_GROUP:${name}:$version")
+                    dependency.value.java.modules.forEach { module ->
+                        add(dependency.key, "$JAVA_GROUP:${module.artifact}:$version")
                     }
                 }
                 if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
-                    module.value.kotlin.modules.forEach { name ->
-                        add(module.key, "$KOTLIN_GROUP:${name}:$version")
+                    dependency.value.kotlin.modules.forEach { module ->
+                        add(dependency.key, "$KOTLIN_GROUP:${module.artifact}:$version")
                     }
                 }
             }

@@ -35,47 +35,44 @@ const val BUILD = "build"
 const val JAR = "jar"
 const val EXECUTABLE = "executable"
 
-val MANIFEST_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")
+val DEFAULT_JAR_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")
+
+const val JAVA_GROUP = "io.art.java"
+const val KOTLIN_GROUP = "io.art.kotlin"
 
 enum class ArtVersion(val version: String) {
     MAIN("main")
 }
 
-const val JAVA_GROUP = "io.art.java"
-const val KOTLIN_GROUP = "io.art.kotlin"
+enum class JavaModules(val artifact: String) {
+    CORE("core"),
+    LOGGING("logging"),
+    VALUE("value"),
+    SCHEDULER("scheduler"),
+    CONFIGURATOR("configurator"),
+    XML("xml"),
+    JSON("json"),
+    PROTOBUF("protobuf"),
+    MESSAGE_PACK("message-pack"),
+    YAML_CONFIGURATION("yaml-configuration"),
+    YAML("yaml"),
+    RESILIENCE("resilience"),
+    TRANSPORT("transport"),
+    SERVER("server"),
+    COMMUNICATOR("communicator"),
+    HTTP("http"),
+    RSOCKET("rsocket"),
+    ROCKS_DB("rocks-db"),
+    TARANTOOL("tarantool"),
+    META("meta"),
+    GRAAL("graal"),
+    STORAGE("storage"),
+    MODEL("model"),
+    LAUNCHER("launcher")
+}
 
-val JAVA_MODULES = setOf(
-        "core",
-        "logging",
-        "value",
-        "scheduler",
-
-        "json",
-        "message-pack",
-        "protobuf",
-        "xml",
-        "yaml",
-        "yaml-configuration",
-
-        "transport",
-        "resilience",
-        "communicator",
-        "server",
-
-        "http",
-        "rsocket",
-        "configurator",
-
-        "storage",
-        "rocks-db",
-        "tarantool",
-
-        "meta",
-        "model",
-        "launcher",
-)
-
-val KOTLIN_MODULES = setOf<String>()
+enum class KotlinModules(val artifact: String) {
+}
 
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
 

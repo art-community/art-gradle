@@ -25,6 +25,7 @@ import io.art.gradle.external.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
 import java.net.URL
 import java.nio.file.Path
+import java.time.Duration
 import java.time.Duration.ofMinutes
 
 const val GRAAL = "graal"
@@ -82,7 +83,7 @@ val GRAAL_CONFIGURATION_FILES = listOf(
         GRAAL_ACCESS_FILTER_CONFIGURATION
 )
 
-var GRAAL_MANDATORY_OPTIONS = listOf(
+var GRAAL_DEFAULT_OPTIONS = listOf(
         "-H:+ReportExceptionStackTraces",
         "--enable-http",
         "--enable-https",
@@ -98,9 +99,6 @@ var GRAAL_MANDATORY_OPTIONS = listOf(
 )
 
 val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
-
-const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_SCRIPT_PROPERTY = "windowsVisualStudioVarsScript"
-const val GRAAL_OPTIONS_PROPERTY = "native-options"
 
 val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath: Path, graalOptions: List<String> ->
     """
@@ -152,7 +150,6 @@ enum class GraalAgentOutputMode {
 const val GRAAL_LLVM_OPTION = "-H:CompilerBackend=llvm"
 const val GRAAL_MUSL_OPTION = "--libc=musl"
 
-
 val GRAAL_AGENT_OUTPUT_DIR_OPTION = { path: Path -> "config-output-dir=${path.toAbsolutePath()}" }
 val GRAAL_AGENT_MERGE_DIR_OPTION = { path: Path -> "config-merge-dir=${path.toAbsolutePath()}" }
 val GRAAL_AGENT_WRITE_PERIOD_OPTION = { seconds: Long -> "config-write-period-secs=$seconds" }
@@ -161,4 +158,8 @@ val GRAAL_AGENT_ACCESS_FILTER_OPTION = { path: Path -> "access-filter-file=${pat
 val GRAAL_AGENT_CALLER_FILTER_OPTION = { path: Path -> "caller-filter-file=${path.toAbsolutePath()}" }
 const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"
 
-val GRAAL_DOWNLOAD_TIMEOUT = ofMinutes(10)
+val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(10)
+
+
+const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY = "windowsVisualStudioVars"
+const val GRAAL_OPTIONS_PROPERTY = "native-options"

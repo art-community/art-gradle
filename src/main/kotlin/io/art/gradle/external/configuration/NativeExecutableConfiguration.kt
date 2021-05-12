@@ -56,7 +56,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var graalConfigurationDirectory: Path? = null
         private set
 
-    var graalOptions: MutableList<String> = GRAAL_MANDATORY_OPTIONS.toMutableList()
+    var graalOptions: MutableList<String> = GRAAL_DEFAULT_OPTIONS.toMutableList()
         private set
 
     var graalOptionsReplacer: (current: List<String>) -> List<String> = { it }
@@ -74,7 +74,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var buildConfigurator: Exec.() -> Unit = {}
         private set
 
-    fun windowsVisualStudioVarsScript(absoluteScriptPath: String) {
+    fun windowsVisualStudioVars(absoluteScriptPath: String) {
         graalWindowsVcVarsPath = Paths.get(absoluteScriptPath)
     }
 
