@@ -1,5 +1,6 @@
 package io.art.gradle.external.graal
 
+import io.art.gradle.common.logger.additional
 import io.art.gradle.external.configuration.NativeExecutableConfiguration
 import io.art.gradle.external.constants.*
 import io.art.gradle.external.constants.GraalPlatformName.*
@@ -70,6 +71,7 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
     }
 
     if (!archiveFile.exists()) {
+        additional("Downloading GraalVM...")
         GRAAL_DOWNLOAD_URL(archiveName, configuration.graalVersion).openStream().use { input ->
             archiveFile.outputStream().use { output ->
                 val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 2)

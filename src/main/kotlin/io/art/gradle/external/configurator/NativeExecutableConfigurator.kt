@@ -28,7 +28,7 @@ import io.art.gradle.external.constants.*
 import io.art.gradle.external.constants.GraalAgentOutputMode.MERGE
 import io.art.gradle.external.constants.GraalAgentOutputMode.OVERWRITE
 import io.art.gradle.external.constants.GraalJavaVersion.JAVA_8
-import io.art.gradle.external.constants.GraalPlatformName.*
+import io.art.gradle.external.constants.GraalPlatformName.DARWIN
 import io.art.gradle.external.graal.downloadGraal
 import io.art.gradle.external.model.GraalPaths
 import io.art.gradle.external.plugin.externalPlugin
@@ -68,13 +68,16 @@ fun Project.configureNative() {
 
             inputs.files(jarTask.outputs.files)
 
-            val graalPaths = downloadGraal(native)
-            val configurations = native.graalConfigurationDirectory ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
-            extractGraalConfigurations(configurations)
+            doFirst {
+                val graalPaths = downloadGraal(native)
+                val configurations = native.graalConfigurationDirectory
+                        ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
+                extractGraalConfigurations(configurations)
 
-            when {
-                OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths)
-                else -> useUnixBuilder(this@with, graalPaths)
+                when {
+                    OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths)
+                    else -> useUnixBuilder(this@with, graalPaths)
+                }
             }
 
             native.buildConfigurator(this)
