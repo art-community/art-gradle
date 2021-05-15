@@ -1,7 +1,4 @@
 {
   "rules": [
-    {
-      "excludeClasses": "org.apache.logging.log4j.**"
-    }
   ]
 }

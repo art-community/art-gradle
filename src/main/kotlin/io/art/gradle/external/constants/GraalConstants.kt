@@ -94,7 +94,7 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
-        "--initialize-at-build-time=io.art,com.fasterxml.jackson,com.google.common,org.apache.logging.log4j.spi.StandardLevel",
+        "--initialize-at-build-time=io.art,com.fasterxml.jackson,com.google.common",
         "--initialize-at-run-time=io.netty"
 )
 
