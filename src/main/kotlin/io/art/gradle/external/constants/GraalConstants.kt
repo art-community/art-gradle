@@ -95,7 +95,7 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
-        "--initialize-at-build-time=io.art,com.fasterxml.jackson,org.yaml,com.google,com.typesafe,io.vavr,io.github.resilience4j,io.projectreactor,io.tarantool,org.rocksdb",
+        "--initialize-at-build-time=io.art,com.fasterxml.jackson,org.yaml,com.google,com.typesafe,io.vavr,io.github.resilience4j,io.projectreactor,io.tarantool",
         "--initialize-at-run-time=io.netty"
 )
 
