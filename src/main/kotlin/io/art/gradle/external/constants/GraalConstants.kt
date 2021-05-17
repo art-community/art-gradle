@@ -96,7 +96,7 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
         "--report-unsupported-elements-at-runtime",
         "--allow-incomplete-classpath",
         "--initialize-at-build-time=io.art,com.fasterxml.jackson,org.yaml,com.google,com.typesafe,io.vavr,io.github.resilience4j,io.projectreactor,io.tarantool",
-        "--initialize-at-run-time=io.netty"
+        "--initialize-at-run-time=io.netty",
 )
 
 val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
