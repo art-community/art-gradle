@@ -107,38 +107,41 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
         val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
         dependsOn(jarTask)
         inputs.files(jarTask.outputs.files)
-
-        val graalPaths = downloadGraal(native)
-        val outputPath = native.agentConfiguration.configurationPath ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
-        extractGraalConfigurations(outputPath)
-
         mainClass.set(native.agentConfiguration.executableClass ?: this@with.mainClass)
-
-        executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
         classpath(jarTask.outputs.files)
         workingDir(directory.toFile())
 
-        native.agentConfiguration.apply {
-            val agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION="
-            val options = mutableListOf<String>()
-            options += when (outputMode) {
-                OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(outputPath)
-                MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(outputPath)
+        doFirst {
+            val graalPaths = downloadGraal(native)
+            val outputPath = native.agentConfiguration.configurationPath
+                    ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
+
+            extractGraalConfigurations(outputPath)
+
+            executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
+
+            native.agentConfiguration.apply {
+                val agentArgument = "$GRAAL_NATIVE_IMAGE_AGENT_OPTION="
+                val options = mutableListOf<String>()
+                options += when (outputMode) {
+                    OVERWRITE -> GRAAL_AGENT_OUTPUT_DIR_OPTION(outputPath)
+                    MERGE -> GRAAL_AGENT_MERGE_DIR_OPTION(outputPath)
+                }
+
+                configurationWritePeriod?.let { period -> options += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
+                configurationWriteInitialDelay?.let { delay -> options += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
+
+                val accessFilter = accessFilter ?: outputPath.resolve(GRAAL_ACCESS_FILTER_CONFIGURATION)
+                val callerFilter = callerFilter ?: outputPath.resolve(GRAAL_CALLER_FILTER_CONFIGURATION)
+                accessFilter.let { path -> options += ",${GRAAL_AGENT_ACCESS_FILTER_OPTION(path)}" }
+                callerFilter.let { path -> options += ",${GRAAL_AGENT_CALLER_FILTER_OPTION(path)}" }
+
+                agentOptions.forEach { option -> options += ",$option" }
+
+                jvmArgs = listOf(agentArgument + agentOptionsReplacer(options).joinToString(EMPTY_STRING))
+
+                runConfigurator(this@register)
             }
-
-            configurationWritePeriod?.let { period -> options += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
-            configurationWriteInitialDelay?.let { delay -> options += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
-
-            val accessFilter = accessFilter ?: outputPath.resolve(GRAAL_ACCESS_FILTER_CONFIGURATION)
-            val callerFilter = callerFilter ?: outputPath.resolve(GRAAL_CALLER_FILTER_CONFIGURATION)
-            accessFilter.let { path -> options += ",${GRAAL_AGENT_ACCESS_FILTER_OPTION(path)}" }
-            callerFilter.let { path -> options += ",${GRAAL_AGENT_CALLER_FILTER_OPTION(path)}" }
-
-            agentOptions.forEach { option -> options += ",$option" }
-
-            jvmArgs = listOf(agentArgument + agentOptionsReplacer(options).joinToString(EMPTY_STRING))
-
-            runConfigurator(this@register)
         }
     }
 }
