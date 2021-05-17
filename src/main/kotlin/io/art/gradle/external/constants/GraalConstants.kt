@@ -85,6 +85,7 @@ val GRAAL_CONFIGURATION_FILES = listOf(
 
 var GRAAL_DEFAULT_OPTIONS = listOf(
         "-H:+ReportExceptionStackTraces",
+        "-H:+JNI",
         "--enable-http",
         "--enable-https",
         "--enable-url-protocols",
