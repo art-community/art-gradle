@@ -27,7 +27,6 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
-import kotlin.with
 
 
 fun Project.configureJar() {
@@ -46,7 +45,7 @@ fun Project.configureJar() {
                     val id = from.id as ProjectComponentIdentifier
                     gradle.includedBuilds
                             .filter { build -> id.build.name == build.name }
-                            .forEach { build -> dependsOn(build.task(":${id.projectName}:${JAR}")) }
+                            .forEach { build -> dependsOn(build.task(":${id.projectName}:$JAR")) }
                     rootProject
                             .subprojects
                             .filter { subProject -> id.build.isCurrentBuild && subProject.name == id.projectName }
