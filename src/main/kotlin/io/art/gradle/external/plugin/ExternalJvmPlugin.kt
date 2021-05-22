@@ -51,5 +51,3 @@ class ExternalJvmPlugin : Plugin<Project> {
         }.onFailure { error -> target.logger.error(error.message, error) }
     }
 }
-
-
