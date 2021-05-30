@@ -50,7 +50,6 @@ enum class JavaModules(val artifact: String) {
     VALUE("value"),
     SCHEDULER("scheduler"),
     CONFIGURATOR("configurator"),
-    XML("xml"),
     JSON("json"),
     PROTOBUF("protobuf"),
     MESSAGE_PACK("message-pack"),

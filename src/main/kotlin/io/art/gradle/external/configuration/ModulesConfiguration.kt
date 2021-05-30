@@ -96,11 +96,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(CONFIGURATOR)
         }
 
-
-        fun xml() {
-            modules.add(XML)
-        }
-
         fun json() {
             modules.add(JSON)
         }
