@@ -100,10 +100,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(JSON)
         }
 
-        fun protobuf() {
-            modules.add(PROTOBUF)
-        }
-
         fun messagePack() {
             modules.add(MESSAGE_PACK)
         }
