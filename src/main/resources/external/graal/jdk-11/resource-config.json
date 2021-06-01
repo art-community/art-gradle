@@ -11,24 +11,6 @@
       "pattern": "\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"
     },
     {
-      "pattern": "\\Qlibrocksdbjni-linux-aarch64.so\\E"
-    },
-    {
-      "pattern": "\\Qlibrocksdbjni-linux-ppc64le.so\\E"
-    },
-    {
-      "pattern": "\\Qlibrocksdbjni-linux32.so\\E"
-    },
-    {
-      "pattern": "\\Qlibrocksdbjni-linux64.so\\E"
-    },
-    {
-      "pattern": "\\Qlibrocksdbjni-osx.jnilib\\E"
-    },
-    {
-      "pattern": "\\Qlibrocksdbjni-win64.dll\\E"
-    },
-    {
       "pattern": "\\Qmodule.yml\\E"
     },
     {

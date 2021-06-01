@@ -138,10 +138,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
         }
 
 
-        fun rocksdb() {
-            modules.add(ROCKS_DB)
-        }
-
         fun tarantool() {
             modules.add(TARANTOOL)
         }

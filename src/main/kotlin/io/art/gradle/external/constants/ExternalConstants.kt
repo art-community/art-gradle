@@ -60,7 +60,6 @@ enum class JavaModules(val artifact: String) {
     COMMUNICATOR("communicator"),
     HTTP("http"),
     RSOCKET("rsocket"),
-    ROCKS_DB("rocks-db"),
     TARANTOOL("tarantool"),
     META("meta"),
     GRAAL("graal"),
