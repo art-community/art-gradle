@@ -18,24 +18,26 @@
 
 package io.art.gradle.common.configuration
 
-import io.art.gradle.common.constants.*
-import io.art.gradle.common.constants.GeneratorLanguages.JAVA
+import io.art.gradle.common.constants.DEFAULT_WATCHER_PERIOD
+import io.art.gradle.common.constants.GENERATOR
+import io.art.gradle.common.constants.GeneratorLanguages
+import io.art.gradle.common.constants.GeneratorLanguages.*
+import io.art.gradle.common.constants.MODULE_YML
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.tasks.SourceSet
 import java.nio.file.Path
 import java.time.Duration
 import javax.inject.Inject
 
-open class GeneratorConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
+open class GeneratorConfiguration @Inject constructor(project: Project) {
     var configurationPath: Path = project.rootProject.buildDir.resolve(GENERATOR).resolve(MODULE_YML).toPath()
         private set
 
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
         private set
 
-    var loggingDirectory: Path = project.buildDir.resolve(GENERATOR).toPath()
+    var loggingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
     var sourceSets = mutableMapOf<GeneratorLanguages, MutableSet<Path>>()
@@ -54,14 +56,14 @@ open class GeneratorConfiguration @Inject constructor(project: Project, objectFa
     }
 
     fun java(source: SourceDirectorySet) {
-        sourceSets.putIfAbsent(GeneratorLanguages.JAVA, mutableSetOf())!!.add(source.sourceDirectories.first().toPath())
+        sourceSets.putIfAbsent(JAVA, mutableSetOf(source.sourceDirectories.first().toPath()))?.add(source.sourceDirectories.first().toPath())
     }
 
     fun kotlin(source: SourceDirectorySet) {
-        sourceSets.putIfAbsent(GeneratorLanguages.KOTLIN, mutableSetOf())!!.add(source.sourceDirectories.first().toPath())
+        sourceSets.putIfAbsent(KOTLIN, mutableSetOf(source.sourceDirectories.first().toPath()))?.add(source.sourceDirectories.first().toPath())
     }
 
     fun dart(source: SourceDirectorySet) {
-        sourceSets.putIfAbsent(GeneratorLanguages.DART, mutableSetOf())!!.add(source.sourceDirectories.first().toPath())
+        sourceSets.putIfAbsent(DART, mutableSetOf(source.sourceDirectories.first().toPath()))?.add(source.sourceDirectories.first().toPath())
     }
 }

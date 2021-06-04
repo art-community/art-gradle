@@ -19,10 +19,7 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.GeneratorConfiguration
-import io.art.gradle.common.constants.COLON
-import io.art.gradle.common.constants.COMPILE_CLASS_PATH_CONFIGURATION_NAME
-import io.art.gradle.common.constants.SEMICOLON
-import io.art.gradle.common.constants.WRITE_CONFIGURATION_TASK
+import io.art.gradle.common.constants.*
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.yaml.snakeyaml.Yaml
@@ -30,13 +27,12 @@ import org.yaml.snakeyaml.Yaml
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     tasks.register(WRITE_CONFIGURATION_TASK) {
-        doLast {
-            writeConfiguration(configuration)
-        }
+        group = ART
+        doLast { writeConfiguration(configuration) }
     }
 }
 
-fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
+private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
     configuration.configurationPath.parent.toFile().mkdirs()
 
     val contentMap = mapOf(
@@ -52,7 +48,7 @@ fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
             "classpath" to collectClasspath(),
-            "paths" to mapOf("sources" to configuration.sourceSets)
+            "paths" to mapOf("sources" to configuration.sourceSets.map { entry -> entry.key.name to entry.value.map { path -> path.toFile().absolutePath }.toTypedArray() }.toMap())
     )
 
     configuration.configurationPath.toFile().writeText(Yaml().dump(contentMap))

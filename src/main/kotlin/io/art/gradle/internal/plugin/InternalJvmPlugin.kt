@@ -1,10 +1,7 @@
 package io.art.gradle.internal.plugin
 
 import io.art.gradle.common.configuration.ExecutableConfiguration
-import io.art.gradle.common.configurator.addEmbeddedConfiguration
-import io.art.gradle.common.configurator.configureEmbeddedConfiguration
-import io.art.gradle.common.configurator.configureJar
-import io.art.gradle.common.configurator.configureNative
+import io.art.gradle.common.configurator.*
 import io.art.gradle.common.constants.EXECUTABLE
 import io.art.gradle.common.constants.GENERATOR
 import io.art.gradle.common.logger.error
@@ -41,6 +38,7 @@ class InternalJvmPlugin : Plugin<Project> {
                 configureEmbeddedConfiguration()
                 configureJar(executable)
                 configureNative(executable)
+                configureGenerator(generator)
             }
         }.onFailure(target::error)
     }
