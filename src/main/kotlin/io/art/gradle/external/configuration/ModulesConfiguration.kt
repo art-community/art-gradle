@@ -46,7 +46,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
     }
 
     fun embedded(action: Action<in ModuleDependenciesConfiguration>) {
-        implementation(action)
         dependencies.named(EMBEDDED_CONFIGURATION_NAME, action)
     }
 
