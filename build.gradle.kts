@@ -55,6 +55,7 @@ gradlePlugin {
 
 dependencies {
     implementation("org.eclipse.jgit:org.eclipse.jgit:+")
+    implementation("org.yaml:snakeyaml:+")
 }
 
 fun configurePublishing(publisherUsername: String, publisherPassword: String) = publishing {
@@ -126,8 +127,10 @@ val publishingProperties
                 .associate { entry -> "${entry.key}" to "${entry.value}" }
     }
 
-val publisherUsername = publishingProperties["publisher.username"] ?: properties["publisher.username"]?.toString()
-val publisherPassword = publishingProperties["publisher.password"] ?: properties["publisher.password"]?.toString()
+val userNameProperty = "publisher.username"
+val passwordProperty = "publisher.password"
+val publisherUsername = publishingProperties[userNameProperty] ?: properties[userNameProperty]?.toString()
+val publisherPassword = publishingProperties[passwordProperty] ?: properties[passwordProperty]?.toString()
 
 if (!publisherUsername.isNullOrBlank() && !publisherPassword.isNullOrBlank()) {
     configurePublishing(publisherUsername, publisherPassword)

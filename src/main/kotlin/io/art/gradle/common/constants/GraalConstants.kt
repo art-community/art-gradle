@@ -159,8 +159,11 @@ val GRAAL_AGENT_ACCESS_FILTER_OPTION = { path: Path -> "access-filter-file=${pat
 val GRAAL_AGENT_CALLER_FILTER_OPTION = { path: Path -> "caller-filter-file=${path.toAbsolutePath()}" }
 const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"
 
-val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(10)
-
+val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(5)
 
 const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY = "windowsVisualStudioVars"
 const val GRAAL_OPTIONS_PROPERTY = "native-options"
+
+const val BUILD_EXECUTABLE_NATIVE_TASK = "build-executable-native"
+const val RUN_EXECUTABLE_NATIVE_TASK = "run-executable-native"
+const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"

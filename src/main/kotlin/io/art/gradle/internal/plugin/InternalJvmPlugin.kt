@@ -6,7 +6,9 @@ import io.art.gradle.common.configurator.configureEmbeddedConfiguration
 import io.art.gradle.common.configurator.configureJar
 import io.art.gradle.common.configurator.configureNative
 import io.art.gradle.common.constants.EXECUTABLE
+import io.art.gradle.common.constants.GENERATOR
 import io.art.gradle.common.logger.error
+import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import io.art.gradle.internal.configurator.configurePublishing
 import io.art.gradle.internal.configurator.configureRepositories
 import org.gradle.api.Plugin
@@ -20,9 +22,17 @@ class InternalJvmPlugin : Plugin<Project> {
     lateinit var executable: ExecutableConfiguration
         private set
 
+    lateinit var generator: InternalGeneratorConfiguration
+        private set
+
+    lateinit var project: Project
+        private set
+
     override fun apply(target: Project) {
         jvmPlugin = this
         executable = target.extensions.create(EXECUTABLE, target)
+        generator = target.extensions.create(GENERATOR, target)
+        project = target
         target.runCatching {
             addEmbeddedConfiguration()
             configureRepositories()

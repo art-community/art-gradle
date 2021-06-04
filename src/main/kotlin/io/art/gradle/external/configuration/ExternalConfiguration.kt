@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactory) {
     val executable = objectFactory.newInstance<ExecutableConfiguration>(externalPlugin.project)
-    val generator = objectFactory.newInstance<GeneratorConfiguration>()
+    val generator = objectFactory.newInstance<GeneratorConfiguration>(externalPlugin.project)
     val modules = objectFactory.newInstance<ModulesConfiguration>()
 
     fun executable(action: Action<in ExecutableConfiguration>) {
