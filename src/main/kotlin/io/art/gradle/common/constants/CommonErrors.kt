@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.constants
+package io.art.gradle.common.constants
 
 import org.gradle.api.GradleException
 import org.gradle.internal.os.OperatingSystem

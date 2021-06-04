@@ -18,25 +18,6 @@
 
 package io.art.gradle.external.constants
 
-const val BUILD_EXECUTABLE_JAR_TASK = "build-executable-jar"
-const val BUILD_EXECUTABLE_NATIVE_TASK = "build-executable-native"
-
-const val RUN_EXECUTABLE_JAR_TASK = "run-executable-jar"
-const val RUN_EXECUTABLE_NATIVE_TASK = "run-executable-native"
-const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"
-
-const val EMBEDDED_CONFIGURATION_NAME = "embedded"
-const val IMPLEMENTATION_CONFIGURATION_NAME = "implementation"
-
-const val MAIN_CLASS_MANIFEST_ATTRIBUTE = "Main-Class"
-const val MULTI_RELEASE_MANIFEST_ATTRIBUTE = "Multi-Release"
-
-const val BUILD = "build"
-const val JAR = "jar"
-const val EXECUTABLE = "executable"
-
-val DEFAULT_JAR_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")
-
 const val JAVA_GROUP = "io.art.java"
 const val KOTLIN_GROUP = "io.art.kotlin"
 
@@ -72,16 +53,3 @@ enum class KotlinModules(val artifact: String) {
 }
 
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
-
-const val DOLLAR = "$"
-const val OS_ARCH_PROPERTY = "os.arch"
-const val CONFIGURATION = "configuration"
-const val DOT_EXE = ".exe"
-const val DOT_JAR = ".jar"
-const val DOT_LOCK = ".lock"
-const val POWERSHELL = "powershell"
-const val JAR_OPTION = "-jar"
-
-const val TAR = "tar"
-const val TAR_EXTRACT_ZIP_OPTIONS = "xzf"
-const val TAR_DIRECTORY_OPTION = "-C"

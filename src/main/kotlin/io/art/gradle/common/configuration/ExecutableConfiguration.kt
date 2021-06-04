@@ -16,22 +16,22 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.configuration
+package io.art.gradle.common.configuration
 
-import io.art.gradle.external.constants.EXECUTABLE
-import io.art.gradle.external.plugin.externalPlugin
+import io.art.gradle.common.constants.EXECUTABLE
 import org.gradle.api.Action
+import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.newInstance
 import java.nio.file.Path
 import javax.inject.Inject
 
-open class ExecutableConfiguration @Inject constructor(objectFactory: ObjectFactory) {
+open class ExecutableConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
     var mainClass: String? = null
         private set
-    var executableName: String = externalPlugin.project.name
+    var executableName: String = project.name
         private set
-    var directory: Path = externalPlugin.project.buildDir.resolve(EXECUTABLE).toPath()
+    var directory: Path = project.buildDir.resolve(EXECUTABLE).toPath()
         private set
 
     val jar = objectFactory.newInstance<JarExecutableConfiguration>()

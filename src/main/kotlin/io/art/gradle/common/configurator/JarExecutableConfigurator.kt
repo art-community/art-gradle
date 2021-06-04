@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.configurator
+package io.art.gradle.common.configurator
 
-import io.art.gradle.common.constants.ART
-import io.art.gradle.external.constants.*
-import io.art.gradle.external.plugin.externalPlugin
+import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.constants.*
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
@@ -29,8 +28,8 @@ import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
 
 
-fun Project.configureJar() {
-    with(externalPlugin.extension.executable) {
+fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
+    with(executableConfiguration) {
         tasks.findByPath(BUILD_EXECUTABLE_JAR_TASK)?.let { return }
         if (!nativeEnabled && !jarEnabled) return
 

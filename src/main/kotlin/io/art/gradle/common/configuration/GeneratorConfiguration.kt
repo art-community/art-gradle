@@ -16,16 +16,10 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.configurator
+package io.art.gradle.common.configuration
 
-import io.art.gradle.external.constants.EMBEDDED_CONFIGURATION_NAME
-import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
+import javax.inject.Inject
 
-fun Project.configureExecutable() {
-    configureJar()
-    configureNative()
-}
-
-fun Project.addEmbeddedConfiguration() {
-    configurations.create(EMBEDDED_CONFIGURATION_NAME)
+open class GeneratorConfiguration @Inject constructor(objectFactory: ObjectFactory) {
 }

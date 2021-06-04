@@ -16,10 +16,8 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.configurator
+package io.art.gradle.common.model
 
-import org.gradle.api.Project
-
-fun Project.configureGenerator() {
-
+data class ProcessorArchitecture(val canonicalName: String, val aliases: List<String>) {
+    fun names() = listOf(canonicalName) + aliases
 }

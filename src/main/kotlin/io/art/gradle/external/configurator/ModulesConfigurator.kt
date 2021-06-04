@@ -18,8 +18,12 @@
 
 package io.art.gradle.external.configurator
 
+import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
+import io.art.gradle.common.constants.GRAAL
 import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
-import io.art.gradle.external.constants.*
+import io.art.gradle.external.constants.JAVA_GROUP
+import io.art.gradle.external.constants.KOTLIN_GROUP
+import io.art.gradle.external.constants.KOTLIN_JVM_PLUGIN_ID
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin

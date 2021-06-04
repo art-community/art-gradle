@@ -18,10 +18,10 @@
 
 package io.art.gradle.external.plugin
 
+import io.art.gradle.common.configurator.addEmbeddedConfiguration
+import io.art.gradle.common.configurator.configureExecutable
+import io.art.gradle.common.configurator.configureGenerator
 import io.art.gradle.common.constants.ART
-import io.art.gradle.external.configurator.addEmbeddedConfiguration
-import io.art.gradle.external.configurator.configureExecutable
-import io.art.gradle.external.configurator.configureGenerator
 import io.art.gradle.external.configurator.configureModules
 import io.art.gradle.external.extension.ExternalExtension
 import org.gradle.api.Plugin
@@ -45,7 +45,7 @@ class ExternalJvmPlugin : Plugin<Project> {
             addEmbeddedConfiguration()
             afterEvaluate {
                 configureModules()
-                configureExecutable()
+                configureExecutable(extension.executable)
                 configureGenerator()
             }
         }.onFailure { error -> target.logger.error(error.message, error) }

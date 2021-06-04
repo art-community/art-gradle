@@ -18,8 +18,8 @@
 
 package io.art.gradle.external.extension
 
-import io.art.gradle.external.configuration.ExecutableConfiguration
-import io.art.gradle.external.configuration.GeneratorConfiguration
+import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.configuration.GeneratorConfiguration
 import io.art.gradle.external.configuration.ModulesConfiguration
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory

@@ -18,9 +18,9 @@
 
 package io.art.gradle.external.configuration
 
+import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
+import io.art.gradle.common.constants.IMPLEMENTATION_CONFIGURATION_NAME
 import io.art.gradle.external.constants.ArtVersion.MAIN
-import io.art.gradle.external.constants.EMBEDDED_CONFIGURATION_NAME
-import io.art.gradle.external.constants.IMPLEMENTATION_CONFIGURATION_NAME
 import io.art.gradle.external.constants.JavaModules
 import io.art.gradle.external.constants.JavaModules.*
 import io.art.gradle.external.constants.KotlinModules

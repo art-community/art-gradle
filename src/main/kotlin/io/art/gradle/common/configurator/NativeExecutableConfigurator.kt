@@ -16,22 +16,17 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.configurator
+package io.art.gradle.common.configurator
 
-import io.art.gradle.common.constants.ART
-import io.art.gradle.common.constants.EMPTY_STRING
-import io.art.gradle.common.constants.JAVA
-import io.art.gradle.common.constants.SPACE
+import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.constants.*
+import io.art.gradle.common.constants.GraalAgentOutputMode.MERGE
+import io.art.gradle.common.constants.GraalAgentOutputMode.OVERWRITE
+import io.art.gradle.common.constants.GraalJavaVersion.JAVA_8
+import io.art.gradle.common.constants.GraalPlatformName.DARWIN
+import io.art.gradle.common.graal.downloadGraal
 import io.art.gradle.common.logger.warning
-import io.art.gradle.external.configuration.ExecutableConfiguration
-import io.art.gradle.external.constants.*
-import io.art.gradle.external.constants.GraalAgentOutputMode.MERGE
-import io.art.gradle.external.constants.GraalAgentOutputMode.OVERWRITE
-import io.art.gradle.external.constants.GraalJavaVersion.JAVA_8
-import io.art.gradle.external.constants.GraalPlatformName.DARWIN
-import io.art.gradle.external.graal.downloadGraal
-import io.art.gradle.external.model.GraalPaths
-import io.art.gradle.external.plugin.externalPlugin
+import io.art.gradle.common.model.GraalPaths
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
@@ -39,8 +34,8 @@ import org.gradle.internal.os.OperatingSystem
 import java.nio.file.Path
 import java.nio.file.Paths
 
-fun Project.configureNative() {
-    with(externalPlugin.extension.executable) {
+fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
+    with(executableConfiguration) {
         if (!nativeEnabled) return
         mainClass ?: return
 
@@ -157,8 +152,7 @@ private fun ExecutableConfiguration.extractGraalConfigurations(path: Path) {
                 return@forEach
             }
 
-            val bytes = externalPlugin
-                    .javaClass
+            val bytes = ExecutableConfiguration::class.java
                     .classLoader
                     .getResourceAsStream(GRAAL_BASE_RESOURCE_CONFIGURATION_PATH(native.graalJavaVersion, json))!!
                     .readBytes()

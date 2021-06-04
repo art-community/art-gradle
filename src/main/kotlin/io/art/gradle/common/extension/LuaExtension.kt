@@ -16,8 +16,22 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.model
+package io.art.gradle.common.extension
 
-data class ProcessorArchitecture(val canonicalName: String, val aliases: List<String>) {
-    fun names() = listOf(canonicalName) + aliases
+import io.art.gradle.common.constants.LUA
+
+open class LuaExtension {
+    var executable = LUA
+        private set
+
+    var removeInitSuffix = false
+        private set
+
+    fun executable(executable: String) {
+        this.executable = executable
+    }
+
+    fun removeInitSuffix(removeInitSuffix: Boolean = true) {
+        this.removeInitSuffix = removeInitSuffix
+    }
 }

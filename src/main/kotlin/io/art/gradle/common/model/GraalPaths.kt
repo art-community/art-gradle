@@ -1,4 +1,4 @@
-package io.art.gradle.external.model
+package io.art.gradle.common.model
 
 import java.io.File
 

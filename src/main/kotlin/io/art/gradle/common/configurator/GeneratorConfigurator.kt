@@ -16,22 +16,10 @@
  * limitations under the License.
  */
 
-package io.art.gradle.internal.extension
+package io.art.gradle.common.configurator
 
-import io.art.gradle.internal.constants.LUA
+import org.gradle.api.Project
 
-open class LuaExtension {
-    var executable = LUA
-        private set
+fun Project.configureGenerator() {
 
-    var removeInitSuffix = false
-        private set
-
-    fun executable(executable: String) {
-        this.executable = executable
-    }
-
-    fun removeInitSuffix(removeInitSuffix: Boolean = true) {
-        this.removeInitSuffix = removeInitSuffix
-    }
 }

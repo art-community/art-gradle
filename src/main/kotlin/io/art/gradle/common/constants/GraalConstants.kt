@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.constants
+package io.art.gradle.common.constants
 
-import io.art.gradle.external.constants.GraalJavaVersion.JAVA_11
-import io.art.gradle.external.constants.GraalJavaVersion.JAVA_8
-import io.art.gradle.external.constants.GraalPlatformName.*
-import io.art.gradle.external.model.ProcessorArchitecture
+import io.art.gradle.common.constants.GraalJavaVersion.JAVA_11
+import io.art.gradle.common.constants.GraalJavaVersion.JAVA_8
+import io.art.gradle.common.constants.GraalPlatformName.*
+import io.art.gradle.common.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
 import java.net.URL
 import java.nio.file.Path
@@ -42,8 +42,8 @@ val GRAAL_UPDATER_EXECUTABLE = when {
 
 val GRAAL_BASE_RESOURCE_CONFIGURATION_PATH = { javaVersion: GraalJavaVersion, resource: String ->
     when (javaVersion) {
-        JAVA_8 -> "external/graal/jdk-8/$resource"
-        JAVA_11 -> "external/graal/jdk-11/$resource"
+        JAVA_8 -> "graal/jdk-8/$resource"
+        JAVA_11 -> "graal/jdk-11/$resource"
     }
 }
 
@@ -105,8 +105,8 @@ val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath
     """
             cmd.exe /c "call `"${visualStudioVarsPath.toFile().absolutePath}`" && set > ${workingDirectory.resolve("vcvars.environment").toAbsolutePath()}"
             Get-Content "${workingDirectory.resolve("vcvars.environment").toAbsolutePath()}" | Foreach-Object { 
-                if (${DOLLAR}_-match "^(.*?)=(.*)${DOLLAR}") { 
-                    Set-Content "env:\${DOLLAR}(${DOLLAR}matches[1])"${DOLLAR}matches[2] 
+                if (${DOLLAR}_-match "^(.*?)=(.*)$DOLLAR") { 
+                    Set-Content "env:\$DOLLAR(${DOLLAR}matches[1])"${DOLLAR}matches[2] 
                 } 
             }
             . ${graalOptions.joinToString(" ")} 
