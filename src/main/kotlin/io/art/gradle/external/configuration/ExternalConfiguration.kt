@@ -16,18 +16,19 @@
  * limitations under the License.
  */
 
-package io.art.gradle.external.extension
+package io.art.gradle.external.configuration
 
 import io.art.gradle.common.configuration.ExecutableConfiguration
 import io.art.gradle.common.configuration.GeneratorConfiguration
 import io.art.gradle.external.configuration.ModulesConfiguration
+import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.newInstance
 import javax.inject.Inject
 
-open class ExternalExtension @Inject constructor(objectFactory: ObjectFactory) {
-    val executable = objectFactory.newInstance<ExecutableConfiguration>()
+open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactory) {
+    val executable = objectFactory.newInstance<ExecutableConfiguration>(externalPlugin.project)
     val generator = objectFactory.newInstance<GeneratorConfiguration>()
     val modules = objectFactory.newInstance<ModulesConfiguration>()
 

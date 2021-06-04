@@ -19,11 +19,12 @@
 package io.art.gradle.external.plugin
 
 import io.art.gradle.common.configurator.addEmbeddedConfiguration
+import io.art.gradle.common.configurator.configureEmbeddedConfiguration
 import io.art.gradle.common.configurator.configureExecutable
 import io.art.gradle.common.configurator.configureGenerator
 import io.art.gradle.common.constants.ART
 import io.art.gradle.external.configurator.configureModules
-import io.art.gradle.external.extension.ExternalExtension
+import io.art.gradle.external.configuration.ExternalConfiguration
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
@@ -32,7 +33,7 @@ lateinit var externalPlugin: ExternalJvmPlugin
     private set
 
 class ExternalJvmPlugin : Plugin<Project> {
-    lateinit var extension: ExternalExtension
+    lateinit var configuration: ExternalConfiguration
         private set
     lateinit var project: Project
         private set
@@ -40,12 +41,13 @@ class ExternalJvmPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         externalPlugin = this
         project = target
-        extension = target.extensions.create(ART)
+        configuration = target.extensions.create(ART)
         target.runCatching {
             addEmbeddedConfiguration()
             afterEvaluate {
+                configureEmbeddedConfiguration()
                 configureModules()
-                configureExecutable(extension.executable)
+                configureExecutable(configuration.executable)
                 configureGenerator()
             }
         }.onFailure { error -> target.logger.error(error.message, error) }

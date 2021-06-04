@@ -25,6 +25,7 @@ const val RUN_EXECUTABLE_JAR_TASK = "run-executable-jar"
 const val RUN_EXECUTABLE_NATIVE_TASK = "run-executable-native"
 const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"
 
+const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
 const val EMBEDDED_CONFIGURATION_NAME = "embedded"
 const val IMPLEMENTATION_CONFIGURATION_NAME = "implementation"
 

@@ -22,4 +22,5 @@ import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
 open class GeneratorConfiguration @Inject constructor(objectFactory: ObjectFactory) {
+
 }

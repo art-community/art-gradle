@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package io.art.gradle.common.extension
+package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.LUA
 
-open class LuaExtension {
+open class LuaConfiguration {
     var executable = LUA
         private set
 

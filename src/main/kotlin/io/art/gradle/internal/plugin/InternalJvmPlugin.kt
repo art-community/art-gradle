@@ -1,16 +1,37 @@
 package io.art.gradle.internal.plugin
 
+import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.configurator.addEmbeddedConfiguration
+import io.art.gradle.common.configurator.configureEmbeddedConfiguration
+import io.art.gradle.common.configurator.configureJar
+import io.art.gradle.common.configurator.configureNative
+import io.art.gradle.common.constants.EXECUTABLE
+import io.art.gradle.common.logger.error
 import io.art.gradle.internal.configurator.configurePublishing
 import io.art.gradle.internal.configurator.configureRepositories
-import io.art.gradle.common.logger.error
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
+
+lateinit var jvmPlugin: InternalJvmPlugin
+    private set
 
 class InternalJvmPlugin : Plugin<Project> {
+    lateinit var executable: ExecutableConfiguration
+        private set
+
     override fun apply(target: Project) {
+        jvmPlugin = this
+        executable = target.extensions.create(EXECUTABLE, target)
         target.runCatching {
+            addEmbeddedConfiguration()
             configureRepositories()
             configurePublishing()
+            afterEvaluate {
+                configureEmbeddedConfiguration()
+                configureJar(executable)
+                configureNative(executable)
+            }
         }.onFailure(target::error)
     }
 }

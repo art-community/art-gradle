@@ -33,7 +33,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.repositories
 
 fun Project.configureModules() {
-    with(externalPlugin.extension.modules) {
+    with(externalPlugin.configuration.modules) {
         if (dependencies.isEmpty()) return
 
         repositories {
@@ -56,7 +56,7 @@ fun Project.configureModules() {
                 }
             }
 
-            if (externalPlugin.extension.executable.nativeEnabled) {
+            if (externalPlugin.configuration.executable.nativeEnabled) {
                 add(EMBEDDED_CONFIGURATION_NAME, "$JAVA_GROUP:$GRAAL:$version")
             }
         }

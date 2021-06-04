@@ -20,7 +20,7 @@ package io.art.gradle.internal.plugin
 
 import io.art.gradle.common.configurator.configureLua
 import io.art.gradle.common.constants.LUA
-import io.art.gradle.common.extension.LuaExtension
+import io.art.gradle.common.configuration.LuaConfiguration
 import io.art.gradle.common.logger.error
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -30,11 +30,11 @@ lateinit var luaPlugin: InternalLuaPlugin
     private set
 
 class InternalLuaPlugin : Plugin<Project> {
-    lateinit var extension: LuaExtension
+    lateinit var configuration: LuaConfiguration
         private set
 
     override fun apply(target: Project) {
-        extension = target.extensions.create(LUA)
+        configuration = target.extensions.create(LUA)
         luaPlugin = this
         target.runCatching(Project::configureLua).onFailure { error -> target.error(error) }
     }

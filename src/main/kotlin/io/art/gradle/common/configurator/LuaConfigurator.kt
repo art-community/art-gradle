@@ -57,7 +57,7 @@ fun Project.configureLua() {
             }
             val builtScript = destinationDirectory.toPath().touch().resolve("${project.name}$DOT_LUA")
             exec {
-                commandLine(luaPlugin.extension.executable)
+                commandLine(luaPlugin.configuration.executable)
                 args(temporaryDir.resolve(AMALG_LUA).toPath().writeContent(amalg).toAbsolutePath().toString())
                 args(LUA_OUTPUT_FLAG, builtScript)
                 args(sourcesString)
@@ -65,7 +65,7 @@ fun Project.configureLua() {
                 standardOutput = logger.output()
                 errorOutput = logger.error()
             }
-            if (luaPlugin.extension.removeInitSuffix) {
+            if (luaPlugin.configuration.removeInitSuffix) {
                 builtScript.writeContent(builtScript.toFile().readText().replace(DOT_INIT, EMPTY_STRING))
             }
             delete(temporaryDir)
