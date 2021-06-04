@@ -48,7 +48,8 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
             "classpath" to collectClasspath(),
-            "paths" to mapOf("sources" to configuration.sourceSets.map { entry -> entry.key.name to entry.value.map { path -> path.toFile().absolutePath }.toTypedArray() }.toMap())
+            "sources" to configuration.sourceSets.map { entry -> entry.key.name to entry.value.map { path -> path.toFile().absolutePath }.toTypedArray() }.toMap(),
+            "module" to mapOf("name" to "Example")
     )
 
     configuration.configurationPath.toFile().writeText(Yaml().dump(contentMap))
