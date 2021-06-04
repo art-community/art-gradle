@@ -19,12 +19,9 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.ExecutableConfiguration
-import io.art.gradle.common.constants.COMPILE_CLASS_PATH_CONFIGURATION_NAME
 import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
+import io.art.gradle.common.constants.IMPLEMENTATION_CONFIGURATION_NAME
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
-import org.gradle.kotlin.dsl.getting
-import org.gradle.kotlin.dsl.provideDelegate
 
 fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration) {
     configureJar(executableConfiguration)
@@ -37,5 +34,5 @@ fun Project.addEmbeddedConfiguration() {
 
 fun Project.configureEmbeddedConfiguration() {
     val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
-    configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME) { extendsFrom(embedded) }
+    configurations.getByName(IMPLEMENTATION_CONFIGURATION_NAME) { extendsFrom(embedded) }
 }

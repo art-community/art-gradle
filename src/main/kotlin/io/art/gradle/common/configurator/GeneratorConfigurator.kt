@@ -55,9 +55,9 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
 }
 
 private fun Project.collectClasspath(): String {
-    val compileClasspath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME)
+    val classpath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME) + configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
     if (OperatingSystem.current().isWindows) {
-        return compileClasspath.files.joinToString(SEMICOLON)
+        return classpath.files.joinToString(SEMICOLON)
     }
-    return compileClasspath.files.joinToString(COLON)
+    return classpath.files.joinToString(COLON)
 }

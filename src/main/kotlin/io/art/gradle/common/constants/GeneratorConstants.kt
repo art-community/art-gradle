@@ -29,3 +29,4 @@ enum class GeneratorLanguages {
 }
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
+const val RUN_GENERATOR = "run-generator"
