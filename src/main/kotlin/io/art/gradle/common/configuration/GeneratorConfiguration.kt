@@ -37,6 +37,12 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
         private set
 
+    var loggingToConsole = false
+        private set
+
+    var loggingToDirectory = true
+        private set
+
     var loggingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
@@ -47,8 +53,15 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         watcherPeriod = period
     }
 
-    fun loggingDirectory(directory: Path) {
+    fun consoleLogging() {
+        loggingToConsole = true
+        loggingToDirectory = false
+    }
+
+    fun fileLogging(directory: Path) {
         loggingDirectory = directory
+        loggingToConsole = false
+        loggingToDirectory = true
     }
 
     fun configurationPath(path: Path) {

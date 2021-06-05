@@ -35,14 +35,23 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
     configuration.configurationPath.parent.toFile().mkdirs()
 
+    val fileWriter = mapOf(
+            "type" to "file",
+            "directory" to configuration.loggingDirectory.toFile().absolutePath
+    )
+    val consoleWriter = mapOf(
+            "type" to "console",
+            "colored" to true
+    )
     val contentMap = mapOf(
             "logging" to mapOf(
                     "default" to mapOf(
                             "writers" to listOf(
-                                    mapOf(
-                                            "type" to "file",
-                                            "directory" to configuration.loggingDirectory.toFile().absolutePath
-                                    )
+                                    when {
+                                        configuration.loggingToConsole -> consoleWriter
+                                        configuration.loggingToDirectory -> fileWriter
+                                        else -> emptyMap()
+                                    }
                             )
                     )
             ),
