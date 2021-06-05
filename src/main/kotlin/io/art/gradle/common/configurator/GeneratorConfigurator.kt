@@ -28,7 +28,7 @@ import org.yaml.snakeyaml.Yaml
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
-        doLast { writeConfiguration(configuration) }
+        doFirst { writeConfiguration(configuration) }
     }
 }
 
