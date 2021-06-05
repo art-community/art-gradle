@@ -36,8 +36,7 @@ class InternalJvmPlugin : Plugin<Project> {
             configurePublishing()
             afterEvaluate {
                 configureEmbeddedConfiguration()
-                configureJar(executable)
-                configureNative(executable)
+                configureExecutable(executable)
                 configureGenerator(generator)
             }
         }.onFailure(target::error)
