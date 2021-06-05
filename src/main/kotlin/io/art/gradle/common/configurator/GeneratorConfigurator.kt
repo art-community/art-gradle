@@ -48,7 +48,10 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
             "classpath" to collectClasspath(),
-            "sources" to configuration.sourceSets.map { entry -> entry.key.name to entry.value.map { path -> path.toFile().absolutePath }.toTypedArray() }.toMap(),
+            "sources" to configuration
+                    .sourceSets
+                    .map { entry -> entry.key.name to entry.value.map { path -> path.toFile().absolutePath }.toTypedArray() }
+                    .toMap(),
             "module" to mapOf("name" to "Example")
     )
 
@@ -56,7 +59,7 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
 }
 
 private fun Project.collectClasspath(): String {
-    val classpath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME) + configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
+    val classpath = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
     if (OperatingSystem.current().isWindows) {
         return classpath.files.joinToString(SEMICOLON)
     }
