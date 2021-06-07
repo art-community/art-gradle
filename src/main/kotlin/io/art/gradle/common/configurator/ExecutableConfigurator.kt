@@ -34,5 +34,6 @@ fun Project.addEmbeddedConfiguration() {
 
 fun Project.configureEmbeddedConfiguration() {
     val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
-    configurations.getByName(IMPLEMENTATION_CONFIGURATION_NAME) { extendsFrom(embedded) }
+    val implementation = configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME) ?: return
+    implementation.extendsFrom(embedded)
 }
