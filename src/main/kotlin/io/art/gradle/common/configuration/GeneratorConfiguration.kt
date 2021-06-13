@@ -26,6 +26,8 @@ import io.art.gradle.common.constants.MODULE_YML
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.model.ObjectFactory
+import org.gradle.tooling.model.SourceDirectory
+import java.io.File
 import java.nio.file.Path
 import java.time.Duration
 import javax.inject.Inject
@@ -68,15 +70,11 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         configurationPath = path
     }
 
-    fun java(source: SourceDirectorySet) {
-        sourceSets.putIfAbsent(JAVA, mutableSetOf(source.sourceDirectories.first().toPath()))?.add(source.sourceDirectories.first().toPath())
+    fun java(source: File) {
+        sourceSets.putIfAbsent(JAVA, mutableSetOf(source.toPath()))?.add(source.toPath())
     }
 
-    fun kotlin(source: SourceDirectorySet) {
-        sourceSets.putIfAbsent(KOTLIN, mutableSetOf(source.sourceDirectories.first().toPath()))?.add(source.sourceDirectories.first().toPath())
-    }
-
-    fun dart(source: SourceDirectorySet) {
-        sourceSets.putIfAbsent(DART, mutableSetOf(source.sourceDirectories.first().toPath()))?.add(source.sourceDirectories.first().toPath())
+    fun kotlin(source: File) {
+        sourceSets.putIfAbsent(KOTLIN, mutableSetOf(source.toPath()))?.add(source.toPath())
     }
 }
