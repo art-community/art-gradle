@@ -21,7 +21,8 @@ package io.art.gradle.common.configuration
 import io.art.gradle.common.constants.DEFAULT_WATCHER_PERIOD
 import io.art.gradle.common.constants.GENERATOR
 import io.art.gradle.common.constants.GeneratorLanguage
-import io.art.gradle.common.constants.GeneratorLanguage.*
+import io.art.gradle.common.constants.GeneratorLanguage.JAVA
+import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import io.art.gradle.common.constants.MODULE_YML
 import org.gradle.api.Project
 import java.io.File
@@ -31,6 +32,9 @@ import javax.inject.Inject
 
 open class GeneratorConfiguration @Inject constructor(project: Project) {
     var configurationPath: Path = project.rootProject.buildDir.resolve(GENERATOR).resolve(MODULE_YML).toPath()
+        private set
+
+    var module: String = project.name.capitalize()
         private set
 
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
@@ -45,7 +49,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var loggingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
-    var sourceSets = mutableMapOf<GeneratorLanguage, MutableSet<Path>>()
+    var sourceSets = mutableMapOf<Path, SourceSet>()
         private set
 
     fun watcherPeriod(period: Duration) {
@@ -67,11 +71,24 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         configurationPath = path
     }
 
+    fun module(module: String) {
+        this.module = module
+    }
+
     fun java(source: File) {
-        sourceSets.putIfAbsent(JAVA, mutableSetOf(source.toPath()))?.add(source.toPath())
+        sourceSets
+                .putIfAbsent(source.toPath(), SourceSet(languages = mutableSetOf(JAVA), root = source.toPath()))
+                ?.languages?.add(JAVA)
     }
 
     fun kotlin(source: File) {
-        sourceSets.putIfAbsent(KOTLIN, mutableSetOf(source.toPath()))?.add(source.toPath())
+        sourceSets
+                .putIfAbsent(source.toPath(), SourceSet(languages = mutableSetOf(KOTLIN), root = source.toPath()))
+                ?.languages?.add(KOTLIN)
     }
+
+    data class SourceSet(
+            val languages: MutableSet<GeneratorLanguage>,
+            val root: Path,
+    )
 }

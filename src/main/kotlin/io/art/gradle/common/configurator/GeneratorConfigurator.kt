@@ -43,6 +43,7 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
             "type" to "console",
             "colored" to true
     )
+
     val contentMap = mapOf(
             "logging" to mapOf(
                     "default" to mapOf(
@@ -57,11 +58,13 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
             "classpath" to collectClasspath(),
-            "sources" to configuration
-                    .sourceSets
-                    .map { entry -> entry.key.name to entry.value.map { path -> path.toFile().absolutePath }.toTypedArray() }
-                    .toMap(),
-            "module" to mapOf("name" to "Example")
+            "sources" to configuration.sourceSets.values.map { set ->
+                mapOf(
+                        "languages" to set.languages.map { language -> language.name },
+                        "path" to set.root.toFile().absolutePath,
+                        "module" to configuration.module
+                )
+            },
     )
 
     configuration.configurationPath.toFile().writeText(Yaml().dump(contentMap))
