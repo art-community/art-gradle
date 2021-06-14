@@ -20,13 +20,10 @@ package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.DEFAULT_WATCHER_PERIOD
 import io.art.gradle.common.constants.GENERATOR
-import io.art.gradle.common.constants.GeneratorLanguages
-import io.art.gradle.common.constants.GeneratorLanguages.*
+import io.art.gradle.common.constants.GeneratorLanguage
+import io.art.gradle.common.constants.GeneratorLanguage.*
 import io.art.gradle.common.constants.MODULE_YML
 import org.gradle.api.Project
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.model.ObjectFactory
-import org.gradle.tooling.model.SourceDirectory
 import java.io.File
 import java.nio.file.Path
 import java.time.Duration
@@ -48,7 +45,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var loggingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
-    var sourceSets = mutableMapOf<GeneratorLanguages, MutableSet<Path>>()
+    var sourceSets = mutableMapOf<GeneratorLanguage, MutableSet<Path>>()
         private set
 
     fun watcherPeriod(period: Duration) {

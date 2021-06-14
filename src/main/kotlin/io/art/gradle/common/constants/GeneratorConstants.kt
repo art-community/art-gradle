@@ -22,7 +22,7 @@ import java.time.Duration
 
 val DEFAULT_WATCHER_PERIOD: Duration = Duration.ofMillis(500)
 
-enum class GeneratorLanguages {
+enum class GeneratorLanguage {
     JAVA,
     KOTLIN,
     DART
