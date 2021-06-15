@@ -41,7 +41,7 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
     )
     val consoleWriter = mapOf(
             "type" to "console",
-            "colored" to false
+            "colored" to true
     )
 
     val contentMap = mapOf(
