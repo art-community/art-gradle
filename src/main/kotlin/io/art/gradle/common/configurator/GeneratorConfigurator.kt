@@ -57,12 +57,12 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
                     )
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
-            "classpath" to collectClasspath(),
             "sources" to configuration.sourceSets.values.map { set ->
                 mapOf(
                         "languages" to set.languages.map { language -> language.name },
                         "path" to set.root.toFile().absolutePath,
-                        "module" to configuration.module
+                        "module" to configuration.module,
+                        "classpath" to collectClasspath(),
                 )
             },
     )
