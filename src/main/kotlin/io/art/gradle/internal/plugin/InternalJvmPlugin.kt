@@ -37,7 +37,7 @@ class InternalJvmPlugin : Plugin<Project> {
             afterEvaluate {
                 configureEmbeddedConfiguration()
                 configureExecutable(executable)
-                configureJvmGenerator(generator)
+                configureGenerator(generator)
             }
         }.onFailure(target::error)
     }

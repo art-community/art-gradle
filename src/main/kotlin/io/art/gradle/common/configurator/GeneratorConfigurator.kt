@@ -26,7 +26,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.yaml.snakeyaml.Yaml
 
 
-fun Project.configureJvmGenerator(configuration: GeneratorConfiguration) {
+fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (configuration.forJvm) {
         val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
         if (!generatorJar.toFile().exists()) {
