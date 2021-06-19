@@ -46,7 +46,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { writeGeneratorConfiguration(configuration) }
     }
 
-    val deleteLock = tasks.register(DELETE_GENERATOR_LOCK_TASK) {
+    tasks.register(DELETE_GENERATOR_LOCK_TASK) {
         group = ART
         doLast {
             configuration.workingDirectory
@@ -59,16 +59,14 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     val stop = tasks.register(STOP_GENERATOR_TASK) {
         group = ART
         doLast {
-            configuration.workingDirectory
-                    .resolve("$GENERATOR$DOT_STOP")
-                    .toFile()
-                    .createNewFile()
+            val stopFile = configuration.workingDirectory.resolve("$GENERATOR$DOT_STOP")
+            stopFile.toFile().createNewFile()
         }
     }
 
     tasks.register(RESTART_GENERATOR_TASK) {
         group = ART
-        dependsOn(stop, deleteLock)
+        dependsOn(stop)
         doLast { activateGenerator(configuration) }
     }
 }

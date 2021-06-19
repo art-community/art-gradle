@@ -23,10 +23,9 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
 
-val DEFAULT_WATCHER_PERIOD: Duration = Duration.ofMillis(500)
-const val MAIN_CLASS = "io.art.generator.Generator"
 const val GENERATOR = "generator"
-const val ART_GENERATOR_NAME = "art-generator"
+
+val DEFAULT_WATCHER_PERIOD: Duration = Duration.ofMillis(500)
 val GENERATOR_LOCK_TIMEOUT: Duration = Duration.ofMinutes(1)
 
 enum class GeneratorLanguage(val extension: String) {

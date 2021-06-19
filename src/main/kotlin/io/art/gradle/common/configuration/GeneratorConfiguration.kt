@@ -48,13 +48,10 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var loggingToConsole = false
         private set
 
-    var loggingToDirectory = false
+    var loggingToDirectory = true
         private set
 
     var loggingDirectory: Path = workingDirectory
-        private set
-
-    var sourceSets = mutableMapOf<Path, SourceSet>()
         private set
 
     var version = MAIN_BRANCH
