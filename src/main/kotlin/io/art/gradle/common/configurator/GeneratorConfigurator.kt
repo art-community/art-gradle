@@ -28,18 +28,20 @@ import org.yaml.snakeyaml.Yaml
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (configuration.forJvm) {
-        val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
-        if (!generatorJar.toFile().exists()) {
-            downloadJvmGenerator(configuration)
+        configuration.localJarOverridingPath?.let { generatorJar ->
+            writeJvmGeneratorConfiguration(configuration)
+            javaexec {
+                workingDir(configuration.workingDirectory)
+                executable(generatorJar)
+                args(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
+            }
+        } ?: let {
+            val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
+            if (!generatorJar.toFile().exists()) {
+                downloadJvmGenerator(configuration)
+            }
         }
 
-        writeJvmGeneratorConfiguration(configuration)
-
-        javaexec {
-            workingDir(configuration.workingDirectory)
-            executable(generatorJar)
-            args(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
-        }
     }
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART

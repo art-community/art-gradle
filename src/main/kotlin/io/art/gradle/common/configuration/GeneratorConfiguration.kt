@@ -42,9 +42,6 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var module: String = project.name.capitalize()
         private set
 
-    var lockUpdatePeriod: Duration = LOCK_UPDATE_PERIOD
-        private set
-
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
         private set
 
@@ -64,6 +61,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         private set
 
     var repositoryUrl: String = STABLE_MAVEN_REPOSITORY
+        private set
+
+    var localJarOverridingPath: Path? = null
         private set
 
     fun watcherPeriod(period: Duration) {
@@ -111,5 +111,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun jvm(enabled: Boolean = true) {
         this.forJvm = false
+    }
+
+    fun useLocalJar(jar: Path) {
+        localJarOverridingPath = jar
     }
 }
