@@ -96,11 +96,7 @@ private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, gener
     val request = JavaForkRequest(
             executable = configuration.jvmExecutable,
             jar = generatorJar,
-            arguments = listOf(
-                    JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)),
-                    CLASSPATH_OPTION, generatorJar.toFile().absolutePath,
-                    MAIN_CLASS
-            ),
+            arguments = listOf(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML))),
             directory = configuration.workingDirectory
     )
     forkJava(request)
