@@ -31,6 +31,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
+import java.lang.Runtime.getRuntime
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -43,28 +44,33 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
         configuration.localJarOverridingPath?.let { generatorJar ->
             writeJvmGeneratorConfiguration(configuration)
-//            javaexec {
-//                main = MAIN_CLASS
-//                workingDir(configuration.workingDirectory)
-//                classpath(generatorJar)
-//                jvmArgs(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
-//            }
+            val javaArguments = arrayOf(
+                    "java",
+                    JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)),
+                    "-cp", generatorJar.toFile().absolutePath,
+                    MAIN_CLASS
+            )
+            runCatching { getRuntime().exec(javaArguments, emptyArray(), configuration.workingDirectory.toFile()) }
         } ?: let {
             val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
             if (!generatorJar.toFile().exists()) {
                 downloadJvmGenerator(configuration)
             }
-//            javaexec {
-//                main = MAIN_CLASS
-//                workingDir(configuration.workingDirectory)
-//                classpath(generatorJar)
-//                jvmArgs(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
-//            }
+            javaexec {
+                main = MAIN_CLASS
+                workingDir(configuration.workingDirectory)
+                classpath(generatorJar)
+                jvmArgs(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
+            }
         }
     }
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
         doFirst { writeJvmGeneratorConfiguration(configuration) }
+    }
+    tasks.register(DELETE_GENERATOR_LOCK) {
+        group = ART
+        doFirst { configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK").toFile().delete() }
     }
 }
 

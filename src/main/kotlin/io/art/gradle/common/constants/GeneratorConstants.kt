@@ -36,6 +36,7 @@ enum class GeneratorLanguage(val extension: String) {
 }
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
+const val DELETE_GENERATOR_LOCK = "delete-generator-lock"
 
 val JVM_GENERATOR_DOWNLOAD_URL = { url: String, name: String, version: String -> URL("$url/$name/$version/$name-$version.jar") }
 val JVM_GENERATOR_FILE = { name: String, version: String -> Paths.get("$name-$version.jar") }
