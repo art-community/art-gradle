@@ -25,5 +25,6 @@ const val BUILD_EXECUTABLE_JAR_TASK = "build-executable-jar"
 const val RUN_EXECUTABLE_JAR_TASK = "run-executable-jar"
 const val JAVA = "java"
 const val JAR_OPTION = "-jar"
+const val CLASSPATH_OPTION = "-cp"
 
 val DEFAULT_JAR_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")

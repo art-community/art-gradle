@@ -20,6 +20,7 @@ package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.*
 import org.gradle.api.Project
+import org.gradle.internal.jvm.Jvm
 import java.nio.file.Path
 import java.time.Duration
 import javax.inject.Inject
@@ -68,6 +69,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var directoryExclusions: MutableSet<String> = mutableSetOf()
         private set
 
+    var jvmExecutable: Path = Jvm.current().javaExecutable.toPath()
+        private set
+
     fun watcherPeriod(period: Duration) {
         watcherPeriod = period
     }
@@ -109,5 +113,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun exclude(directory: String) {
         directoryExclusions.add(directory)
+    }
+
+    fun jvmExecutable(executable: Path) {
+        this.jvmExecutable = executable
     }
 }

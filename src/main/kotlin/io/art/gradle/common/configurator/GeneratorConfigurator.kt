@@ -24,6 +24,8 @@ import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
+import io.art.gradle.common.service.JavaForkRequest
+import io.art.gradle.common.service.ProcessExecutionService.forkJava
 import io.art.gradle.external.configuration.ExternalConfiguration
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
@@ -31,7 +33,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
-import java.lang.Runtime.getRuntime
+import java.nio.file.Path
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -41,28 +43,18 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         if (!configuration.workingDirectory.toFile().exists()) {
             configuration.workingDirectory.toFile().mkdirs()
         }
-
-        configuration.localJarOverridingPath?.let { generatorJar ->
-            writeJvmGeneratorConfiguration(configuration)
-            val javaArguments = arrayOf(
-                    "java",
-                    JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)),
-                    "-cp", generatorJar.toFile().absolutePath,
-                    MAIN_CLASS
-            )
-            runCatching { getRuntime().exec(javaArguments, emptyArray(), configuration.workingDirectory.toFile()) }
-        } ?: let {
-            val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
-            if (!generatorJar.toFile().exists()) {
-                downloadJvmGenerator(configuration)
-            }
-            javaexec {
-                main = MAIN_CLASS
-                workingDir(configuration.workingDirectory)
-                classpath(generatorJar)
-                jvmArgs(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
-            }
-        }
+        configuration
+                .localJarOverridingPath
+                ?.let { generatorJar -> runJvmGenerator(configuration, generatorJar) }
+                ?: let {
+                    val generatorJar = configuration
+                            .workingDirectory
+                            .resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
+                    if (!generatorJar.toFile().exists()) {
+                        downloadJvmGenerator(configuration)
+                    }
+                    runJvmGenerator(configuration, generatorJar)
+                }
     }
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
@@ -72,6 +64,21 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         group = ART
         doFirst { configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK").toFile().delete() }
     }
+}
+
+private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, generatorJar: Path) {
+    writeJvmGeneratorConfiguration(configuration)
+    val request = JavaForkRequest(
+            executable = configuration.jvmExecutable,
+            jar = generatorJar,
+            arguments = listOf(
+                    JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)),
+                    CLASSPATH_OPTION, generatorJar.toFile().absolutePath,
+                    MAIN_CLASS
+            ),
+            directory = configuration.workingDirectory
+    )
+    forkJava(request)
 }
 
 private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfiguration) {
@@ -109,23 +116,24 @@ private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfi
                         generatorConfiguration?.forJvm == true || externalConfiguration?.forJvm == true
                     }
                     .flatMap { project ->
-                        project
-                                .collectSources()
-                                .map { source ->
-                                    mapOf(
-                                            "languages" to source.languages.map { language -> language.name },
-                                            "root" to source.root,
-                                            "classpath" to source.classpath,
-                                            "module" to source.module
-                                    )
-                                }
+                        project.collectJvmSources().map { source ->
+                            mapOf(
+                                    "languages" to source.languages.map { language -> language.name },
+                                    "root" to source.root,
+                                    "classpath" to source.classpath,
+                                    "module" to source.module
+                            )
+                        }
                     },
     )
 
-    configuration.workingDirectory.resolve(MODULE_YML).toFile().writeText(Yaml().dump(contentMap))
+    configuration.workingDirectory
+            .resolve(MODULE_YML)
+            .toFile()
+            .writeText(Yaml().dump(contentMap))
 }
 
-private fun Project.collectSources(): Set<SourceSet> {
+private fun Project.collectJvmSources(): Set<SourceSet> {
     val extensions = project.extensions
     val configuration = extensions.findByType() ?: extensions.findByType<ExternalConfiguration>()!!.generator
     val sources = mutableSetOf<SourceSet>()
