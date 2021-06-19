@@ -19,17 +19,16 @@
 package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.*
-import io.art.gradle.common.constants.GeneratorLanguage.JAVA
-import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import org.gradle.api.Project
-import java.io.File
 import java.nio.file.Path
 import java.time.Duration
 import javax.inject.Inject
 
 data class SourceSet(
         val languages: MutableSet<GeneratorLanguage>,
-        val root: Path,
+        val root: String,
+        val classpath: String,
+        val module: String,
 )
 
 open class GeneratorConfiguration @Inject constructor(project: Project) {
@@ -87,18 +86,6 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun module(module: String) {
         this.module = module
-    }
-
-    fun java(source: File) {
-        sourceSets
-                .putIfAbsent(source.toPath(), SourceSet(languages = mutableSetOf(JAVA), root = source.toPath()))
-                ?.languages?.add(JAVA)
-    }
-
-    fun kotlin(source: File) {
-        sourceSets
-                .putIfAbsent(source.toPath(), SourceSet(languages = mutableSetOf(KOTLIN), root = source.toPath()))
-                ?.languages?.add(KOTLIN)
     }
 
     fun version(version: String) {
