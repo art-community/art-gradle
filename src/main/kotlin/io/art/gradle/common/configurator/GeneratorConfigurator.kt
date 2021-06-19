@@ -34,6 +34,7 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -46,7 +47,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { writeGeneratorConfiguration(configuration) }
     }
 
-    tasks.register(DELETE_GENERATOR_LOCK_TASK) {
+    val deleteLock = tasks.register(DELETE_GENERATOR_LOCK_TASK) {
         group = ART
         doLast {
             configuration.workingDirectory
@@ -68,7 +69,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     tasks.register(RESTART_GENERATOR_TASK) {
         group = ART
-        dependsOn(stop)
+        dependsOn(stop, deleteLock)
         doLast { activateGenerator(configuration) }
     }
 }
@@ -76,6 +77,10 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
     val workingDirectory = configuration.workingDirectory
     if (configuration.forJvm) {
+        val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
+        if (generatorLock.toFile().exists()) {
+            return
+        }
         if (!workingDirectory.toFile().exists()) {
             workingDirectory.toFile().mkdirs()
         }
