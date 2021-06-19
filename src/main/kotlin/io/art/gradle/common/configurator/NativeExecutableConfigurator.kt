@@ -65,8 +65,9 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
 
             doFirst {
                 val graalPaths = downloadGraal(native)
-                val configurations = native.graalConfigurationDirectory
-                        ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
+                val configurations = native.graalConfigurationDirectory ?: directory
+                        .resolve(GRAAL)
+                        .resolve(CONFIGURATION)
                 extractGraalConfigurations(configurations)
 
                 when {
