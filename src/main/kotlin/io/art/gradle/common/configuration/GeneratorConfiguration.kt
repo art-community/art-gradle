@@ -110,7 +110,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     }
 
     fun jvm(enabled: Boolean = true) {
-        this.forJvm = false
+        this.forJvm = enabled
     }
 
     fun useLocalJar(jar: Path) {
