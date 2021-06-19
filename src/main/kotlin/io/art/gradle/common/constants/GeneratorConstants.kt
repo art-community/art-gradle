@@ -24,6 +24,7 @@ import java.nio.file.Paths
 import java.time.Duration
 
 val DEFAULT_WATCHER_PERIOD: Duration = Duration.ofMillis(500)
+val DEFAULT_REFRESH_PERIOD: Duration = Duration.ofSeconds(1)
 const val GENERATOR = "generator"
 const val ART_GENERATOR_NAME = "art-generator"
 val GENERATOR_LOCK_TIMEOUT: Duration = Duration.ofMinutes(1)
