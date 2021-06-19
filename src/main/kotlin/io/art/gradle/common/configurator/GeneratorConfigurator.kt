@@ -104,7 +104,9 @@ private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfi
             "sources" to allprojects
                     .filter { project ->
                         val extensions = project.extensions
-                        extensions.findByType<GeneratorConfiguration>() != null || extensions.findByType<ExternalConfiguration>()?.generator != null
+                        val generatorConfiguration = extensions.findByType<GeneratorConfiguration>()
+                        val externalConfiguration = extensions.findByType<ExternalConfiguration>()?.generator
+                        generatorConfiguration?.forJvm == true || externalConfiguration?.forJvm == true
                     }
                     .flatMap { project ->
                         project
