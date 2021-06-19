@@ -49,7 +49,7 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
         }
 
         if (!lockFile.createNewFile() || !lock.isValid) {
-            throw unableToLockGraalDownloader()
+            throw lockCreation()
         }
 
         val binariesDirectory = graalDirectory

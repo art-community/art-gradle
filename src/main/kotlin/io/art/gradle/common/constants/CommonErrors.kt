@@ -39,9 +39,7 @@ fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
 
 fun unableToFindGraalUpdater() = GradleException("Unable to find 'gu' executable for GraalVM")
 
-fun unableToLockGraalDownloader() = GradleException("Unable to create lock file for GraalVM downloader")
-
-fun lockCreation() = GradleException("Unable to create lock file for ART Generator downloader")
+fun lockCreation() = GradleException("Unable to create lock file for downloader")
 
 fun lockTimeout() = GradleException("Unable to lock for download during timeout")
 
