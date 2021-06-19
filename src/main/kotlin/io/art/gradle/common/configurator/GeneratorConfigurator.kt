@@ -130,23 +130,26 @@ private fun Project.collectSources(): Set<SourceSet> {
     val configuration = extensions.findByType() ?: extensions.findByType<ExternalConfiguration>()!!.generator
     val sources = mutableSetOf<SourceSet>()
     project.convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
-        set.allSource.sourceDirectories.filter { directory -> directory.name !in configuration.directoryExclusions }.forEach { directory ->
-            val hasJava = directory.walkTopDown().any { file -> file.extension == JAVA.extension }
-            val hasKotlin = directory.walkTopDown().any { file -> file.extension == KOTLIN.extension }
-            val languages = mutableSetOf<GeneratorLanguage>()
-            if (hasJava) {
-                languages += JAVA
-            }
-            if (hasKotlin) {
-                languages += KOTLIN
-            }
-            if (languages.isNotEmpty()) sources.add(SourceSet(
-                    languages = languages,
-                    root = directory.absolutePath,
-                    classpath = project.collectClasspath(),
-                    module = configuration.module
-            ))
-        }
+        set.allSource.sourceDirectories
+                .asSequence()
+                .filter { directory -> directory.name !in configuration.directoryExclusions }
+                .forEach { directory ->
+                    val hasJava = directory.walkTopDown().any { file -> file.extension == JAVA.extension }
+                    val hasKotlin = directory.walkTopDown().any { file -> file.extension == KOTLIN.extension }
+                    val languages = mutableSetOf<GeneratorLanguage>()
+                    if (hasJava) {
+                        languages += JAVA
+                    }
+                    if (hasKotlin) {
+                        languages += KOTLIN
+                    }
+                    if (languages.isNotEmpty()) sources.add(SourceSet(
+                            languages = languages,
+                            root = directory.absolutePath,
+                            classpath = project.collectClasspath(),
+                            module = configuration.module
+                    ))
+                }
     }
     return sources
 }
