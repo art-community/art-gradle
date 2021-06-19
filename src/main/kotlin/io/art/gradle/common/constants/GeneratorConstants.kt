@@ -24,7 +24,7 @@ import java.nio.file.Paths
 import java.time.Duration
 
 val DEFAULT_WATCHER_PERIOD: Duration = Duration.ofMillis(500)
-val DEFAULT_REFRESH_PERIOD: Duration = Duration.ofSeconds(1)
+const val MAIN_CLASS = "io.art.generator.Generator"
 const val GENERATOR = "generator"
 const val ART_GENERATOR_NAME = "art-generator"
 val GENERATOR_LOCK_TIMEOUT: Duration = Duration.ofMinutes(1)
@@ -37,10 +37,7 @@ enum class GeneratorLanguage {
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
 
-val JVM_GENERATOR_DOWNLOAD_URL = { url: String, name: String, version: String ->
-    URL("$url/$name/$version/$name-$version.jar")
-}
-
+val JVM_GENERATOR_DOWNLOAD_URL = { url: String, name: String, version: String -> URL("$url/$name/$version/$name-$version.jar") }
 val JVM_GENERATOR_FILE = { name: String, version: String -> Paths.get("$name-$version.jar") }
 
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }

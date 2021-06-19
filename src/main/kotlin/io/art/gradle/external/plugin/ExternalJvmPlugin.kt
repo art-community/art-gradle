@@ -21,9 +21,10 @@ package io.art.gradle.external.plugin
 import io.art.gradle.common.configurator.addEmbeddedConfiguration
 import io.art.gradle.common.configurator.configureEmbeddedConfiguration
 import io.art.gradle.common.configurator.configureExecutable
+import io.art.gradle.common.configurator.configureGenerator
 import io.art.gradle.common.constants.ART
-import io.art.gradle.external.configurator.configureModules
 import io.art.gradle.external.configuration.ExternalConfiguration
+import io.art.gradle.external.configurator.configureModules
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
@@ -47,6 +48,7 @@ class ExternalJvmPlugin : Plugin<Project> {
                 configureEmbeddedConfiguration()
                 configureModules()
                 configureExecutable(configuration.executable)
+                configureGenerator(configuration.generator)
             }
         }.onFailure { error -> target.logger.error(error.message, error) }
     }
