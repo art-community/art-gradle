@@ -3,7 +3,6 @@ package io.art.gradle.internal.constants
 import org.gradle.api.Project
 
 const val UNSTABLE_MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven-unstable"
-const val MAIN_BRANCH = "main"
 const val ART_JAVA = "art-java"
 const val ART_GENERATOR = "art-generator"
 const val ART_KOTLIN = "art-kotlin"

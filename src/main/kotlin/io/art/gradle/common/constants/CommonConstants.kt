@@ -7,6 +7,7 @@ const val DOT = "."
 const val DOLLAR = "$"
 const val SEMICOLON = ";"
 const val COLON = ":"
+const val MAIN_BRANCH = "main"
 
 const val ART = "art"
 const val STABLE_MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven-stable/"
@@ -19,7 +20,6 @@ const val BUILD = "build"
 const val CLEAN = "clean"
 
 const val EXECUTABLE = "executable"
-const val GENERATOR = "generator"
 
 const val OS_ARCH_PROPERTY = "os.arch"
 const val CONFIGURATION = "configuration"

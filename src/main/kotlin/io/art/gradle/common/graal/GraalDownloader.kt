@@ -18,14 +18,17 @@
 
 package io.art.gradle.common.graal
 
-import io.art.gradle.common.constants.*
-import io.art.gradle.common.logger.additional
 import io.art.gradle.common.configuration.NativeExecutableConfiguration
+import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GraalPlatformName.*
+import io.art.gradle.common.logger.additional
 import io.art.gradle.common.model.GraalPaths
 import org.gradle.api.Project
 import java.io.File
 import java.lang.Thread.interrupted
+import java.nio.channels.FileChannel.open
+import java.nio.file.StandardOpenOption.READ
+import java.nio.file.StandardOpenOption.WRITE
 import java.time.LocalTime.now
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -35,15 +38,17 @@ private val LOCK = ReentrantLock()
 fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths = LOCK.withLock {
     val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
     val lockFile = graalDirectory.apply { if (!exists()) mkdirs() }.resolve("$GRAAL$DOT_LOCK").apply { deleteOnExit() }
+    val channel = open(lockFile.toPath(), READ, WRITE)
+    val lock = channel.lock()
     val time = now().plus(GRAAL_DOWNLOAD_TIMEOUT)
     try {
-        while (lockFile.exists() && !interrupted()) {
+        while (lockFile.exists() && !lock.isValid && !interrupted()) {
             if (now().isAfter(time)) {
-                throw graalDownloadTimeout()
+                throw lockTimeout()
             }
         }
 
-        if (!lockFile.createNewFile()) {
+        if (!lockFile.createNewFile() || !lock.isValid) {
             throw unableToLockGraalDownloader()
         }
 
@@ -70,6 +75,8 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
 
         return processDownloading(configuration, graalDirectory)
     } finally {
+        lock.release()
+        channel.close()
         lockFile.delete()
     }
 }

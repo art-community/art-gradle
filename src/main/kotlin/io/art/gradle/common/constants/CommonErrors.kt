@@ -41,6 +41,8 @@ fun unableToFindGraalUpdater() = GradleException("Unable to find 'gu' executable
 
 fun unableToLockGraalDownloader() = GradleException("Unable to create lock file for GraalVM downloader")
 
-fun graalDownloadTimeout() = GradleException("Unable to download GraalVM during $GRAAL_DOWNLOAD_TIMEOUT")
+fun lockCreation() = GradleException("Unable to create lock file for ART Generator downloader")
+
+fun lockTimeout() = GradleException("Unable to lock for download during timeout")
 
 const val GRAAL_VM_JDK_8_DARWIN_WARING = "GraalVM for JDK 8 on MacOS not supported"

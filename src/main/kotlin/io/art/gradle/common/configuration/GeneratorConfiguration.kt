@@ -18,23 +18,31 @@
 
 package io.art.gradle.common.configuration
 
-import io.art.gradle.common.constants.DEFAULT_WATCHER_PERIOD
-import io.art.gradle.common.constants.GENERATOR
-import io.art.gradle.common.constants.GeneratorLanguage
+import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
-import io.art.gradle.common.constants.MODULE_YML
 import org.gradle.api.Project
 import java.io.File
 import java.nio.file.Path
 import java.time.Duration
 import javax.inject.Inject
 
+data class SourceSet(
+        val languages: MutableSet<GeneratorLanguage>,
+        val root: Path,
+)
+
 open class GeneratorConfiguration @Inject constructor(project: Project) {
-    var configurationPath: Path = project.rootProject.buildDir.resolve(GENERATOR).resolve(MODULE_YML).toPath()
+    var forJvm = false
+        private set
+
+    var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
     var module: String = project.name.capitalize()
+        private set
+
+    var lockUpdatePeriod: Duration = LOCK_UPDATE_PERIOD
         private set
 
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
@@ -46,10 +54,16 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var loggingToDirectory = true
         private set
 
-    var loggingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
+    var loggingDirectory: Path = workingDirectory.resolve(GENERATOR)
         private set
 
     var sourceSets = mutableMapOf<Path, SourceSet>()
+        private set
+
+    var version = MAIN_BRANCH
+        private set
+
+    var repositoryUrl: String = STABLE_MAVEN_REPOSITORY
         private set
 
     fun watcherPeriod(period: Duration) {
@@ -67,8 +81,8 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         loggingToDirectory = true
     }
 
-    fun configurationPath(path: Path) {
-        configurationPath = path
+    fun workingDirectory(path: Path) {
+        workingDirectory = path
     }
 
     fun module(module: String) {
@@ -87,8 +101,15 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
                 ?.languages?.add(KOTLIN)
     }
 
-    data class SourceSet(
-            val languages: MutableSet<GeneratorLanguage>,
-            val root: Path,
-    )
+    fun version(version: String) {
+        this.version = version
+    }
+
+    fun repository(url: String) {
+        this.repositoryUrl = url
+    }
+
+    fun jvm(enabled: Boolean = true) {
+        this.forJvm = false
+    }
 }

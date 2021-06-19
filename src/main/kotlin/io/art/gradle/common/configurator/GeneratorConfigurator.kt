@@ -20,20 +20,36 @@ package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.GeneratorConfiguration
 import io.art.gradle.common.constants.*
+import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.yaml.snakeyaml.Yaml
 
 
-fun Project.configureGenerator(configuration: GeneratorConfiguration) {
+fun Project.configureJvmGenerator(configuration: GeneratorConfiguration) {
+    if (configuration.forJvm) {
+        val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
+        if (!generatorJar.toFile().exists()) {
+            downloadJvmGenerator(configuration)
+        }
+
+        writeJvmGeneratorConfiguration(configuration)
+
+        javaexec {
+            workingDir(configuration.workingDirectory)
+            executable(generatorJar)
+            args(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
+        }
+    }
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
-        doFirst { writeConfiguration(configuration) }
+        doFirst { writeJvmGeneratorConfiguration(configuration) }
     }
 }
 
-private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
-    configuration.configurationPath.parent.toFile().mkdirs()
+private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfiguration) {
+    val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
+    configuration.workingDirectory.parent.toFile().mkdirs()
 
     val fileWriter = mapOf(
             "type" to "file",
@@ -45,6 +61,7 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
     )
 
     val contentMap = mapOf(
+            "lock" to generatorLock.toFile().absolutePath,
             "logging" to mapOf(
                     "default" to mapOf(
                             "writers" to listOf(
@@ -67,7 +84,7 @@ private fun Project.writeConfiguration(configuration: GeneratorConfiguration) {
             },
     )
 
-    configuration.configurationPath.toFile().writeText(Yaml().dump(contentMap))
+    configuration.workingDirectory.resolve(MODULE_YML).toFile().writeText(Yaml().dump(contentMap))
 }
 
 private fun Project.collectClasspath(): String {
