@@ -32,7 +32,6 @@ data class JavaForkRequest(
 object ProcessExecutionService {
     fun fork(command: Array<String>, directory: Path) {
         runCatching {
-            println("Running: ${command.joinToString(" ")}")
             getRuntime().exec(command, emptyArray(), directory.toFile())
         }
     }
@@ -42,8 +41,9 @@ object ProcessExecutionService {
     }
 
     fun forkJava(request: JavaForkRequest) {
-        val forkArguments = request.arguments + listOf(
+        val forkArguments = listOf(
                 request.executable.toFile().absolutePath,
+                *request.arguments.toTypedArray(),
                 JAR_OPTION, request.jar.toFile().absolutePath,
         )
         fork(forkArguments.toTypedArray(), request.directory)
