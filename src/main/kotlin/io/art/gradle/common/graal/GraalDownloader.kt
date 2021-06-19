@@ -21,7 +21,6 @@ package io.art.gradle.common.graal
 import io.art.gradle.common.configuration.NativeExecutableConfiguration
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GraalPlatformName.*
-import io.art.gradle.common.logger.additional
 import io.art.gradle.common.model.GraalPaths
 import org.gradle.api.Project
 import java.io.File
@@ -96,7 +95,6 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
     }
 
     if (!archiveFile.exists()) {
-        additional("Downloading GraalVM...")
         GRAAL_DOWNLOAD_URL(archiveName, configuration.graalVersion).openStream().use { input ->
             archiveFile.outputStream().use { output ->
                 val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 2)
