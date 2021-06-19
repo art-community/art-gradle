@@ -29,10 +29,10 @@ const val GENERATOR = "generator"
 const val ART_GENERATOR_NAME = "art-generator"
 val GENERATOR_LOCK_TIMEOUT: Duration = Duration.ofMinutes(1)
 
-enum class GeneratorLanguage {
-    JAVA,
-    KOTLIN,
-    DART
+enum class GeneratorLanguage(val extension: String) {
+    JAVA("java"),
+    KOTLIN("kt"),
+    DART("dart")
 }
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
