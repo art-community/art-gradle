@@ -26,8 +26,8 @@ import io.art.gradle.common.service.FileDownloadService.downloadFile
 object GeneratorDownloader {
     fun downloadJvmGenerator(configuration: GeneratorConfiguration) {
         val request = DownloadingRequest(
-                url = JVM_GENERATOR_DOWNLOAD_URL(configuration.repositoryUrl, ART_GENERATOR_NAME, configuration.version),
-                path = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version)),
+                url = JVM_GENERATOR_DOWNLOAD_URL(configuration.repositoryUrl, configuration.version),
+                path = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version)),
                 lockName = "$GENERATOR$DOT_LOCK",
                 lockTimeout = GENERATOR_LOCK_TIMEOUT
         )

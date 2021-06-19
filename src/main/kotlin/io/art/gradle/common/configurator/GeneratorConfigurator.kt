@@ -39,30 +39,55 @@ import java.nio.file.Path
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
-    if (configuration.forJvm) {
-        if (!configuration.workingDirectory.toFile().exists()) {
-            configuration.workingDirectory.toFile().mkdirs()
+    activateGenerator(configuration)
+
+    tasks.register(WRITE_CONFIGURATION_TASK) {
+        group = ART
+        doLast { writeGeneratorConfiguration(configuration) }
+    }
+
+    tasks.register(DELETE_GENERATOR_LOCK_TASK) {
+        group = ART
+        doLast {
+            configuration.workingDirectory
+                    .resolve("$GENERATOR$DOT_LOCK")
+                    .toFile()
+                    .delete()
         }
-        configuration
-                .localJarOverridingPath
+    }
+
+    val stop = tasks.register(STOP_GENERATOR_TASK) {
+        group = ART
+        doLast {
+            configuration.workingDirectory
+                    .resolve("$GENERATOR$DOT_STOP")
+                    .toFile()
+                    .createNewFile()
+        }
+    }
+
+    tasks.register(RESTART_GENERATOR_TASK) {
+        group = ART
+        dependsOn(stop)
+        doLast { activateGenerator(configuration) }
+    }
+}
+
+private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
+    val workingDirectory = configuration.workingDirectory
+    if (configuration.forJvm) {
+        if (!workingDirectory.toFile().exists()) {
+            workingDirectory.toFile().mkdirs()
+        }
+        configuration.localJarOverridingPath
                 ?.let { generatorJar -> runJvmGenerator(configuration, generatorJar) }
                 ?: let {
-                    val generatorJar = configuration
-                            .workingDirectory
-                            .resolve(JVM_GENERATOR_FILE(ART_GENERATOR_NAME, configuration.version))
+                    val generatorJar = workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version))
                     if (!generatorJar.toFile().exists()) {
                         downloadJvmGenerator(configuration)
                     }
                     runJvmGenerator(configuration, generatorJar)
                 }
-    }
-    tasks.register(WRITE_CONFIGURATION_TASK) {
-        group = ART
-        doFirst { writeGeneratorConfiguration(configuration) }
-    }
-    tasks.register(DELETE_GENERATOR_LOCK) {
-        group = ART
-        doFirst { configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK").toFile().delete() }
     }
 }
 
@@ -83,6 +108,7 @@ private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, gener
 
 private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
     val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
+    val generatorStop = configuration.workingDirectory.resolve("$GENERATOR$DOT_STOP")
     configuration.workingDirectory.parent.toFile().mkdirs()
 
     val fileWriter = mapOf(
@@ -106,7 +132,10 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
     val allSources = jvmSources + dartSources
 
     val configurationContent = mapOf(
-            "lock" to generatorLock.toFile().absolutePath,
+            "marker" to mapOf(
+                    "lock" to generatorLock.toFile().absolutePath,
+                    "stop" to generatorStop.toFile().absolutePath
+            ),
             "logging" to mapOf(
                     "default" to mapOf(
                             "writers" to listOf(

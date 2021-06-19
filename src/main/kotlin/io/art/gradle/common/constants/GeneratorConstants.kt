@@ -36,9 +36,10 @@ enum class GeneratorLanguage(val extension: String) {
 }
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
-const val DELETE_GENERATOR_LOCK = "delete-generator-lock"
+const val DELETE_GENERATOR_LOCK_TASK = "delete-generator-lock"
+const val STOP_GENERATOR_TASK = "stop-generator"
+const val RESTART_GENERATOR_TASK = "restart-generator"
 
-val JVM_GENERATOR_DOWNLOAD_URL = { url: String, name: String, version: String -> URL("$url/$name/$version/$name-$version.jar") }
-val JVM_GENERATOR_FILE = { name: String, version: String -> Paths.get("$name-$version.jar") }
-
+val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/art-generator/$version/art-generator-$version.jar") }
+val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }

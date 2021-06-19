@@ -26,6 +26,7 @@ const val CONFIGURATION = "configuration"
 const val DOT_EXE = ".exe"
 const val DOT_JAR = ".jar"
 const val DOT_LOCK = ".lock"
+const val DOT_STOP = ".stop"
 const val POWERSHELL = "powershell"
 
 const val TAR = "tar"
