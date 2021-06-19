@@ -58,7 +58,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
-        doFirst { writeJvmGeneratorConfiguration(configuration) }
+        doFirst { writeGeneratorConfiguration(configuration) }
     }
     tasks.register(DELETE_GENERATOR_LOCK) {
         group = ART
@@ -67,7 +67,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 }
 
 private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, generatorJar: Path) {
-    writeJvmGeneratorConfiguration(configuration)
+    writeGeneratorConfiguration(configuration)
     val request = JavaForkRequest(
             executable = configuration.jvmExecutable,
             jar = generatorJar,
@@ -81,7 +81,7 @@ private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, gener
     forkJava(request)
 }
 
-private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfiguration) {
+private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
     val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
     configuration.workingDirectory.parent.toFile().mkdirs()
 
@@ -94,7 +94,18 @@ private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfi
             "colored" to true
     )
 
-    val contentMap = mapOf(
+    val jvmSources = allprojects
+            .filter { project ->
+                val extensions = project.extensions
+                val generatorConfiguration = extensions.findByType<GeneratorConfiguration>()
+                val externalConfiguration = extensions.findByType<ExternalConfiguration>()?.generator
+                generatorConfiguration?.forJvm == true || externalConfiguration?.forJvm == true
+            }
+            .flatMap { project -> project.collectJvmSources() }
+    val dartSources = emptyList<SourceSet>()
+    val allSources = jvmSources + dartSources
+
+    val configurationContent = mapOf(
             "lock" to generatorLock.toFile().absolutePath,
             "logging" to mapOf(
                     "default" to mapOf(
@@ -108,29 +119,20 @@ private fun Project.writeJvmGeneratorConfiguration(configuration: GeneratorConfi
                     )
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
-            "sources" to allprojects
-                    .filter { project ->
-                        val extensions = project.extensions
-                        val generatorConfiguration = extensions.findByType<GeneratorConfiguration>()
-                        val externalConfiguration = extensions.findByType<ExternalConfiguration>()?.generator
-                        generatorConfiguration?.forJvm == true || externalConfiguration?.forJvm == true
-                    }
-                    .flatMap { project ->
-                        project.collectJvmSources().map { source ->
-                            mapOf(
-                                    "languages" to source.languages.map { language -> language.name },
-                                    "root" to source.root,
-                                    "classpath" to source.classpath,
-                                    "module" to source.module
-                            )
-                        }
-                    },
+            "sources" to allSources.map { source ->
+                mapOf(
+                        "languages" to source.languages.map { language -> language.name },
+                        "root" to source.root,
+                        "classpath" to source.classpath,
+                        "module" to source.module
+                )
+            },
     )
 
     configuration.workingDirectory
             .resolve(MODULE_YML)
             .toFile()
-            .writeText(Yaml().dump(contentMap))
+            .writeText(Yaml().dump(configurationContent))
 }
 
 private fun Project.collectJvmSources(): Set<SourceSet> {
