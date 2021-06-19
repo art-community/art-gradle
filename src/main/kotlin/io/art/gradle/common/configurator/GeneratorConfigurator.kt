@@ -34,7 +34,6 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
-import kotlin.io.path.exists
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -101,7 +100,10 @@ private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, gener
     val request = JavaForkRequest(
             executable = configuration.jvmExecutable,
             jar = generatorJar,
-            arguments = listOf(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML))),
+            arguments = listOf(
+                    JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)),
+                    *GENERATOR_JVM_OPTIONS
+            ),
             directory = configuration.workingDirectory
     )
     forkJava(request)
