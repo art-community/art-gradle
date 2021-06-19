@@ -65,6 +65,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var localJarOverridingPath: Path? = null
         private set
 
+    var directoryExclusions: MutableSet<String> = mutableSetOf()
+        private set
+
     fun watcherPeriod(period: Duration) {
         watcherPeriod = period
     }
@@ -102,5 +105,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun useLocalJar(jar: Path) {
         localJarOverridingPath = jar
+    }
+
+    fun exclude(directory: String) {
+        directoryExclusions.add(directory)
     }
 }

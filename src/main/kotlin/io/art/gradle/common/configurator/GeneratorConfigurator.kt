@@ -128,7 +128,7 @@ private fun Project.collectSources(): Set<SourceSet> {
     val configuration = extensions.findByType() ?: extensions.findByType<ExternalConfiguration>()!!.generator
     val sources = mutableSetOf<SourceSet>()
     project.convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
-        set.allSource.sourceDirectories.forEach { directory ->
+        set.allSource.sourceDirectories.filter { directory -> directory.name !in configuration.directoryExclusions }.forEach { directory ->
             val hasJava = directory.walkTopDown().any { file -> file.extension == JAVA.extension }
             val hasKotlin = directory.walkTopDown().any { file -> file.extension == KOTLIN.extension }
             val languages = mutableSetOf<GeneratorLanguage>()
