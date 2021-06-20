@@ -34,6 +34,7 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -110,7 +111,9 @@ private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, gener
 private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
     val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
     val generatorStop = configuration.workingDirectory.resolve("$GENERATOR$DOT_STOP")
-    configuration.workingDirectory.parent.toFile().mkdirs()
+    if (!configuration.workingDirectory.toFile().exists()) {
+        configuration.workingDirectory.toFile().mkdirs()
+    }
 
     val fileWriter = mapOf(
             "type" to "file",
