@@ -34,7 +34,6 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
-import kotlin.io.path.exists
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -83,13 +82,13 @@ private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
             workingDirectory.toFile().mkdirs()
         }
         configuration.localJarOverridingPath
-                ?.let { generatorJar -> runJvmGenerator(configuration, generatorJar) }
+                ?.let { generatorJar -> if (configuration.autoRun) runJvmGenerator(configuration, generatorJar) }
                 ?: let {
                     val generatorJar = workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version))
                     if (!generatorJar.toFile().exists()) {
                         downloadJvmGenerator(configuration)
                     }
-                    runJvmGenerator(configuration, generatorJar)
+                    if (configuration.autoRun) runJvmGenerator(configuration, generatorJar)
                 }
     }
 }
