@@ -195,7 +195,7 @@ private fun Project.collectJvmSources(): Set<SourceSet> {
 }
 
 private fun Project.collectClasspath(): String {
-    val classpath = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
+    val classpath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME)
     if (OperatingSystem.current().isWindows) {
         return classpath.files.joinToString(SEMICOLON)
     }
