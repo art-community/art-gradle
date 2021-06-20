@@ -39,7 +39,7 @@ import java.nio.file.Path
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
-    activateGenerator(configuration)
+    if (configuration.autoRun) activateGenerator(configuration)
 
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
@@ -82,13 +82,13 @@ private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
             workingDirectory.toFile().mkdirs()
         }
         configuration.localJarOverridingPath
-                ?.let { generatorJar -> if (configuration.autoRun) runJvmGenerator(configuration, generatorJar) }
+                ?.let { generatorJar -> runJvmGenerator(configuration, generatorJar) }
                 ?: let {
                     val generatorJar = workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version))
                     if (!generatorJar.toFile().exists()) {
                         downloadJvmGenerator(configuration)
                     }
-                    if (configuration.autoRun) runJvmGenerator(configuration, generatorJar)
+                    runJvmGenerator(configuration, generatorJar)
                 }
     }
 }
