@@ -47,7 +47,10 @@ object FileDownloadService {
                 return@withLock
             }
             val directory = path.parent
-            val lockFile = directory.toFile().apply { if (!exists()) mkdirs() }.resolve(lockName).apply { deleteOnExit() }
+            val lockFile = directory.toFile().apply { if (!exists()) mkdirs() }.resolve(lockName).apply {
+                createNewFile()
+                deleteOnExit()
+            }
             val channel = FileChannel.open(lockFile.toPath(), READ, WRITE)
             val lock = channel.lock()
             val time = now().plus(lockTimeout)
