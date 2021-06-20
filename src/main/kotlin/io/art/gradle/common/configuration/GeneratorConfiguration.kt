@@ -48,7 +48,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var loggingToConsole = false
         private set
 
-    var loggingToDirectory = true
+    var loggingToDirectory = false
         private set
 
     var loggingDirectory: Path = workingDirectory
