@@ -171,10 +171,11 @@ private fun Project.collectJvmSources(): Set<SourceSet> {
     val extensions = project.extensions
     val configuration = extensions.findByType() ?: extensions.findByType<ExternalConfiguration>()!!.generator
     val sources = mutableSetOf<SourceSet>()
+    val availableFiles = fileTree(project.projectDir).matching { configuration.pattern(this) }.files
     project.convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
         set.allSource.sourceDirectories
                 .asSequence()
-                .filter { directory -> directory.name !in configuration.directoryExclusions }
+                .filter { directory -> availableFiles.any { file -> file.startsWith(directory) } }
                 .forEach { directory ->
                     val hasJava = directory.walkTopDown().any { file -> file.extension == JAVA.extension }
                     val hasKotlin = directory.walkTopDown().any { file -> file.extension == KOTLIN.extension }

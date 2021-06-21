@@ -20,6 +20,7 @@ package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.*
 import org.gradle.api.Project
+import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.internal.jvm.Jvm
 import java.nio.file.Path
 import java.time.Duration
@@ -63,7 +64,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var localJarOverridingPath: Path? = null
         private set
 
-    var directoryExclusions: MutableSet<String> = mutableSetOf()
+    var pattern: PatternFilterable.() -> PatternFilterable = { this }
         private set
 
     var jvmExecutable: Path = Jvm.current().javaExecutable.toPath()
@@ -111,8 +112,8 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         localJarOverridingPath = jar
     }
 
-    fun exclude(directory: String) {
-        directoryExclusions.add(directory)
+    fun pattern(pattern: PatternFilterable.() -> PatternFilterable) {
+        this.pattern = pattern
     }
 
     fun jvmExecutable(executable: Path) {
