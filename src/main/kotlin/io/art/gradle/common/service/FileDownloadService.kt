@@ -61,7 +61,7 @@ object FileDownloadService {
                     }
                 }
 
-                if (!lockFile.createNewFile() || !lock.isValid) {
+                if (!lock.isValid) {
                     throw lockCreation()
                 }
 
