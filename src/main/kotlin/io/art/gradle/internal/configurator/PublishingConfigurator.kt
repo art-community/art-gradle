@@ -84,7 +84,7 @@ private fun Project.generatorPublishing(publisherUsername: String, publisherPass
                     artifactId = project.name
                     groupId = rootProject.group as String
                     version = rootProject.version as String
-                    artifact(jvmPlugin.executable.directory.resolve("$name.$DOT_JAR"))
+                    artifact(jvmPlugin.executable.directory.resolve("$name.$DOT_JAR").toFile())
                     projectPom(this)
                 }
             }
