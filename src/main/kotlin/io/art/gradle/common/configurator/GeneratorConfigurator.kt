@@ -88,13 +88,6 @@ private fun stopGenerator(configuration: GeneratorConfiguration) {
 
 private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
     if (configuration.forJvm) {
-        val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
-        if (controllerFile.toFile().exists()) {
-            controllerFile.toFile()
-                    .createNewFile()
-                    .apply { controllerFile.writeContent(AVAILABLE.name) }
-            return
-        }
         configuration.localJarOverridingPath
                 ?.let { generatorJar -> runLocalGeneratorJar(configuration, generatorJar) }
                 ?: runRemoteGeneratorJar(configuration)
@@ -125,12 +118,6 @@ private fun Project.runLocalGeneratorJar(configuration: GeneratorConfiguration, 
 
 private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
-    if (controllerFile.toFile().exists()) {
-        controllerFile.toFile()
-                .createNewFile()
-                .apply { controllerFile.writeContent(AVAILABLE.name) }
-        return
-    }
 
     val fileWriter = mapOf(
             "type" to "file",
