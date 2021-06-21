@@ -29,7 +29,7 @@ object GeneratorDownloader {
                 url = JVM_GENERATOR_DOWNLOAD_URL(configuration.repositoryUrl, configuration.version),
                 path = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version)),
                 lockName = "$GENERATOR$DOT_LOCK",
-                lockTimeout = GENERATOR_LOCK_TIMEOUT
+                timeout = GENERATOR_DOWNLOAD_TIMEOUT
         )
         downloadFile(request)
     }

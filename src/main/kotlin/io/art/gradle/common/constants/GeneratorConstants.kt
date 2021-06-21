@@ -22,11 +22,16 @@ import java.net.URL
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
+import java.time.Duration.*
 
 const val GENERATOR = "generator"
 
-val DEFAULT_WATCHER_PERIOD: Duration = Duration.ofMillis(500)
-val GENERATOR_LOCK_TIMEOUT: Duration = Duration.ofMinutes(1)
+const val GENERATOR_CONTROLLER = "generator.controller"
+
+val DEFAULT_WATCHER_PERIOD: Duration = ofMillis(500)
+val GENERATOR_DOWNLOAD_TIMEOUT: Duration = ofMinutes(5)
+val GENERATOR_STOP_TIMEOUT: Duration = ofSeconds(30)
+val GENERATOR_STOP_CHECKING_PERIOD: Duration = ofSeconds(1)
 
 enum class GeneratorLanguage(val extension: String) {
     JAVA("java"),
@@ -34,8 +39,13 @@ enum class GeneratorLanguage(val extension: String) {
     DART("dart")
 }
 
+enum class GeneratorState {
+    LOCKED,
+    STOPPING,
+    AVAILABLE
+}
+
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
-const val DELETE_GENERATOR_LOCK_TASK = "delete-generator-lock"
 const val STOP_GENERATOR_TASK = "stop-generator"
 const val RESTART_GENERATOR_TASK = "restart-generator"
 

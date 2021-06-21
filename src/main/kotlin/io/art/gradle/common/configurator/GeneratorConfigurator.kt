@@ -23,9 +23,12 @@ import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
+import io.art.gradle.common.constants.GeneratorState.AVAILABLE
+import io.art.gradle.common.constants.GeneratorState.STOPPING
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import io.art.gradle.common.service.JavaForkRequest
 import io.art.gradle.common.service.ProcessExecutionService.forkJava
+import io.art.gradle.common.service.writeContent
 import io.art.gradle.external.configuration.ExternalConfiguration
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
@@ -34,66 +37,79 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
+    configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
 
-    if (configuration.autoRun) activateGenerator(configuration)
+    if (configuration.activateAutomatically) activateGenerator(configuration)
 
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
         doLast { writeGeneratorConfiguration(configuration) }
     }
 
-    tasks.register(DELETE_GENERATOR_LOCK_TASK) {
-        group = ART
-        doLast {
-            configuration.workingDirectory
-                    .resolve("$GENERATOR$DOT_LOCK")
-                    .toFile()
-                    .delete()
-        }
-    }
-
     val stop = tasks.register(STOP_GENERATOR_TASK) {
         group = ART
-        doLast {
-            val stopFile = configuration.workingDirectory.resolve("$GENERATOR$DOT_STOP")
-            stopFile.toFile().createNewFile()
-        }
+        doLast { stopGenerator(configuration) }
     }
 
     tasks.register(RESTART_GENERATOR_TASK) {
         group = ART
         dependsOn(stop)
-        doLast { activateGenerator(configuration) }
+        doLast { restartGenerator(configuration) }
     }
+}
+
+private fun Project.restartGenerator(configuration: GeneratorConfiguration) {
+    stopGenerator(configuration)
+    activateGenerator(configuration)
+}
+
+private fun stopGenerator(configuration: GeneratorConfiguration) {
+    val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
+    controllerFile.writeContent(STOPPING.name)
+    val latch = CountDownLatch(1)
+    val scheduler = ScheduledThreadPoolExecutor(1).apply { maximumPoolSize = 1 }
+    fun check() {
+        if (!controllerFile.toFile().exists()) {
+            latch.countDown()
+            return
+        }
+        if (GeneratorState.valueOf(controllerFile.toFile().readText().split(SPACE)[0]) == AVAILABLE) latch.countDown()
+    }
+    scheduler.scheduleAtFixedRate(::check, 0L, GENERATOR_STOP_CHECKING_PERIOD.toMillis(), MILLISECONDS)
+    if (!latch.await(GENERATOR_STOP_TIMEOUT.toMillis(), MILLISECONDS)) throw generatorStopTimeoutError()
 }
 
 private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
-    val workingDirectory = configuration.workingDirectory
     if (configuration.forJvm) {
-        val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
-        if (generatorLock.toFile().exists()) {
+        val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
+        if (controllerFile.toFile().exists()) {
+            controllerFile.toFile()
+                    .createNewFile()
+                    .apply { controllerFile.writeContent(AVAILABLE.name) }
             return
         }
-        if (!workingDirectory.toFile().exists()) {
-            workingDirectory.toFile().mkdirs()
-        }
         configuration.localJarOverridingPath
-                ?.let { generatorJar -> runJvmGenerator(configuration, generatorJar) }
-                ?: let {
-                    val generatorJar = workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version))
-                    if (!generatorJar.toFile().exists()) {
-                        downloadJvmGenerator(configuration)
-                    }
-                    runJvmGenerator(configuration, generatorJar)
-                }
+                ?.let { generatorJar -> runLocalGeneratorJar(configuration, generatorJar) }
+                ?: runRemoteGeneratorJar(configuration)
     }
 }
 
-private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, generatorJar: Path) {
+private fun Project.runRemoteGeneratorJar(configuration: GeneratorConfiguration) {
+    val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version))
+    if (!generatorJar.toFile().exists()) {
+        downloadJvmGenerator(configuration)
+    }
+    runLocalGeneratorJar(configuration, generatorJar)
+}
+
+private fun Project.runLocalGeneratorJar(configuration: GeneratorConfiguration, generatorJar: Path) {
     writeGeneratorConfiguration(configuration)
     val request = JavaForkRequest(
             executable = configuration.jvmExecutable,
@@ -108,16 +124,19 @@ private fun Project.runJvmGenerator(configuration: GeneratorConfiguration, gener
 }
 
 private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
-    val generatorLock = configuration.workingDirectory.resolve("$GENERATOR$DOT_LOCK")
-    val generatorStop = configuration.workingDirectory.resolve("$GENERATOR$DOT_STOP")
-    if (!configuration.workingDirectory.toFile().exists()) {
-        configuration.workingDirectory.toFile().mkdirs()
+    val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
+    if (controllerFile.toFile().exists()) {
+        controllerFile.toFile()
+                .createNewFile()
+                .apply { controllerFile.writeContent(AVAILABLE.name) }
+        return
     }
 
     val fileWriter = mapOf(
             "type" to "file",
             "directory" to configuration.loggingDirectory.toFile().absolutePath
     )
+
     val consoleWriter = mapOf(
             "type" to "console",
             "colored" to true
@@ -135,10 +154,7 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
     val allSources = jvmSources + dartSources
 
     val configurationContent = mapOf(
-            "marker" to mapOf(
-                    "lock" to generatorLock.toFile().absolutePath,
-                    "stop" to generatorStop.toFile().absolutePath
-            ),
+            "controller" to controllerFile.toFile().absolutePath,
             "logging" to mapOf(
                     "default" to mapOf(
                             "writers" to listOf(
@@ -171,7 +187,7 @@ private fun Project.collectJvmSources(): Set<SourceSet> {
     val extensions = project.extensions
     val configuration = extensions.findByType() ?: extensions.findByType<ExternalConfiguration>()!!.generator
     val sources = mutableSetOf<SourceSet>()
-    val availableFiles = fileTree(project.projectDir).matching { configuration.pattern(this) }.files
+    val availableFiles = fileTree(project.projectDir).matching { configuration.sourcesPattern(this) }.files
     project.convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
         set.allSource.sourceDirectories
                 .asSequence()

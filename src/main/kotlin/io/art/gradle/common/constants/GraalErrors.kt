@@ -39,8 +39,4 @@ fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
 
 fun unableToFindGraalUpdater() = GradleException("Unable to find 'gu' executable for GraalVM")
 
-fun lockCreation() = GradleException("Unable to create lock file for downloader")
-
-fun lockTimeout() = GradleException("Unable to lock for download during timeout")
-
 const val GRAAL_VM_JDK_8_DARWIN_WARING = "GraalVM for JDK 8 on MacOS not supported"

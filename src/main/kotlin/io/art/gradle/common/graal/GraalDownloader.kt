@@ -22,62 +22,42 @@ import io.art.gradle.common.configuration.NativeExecutableConfiguration
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GraalPlatformName.*
 import io.art.gradle.common.model.GraalPaths
+import io.art.gradle.common.service.withLock
 import org.gradle.api.Project
 import java.io.File
-import java.lang.Thread.interrupted
-import java.nio.channels.FileChannel.open
-import java.nio.file.StandardOpenOption.READ
-import java.nio.file.StandardOpenOption.WRITE
-import java.time.LocalTime.now
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+import java.util.concurrent.CompletableFuture.supplyAsync
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
-private val LOCK = ReentrantLock()
+private const val bufferSize = DEFAULT_BUFFER_SIZE * 2
 
-fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths = LOCK.withLock {
-    val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
-    val lockFile = graalDirectory.apply { if (!exists()) mkdirs() }.resolve("$GRAAL$DOT_LOCK").apply { deleteOnExit() }
-    val channel = open(lockFile.toPath(), READ, WRITE)
-    val lock = channel.lock()
-    val time = now().plus(GRAAL_DOWNLOAD_TIMEOUT)
-    try {
-        while (lockFile.exists() && !lock.isValid && !interrupted()) {
-            if (now().isAfter(time)) {
-                throw lockTimeout()
-            }
-        }
+fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths {
+    val directory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
+    return supplyAsync {
+        directory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
+            val binariesDirectory = directory
+                    .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
+                    .walkTopDown()
+                    .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
+                    ?.parentFile
 
-        if (!lockFile.createNewFile() || !lock.isValid) {
-            throw lockCreation()
-        }
-
-        val binariesDirectory = graalDirectory
-                .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-                .walkTopDown()
-                .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-                ?.parentFile
-
-        if (graalDirectory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
-            if (configuration.llvm) {
-                exec {
-                    commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
-                    args(GRAAL_UPDATE_LLVM_ARGUMENTS)
+            if (directory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
+                if (configuration.llvm) {
+                    exec {
+                        commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
+                        args(GRAAL_UPDATE_LLVM_ARGUMENTS)
+                    }
                 }
+
+                return@withLock GraalPaths(
+                        base = directory,
+                        binary = binariesDirectory,
+                        nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
+                )
             }
 
-            return GraalPaths(
-                    base = graalDirectory,
-                    binary = binariesDirectory,
-                    nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
-            )
+            return@withLock processDownloading(configuration, directory)
         }
-
-        return processDownloading(configuration, graalDirectory)
-    } finally {
-        lock.release()
-        channel.close()
-        lockFile.delete()
-    }
+    }.get(GRAAL_DOWNLOAD_TIMEOUT.toMillis(), MILLISECONDS)
 }
 
 private fun Project.processDownloading(configuration: NativeExecutableConfiguration, graalDirectory: File): GraalPaths {
@@ -97,9 +77,9 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
     if (!archiveFile.exists()) {
         GRAAL_DOWNLOAD_URL(archiveName, configuration.graalVersion).openStream().use { input ->
             archiveFile.outputStream().use { output ->
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 2)
+                val buffer = ByteArray(bufferSize)
                 var read: Int
-                while (input.read(buffer, 0, DEFAULT_BUFFER_SIZE * 2).also { read = it } >= 0) {
+                while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
                     output.write(buffer, 0, read)
                 }
             }

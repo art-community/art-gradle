@@ -18,68 +18,37 @@
 
 package io.art.gradle.common.service
 
-import io.art.gradle.common.constants.lockCreation
-import io.art.gradle.common.constants.lockTimeout
-import java.lang.Thread.interrupted
 import java.net.URL
-import java.nio.channels.FileChannel
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption.READ
-import java.nio.file.StandardOpenOption.WRITE
 import java.time.Duration
-import java.time.LocalTime.now
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+import java.util.concurrent.CompletableFuture.runAsync
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 data class DownloadingRequest(
         val url: URL,
         val path: Path,
         val lockName: String,
-        val lockTimeout: Duration,
+        val timeout: Duration,
 )
 
 object FileDownloadService {
-    private val downloadLock = ReentrantLock()
+    private const val bufferSize = DEFAULT_BUFFER_SIZE * 2
 
-    fun downloadFile(request: DownloadingRequest) = request.apply {
-        downloadLock.withLock {
-            if (path.toFile().exists()) {
-                return@withLock
-            }
-            val directory = path.parent
-            val lockFile = directory.toFile().apply { if (!exists()) mkdirs() }.resolve(lockName).apply {
-                createNewFile()
-                deleteOnExit()
-            }
-            val channel = FileChannel.open(lockFile.toPath(), READ, WRITE)
-            val lock = channel.lock()
-            val time = now().plus(lockTimeout)
-            try {
-                while (lockFile.exists() && !lock.isValid && !interrupted()) {
-                    if (now().isAfter(time)) {
-                        throw lockTimeout()
-                    }
-                }
-
-                if (!lock.isValid) {
-                    throw lockCreation()
-                }
-
-                url.openStream().use { input ->
-                    path.toFile().outputStream().use { output ->
-                        val buffer = ByteArray(DEFAULT_BUFFER_SIZE * 2)
-                        var read: Int
-                        while (input.read(buffer, 0, DEFAULT_BUFFER_SIZE * 2).also { read = it } >= 0) {
-                            output.write(buffer, 0, read)
+    fun downloadFile(request: DownloadingRequest) {
+        runAsync {
+            request.apply {
+                request.path.parent.resolve(request.lockName).withLock {
+                    url.openStream().use { input ->
+                        path.toFile().outputStream().use { output ->
+                            val buffer = ByteArray(bufferSize)
+                            var read: Int
+                            while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
+                                output.write(buffer, 0, read)
+                            }
                         }
                     }
                 }
-            } finally {
-                lock.release()
-                channel.close()
-                lockFile.delete()
             }
-        }
+        }.get(request.timeout.toMillis(), MILLISECONDS)
     }
-
 }

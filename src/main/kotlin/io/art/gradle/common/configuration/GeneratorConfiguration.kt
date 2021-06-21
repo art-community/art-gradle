@@ -64,13 +64,13 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var localJarOverridingPath: Path? = null
         private set
 
-    var pattern: PatternFilterable.() -> PatternFilterable = { this }
+    var sourcesPattern: PatternFilterable.() -> PatternFilterable = { this }
         private set
 
     var jvmExecutable: Path = Jvm.current().javaExecutable.toPath()
         private set
 
-    var autoRun = true
+    var activateAutomatically = true
         private set
 
     fun watcherPeriod(period: Duration) {
@@ -112,15 +112,15 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         localJarOverridingPath = jar
     }
 
-    fun pattern(pattern: PatternFilterable.() -> PatternFilterable) {
-        this.pattern = pattern
+    fun sourcesPattern(pattern: PatternFilterable.() -> PatternFilterable) {
+        this.sourcesPattern = pattern
     }
 
     fun jvmExecutable(executable: Path) {
         this.jvmExecutable = executable
     }
 
-    fun disableAutoRun() {
-        autoRun = false
+    fun disableAutoActivation() {
+        activateAutomatically = false
     }
 }
