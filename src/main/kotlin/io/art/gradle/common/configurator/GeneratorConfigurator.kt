@@ -50,6 +50,8 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
 
+    writeGeneratorConfiguration(configuration)
+
     tasks.register(START_GENERATOR_TASK) {
         group = ART
         doLast { activateGenerator(configuration) }
@@ -64,11 +66,6 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         group = ART
         doLast { stopGenerator(configuration) }
     }
-}
-
-private fun Project.restartGenerator(configuration: GeneratorConfiguration) {
-    stopGenerator(configuration)
-    activateGenerator(configuration)
 }
 
 private fun stopGenerator(configuration: GeneratorConfiguration) {
