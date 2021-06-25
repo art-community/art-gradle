@@ -23,7 +23,6 @@ import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
-import io.art.gradle.common.constants.GeneratorState.AVAILABLE
 import io.art.gradle.common.constants.GeneratorState.STOPPING
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import io.art.gradle.common.service.JavaForkRequest
@@ -38,9 +37,6 @@ import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
 import java.time.LocalDateTime.now
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit.MILLISECONDS
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -74,17 +70,6 @@ private fun Project.restartGenerator(configuration: GeneratorConfiguration) {
 private fun stopGenerator(configuration: GeneratorConfiguration) {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
     controllerFile.writeContent("${STOPPING.name} ${GENERATOR_DATE_TIME_FORMATTER.format(now())}")
-    val latch = CountDownLatch(1)
-    val scheduler = ScheduledThreadPoolExecutor(1).apply { maximumPoolSize = 1 }
-    fun check() {
-        if (!controllerFile.toFile().exists()) {
-            latch.countDown()
-            return
-        }
-        if (GeneratorState.valueOf(controllerFile.toFile().readText().split(SPACE)[0]) == AVAILABLE) latch.countDown()
-    }
-    scheduler.scheduleAtFixedRate(::check, 0L, GENERATOR_STOP_CHECKING_PERIOD.toMillis(), MILLISECONDS)
-    if (!latch.await(GENERATOR_STOP_TIMEOUT.toMillis(), MILLISECONDS)) throw generatorStopTimeoutError()
 }
 
 private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
