@@ -43,18 +43,22 @@ import java.time.LocalDateTime.now
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
+    if (!configuration.forJvm && !configuration.forDart) return
+
     tasks.withType(Delete::class.java) {
         delete = emptySet()
         delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
     }
 
-    configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
-
     writeGeneratorConfiguration(configuration)
+
+    if (configuration.automaticActivation) {
+        runGenerator(configuration)
+    }
 
     tasks.register(START_GENERATOR_TASK) {
         group = ART
-        doLast { activateGenerator(configuration) }
+        doLast { runGenerator(configuration) }
     }
 
     tasks.register(WRITE_CONFIGURATION_TASK) {
@@ -73,7 +77,7 @@ private fun stopGenerator(configuration: GeneratorConfiguration) {
     controllerFile.writeContent("${STOPPING.name}#${GENERATOR_DATE_TIME_FORMATTER.format(now())}")
 }
 
-private fun Project.activateGenerator(configuration: GeneratorConfiguration) {
+private fun Project.runGenerator(configuration: GeneratorConfiguration) {
     if (configuration.forJvm) {
         configuration.localJarOverridingPath
                 ?.let { generatorJar -> runLocalGeneratorJar(configuration, generatorJar) }
