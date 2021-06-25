@@ -43,7 +43,10 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
     configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
 
-    if (configuration.activateAutomatically) activateGenerator(configuration)
+    tasks.register(START_GENERATOR_TASK) {
+        group = ART
+        doLast { activateGenerator(configuration) }
+    }
 
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
@@ -69,7 +72,7 @@ private fun Project.restartGenerator(configuration: GeneratorConfiguration) {
 
 private fun stopGenerator(configuration: GeneratorConfiguration) {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
-    controllerFile.writeContent("${STOPPING.name} ${GENERATOR_DATE_TIME_FORMATTER.format(now())}")
+    controllerFile.writeContent("${STOPPING.name}#${GENERATOR_DATE_TIME_FORMATTER.format(now())}")
 }
 
 private fun Project.activateGenerator(configuration: GeneratorConfiguration) {

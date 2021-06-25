@@ -33,7 +33,7 @@ const val GENERATOR_CONTROLLER = "generator.controller"
 val DEFAULT_WATCHER_PERIOD: Duration = ofMillis(500)
 val GENERATOR_DOWNLOAD_TIMEOUT: Duration = ofMinutes(5)
 val GENERATOR_STOP_TIMEOUT: Duration = ofSeconds(30)
-val GENERATOR_STOP_CHECKING_PERIOD: Duration = ofSeconds(1)
+val GENERATOR_STOP_CHECKING_PERIOD: Duration = ofMillis(500)
 
 enum class GeneratorLanguage(val extension: String) {
     JAVA("java"),
@@ -50,6 +50,7 @@ enum class GeneratorState {
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
 const val STOP_GENERATOR_TASK = "stop-generator"
 const val RESTART_GENERATOR_TASK = "restart-generator"
+const val START_GENERATOR_TASK = "start-generator"
 
 val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/art/generator/art-generator/$version/art-generator-$version.jar") }
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
