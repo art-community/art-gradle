@@ -31,6 +31,7 @@ import io.art.gradle.common.service.writeContent
 import io.art.gradle.external.configuration.ExternalConfiguration
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.Delete
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
@@ -41,6 +42,12 @@ import java.time.LocalDateTime.now
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
+
+    tasks.withType(Delete::class.java) {
+        delete = emptySet()
+        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
+    }
+
     configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
 
     tasks.register(START_GENERATOR_TASK) {
@@ -53,15 +60,9 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { writeGeneratorConfiguration(configuration) }
     }
 
-    val stop = tasks.register(STOP_GENERATOR_TASK) {
+    tasks.register(STOP_GENERATOR_TASK) {
         group = ART
         doLast { stopGenerator(configuration) }
-    }
-
-    tasks.register(RESTART_GENERATOR_TASK) {
-        group = ART
-        dependsOn(stop)
-        doLast { restartGenerator(configuration) }
     }
 }
 

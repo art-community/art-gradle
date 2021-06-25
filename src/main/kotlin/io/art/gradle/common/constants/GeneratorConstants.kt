@@ -49,7 +49,6 @@ enum class GeneratorState {
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
 const val STOP_GENERATOR_TASK = "stop-generator"
-const val RESTART_GENERATOR_TASK = "restart-generator"
 const val START_GENERATOR_TASK = "start-generator"
 
 val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/art/generator/art-generator/$version/art-generator-$version.jar") }
