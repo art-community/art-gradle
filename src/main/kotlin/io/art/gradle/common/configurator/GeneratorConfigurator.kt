@@ -107,6 +107,8 @@ private fun Project.runLocalGeneratorJar(configuration: GeneratorConfiguration, 
 }
 
 private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
+    configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
+
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
 
     val fileWriter = mapOf(
