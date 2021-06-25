@@ -45,11 +45,6 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     if (!configuration.forJvm && !configuration.forDart) return
 
-    tasks.withType(Delete::class.java) {
-        delete = emptySet()
-        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
-    }
-
     writeGeneratorConfiguration(configuration)
 
     if (configuration.automaticActivation) {
@@ -69,6 +64,11 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     tasks.register(STOP_GENERATOR_TASK) {
         group = ART
         doLast { stopGenerator(configuration) }
+    }
+
+    tasks.withType(Delete::class.java) {
+        delete = emptySet()
+        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
     }
 }
 
