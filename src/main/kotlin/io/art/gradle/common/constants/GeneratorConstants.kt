@@ -23,6 +23,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
 import java.time.Duration.*
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ofPattern
 
 const val GENERATOR = "generator"
 
@@ -61,3 +63,4 @@ val GENERATOR_JVM_OPTIONS = arrayOf(
         "-XX:MaxMetaspaceSize=1g",
         "-Dfile.encoding=UTF-8"
 )
+var GENERATOR_DATE_TIME_FORMATTER: DateTimeFormatter = ofPattern("dd-MM-yyyy HH:mm:ss.SSS")

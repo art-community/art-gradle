@@ -37,6 +37,7 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
 import java.nio.file.Path
+import java.time.LocalDateTime.now
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -72,7 +73,7 @@ private fun Project.restartGenerator(configuration: GeneratorConfiguration) {
 
 private fun stopGenerator(configuration: GeneratorConfiguration) {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
-    controllerFile.writeContent(STOPPING.name)
+    controllerFile.writeContent("${STOPPING.name} ${GENERATOR_DATE_TIME_FORMATTER.format(now())}")
     val latch = CountDownLatch(1)
     val scheduler = ScheduledThreadPoolExecutor(1).apply { maximumPoolSize = 1 }
     fun check() {
