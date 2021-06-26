@@ -21,8 +21,6 @@ package io.art.gradle.common.logger
 import io.art.gradle.common.constants.EMPTY_STRING
 import io.art.gradle.common.constants.LOG_TEMPLATE
 import io.art.gradle.common.constants.NEW_LINE
-import io.art.gradle.common.logger.LogMessageColor.CYAN_BOLD
-import io.art.gradle.common.logger.LogMessageColor.RED_BOLD
 import org.gradle.api.Project
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
@@ -49,7 +47,7 @@ class ContextLogger(private val context: String, private val project: Project) {
                 .filter { line -> line.isNotBlank() }
                 .map { line -> LOG_TEMPLATE(context, line) }
                 .joinToString(NEW_LINE)
-                .let { line -> project.logger.quiet(message(line, CYAN_BOLD)) }
+                .let(project.logger::quiet)
     }
 
     fun error() = object : OutputStream() {
@@ -62,6 +60,6 @@ class ContextLogger(private val context: String, private val project: Project) {
                 .filter { line -> line.isNotBlank() }
                 .map { line -> LOG_TEMPLATE(context, line) }
                 .joinToString(NEW_LINE)
-                .let { line -> project.logger.quiet(message(line, RED_BOLD)) }
+                .let(project.logger::quiet)
     }
 }

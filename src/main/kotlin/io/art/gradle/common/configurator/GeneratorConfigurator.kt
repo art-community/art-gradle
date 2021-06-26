@@ -117,10 +117,7 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
             "directory" to configuration.loggingDirectory.toFile().absolutePath
     )
 
-    val consoleWriter = mapOf(
-            "type" to "console",
-            "colored" to true
-    )
+    val consoleWriter = mapOf("type" to "console")
 
     val jvmSources = allprojects
             .filter { project ->
