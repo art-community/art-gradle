@@ -51,19 +51,19 @@ fun Project.quiet(message: String, context: String = project.name, color: LogMes
     logger.quiet("${color.code}${LOG_TEMPLATE(context, message)}$ANSI_RESET")
 }
 
-fun Project.success(message: String, context: String = project.name, color: LogMessageColor = LogMessageColor.GREEN_BOLD) {
+fun Project.success(message: String, context: String = project.name, color: LogMessageColor = GREEN_BOLD) {
     logger.quiet("${color.code}${LOG_TEMPLATE(context, message)}$ANSI_RESET")
 }
 
-fun Project.warning(message: String, context: String = project.name, color: LogMessageColor = LogMessageColor.YELLOW_BOLD) {
+fun Project.warning(message: String, context: String = project.name, color: LogMessageColor = YELLOW_BOLD) {
     logger.quiet("${color.code}${LOG_TEMPLATE(context, message)}$ANSI_RESET")
 }
 
-fun Project.attention(message: String, context: String = project.name, color: LogMessageColor = LogMessageColor.CYAN_BOLD) {
+fun Project.attention(message: String, context: String = project.name, color: LogMessageColor = CYAN_BOLD) {
     logger.quiet("${color.code}${LOG_TEMPLATE(context, message)}$ANSI_RESET")
 }
 
-fun Project.additional(message: String, context: String = project.name, color: LogMessageColor = LogMessageColor.PURPLE_BOLD) {
+fun Project.additional(message: String, context: String = project.name, color: LogMessageColor = PURPLE_BOLD) {
     logger.quiet("${color.code}${LOG_TEMPLATE(context, message)}$ANSI_RESET")
 }
 
