@@ -47,7 +47,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     writeGeneratorConfiguration(configuration)
 
-    if (configuration.automaticActivation && gradle.startParameter.taskNames.none { task -> task in listOf(STOP_GENERATOR_TASK, STOP_GENERATOR_TASK, WRITE_CONFIGURATION_TASK) }) {
+    if (configuration.automaticActivation && gradle.startParameter.taskNames.none { task -> task in listOf(STOP_GENERATOR_TASK, START_GENERATOR_TASK, WRITE_CONFIGURATION_TASK) }) {
         runGenerator(configuration)
     }
 
