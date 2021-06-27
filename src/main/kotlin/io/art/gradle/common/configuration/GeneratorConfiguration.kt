@@ -85,7 +85,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         loggingToDirectory = false
     }
 
-    fun fileLogging(directory: Path) {
+    fun fileLogging(directory: Path = workingDirectory) {
         loggingDirectory = directory
         loggingToConsole = false
         loggingToDirectory = true
