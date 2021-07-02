@@ -40,9 +40,6 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var forDart = false
         private set
 
-    var automaticActivation = true
-        private set
-
     var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
@@ -125,9 +122,5 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun jvmExecutable(executable: Path) {
         this.jvmExecutable = executable
-    }
-
-    fun disableAutoActivation() {
-        automaticActivation = false
     }
 }

@@ -23,8 +23,10 @@ import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
+import io.art.gradle.common.constants.GeneratorState.AVAILABLE
 import io.art.gradle.common.constants.GeneratorState.STOPPING
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
+import io.art.gradle.common.logger.log
 import io.art.gradle.common.service.JavaForkRequest
 import io.art.gradle.common.service.ProcessExecutionService.forkJava
 import io.art.gradle.common.service.writeContent
@@ -47,8 +49,8 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     writeGeneratorConfiguration(configuration)
 
-    if (configuration.automaticActivation && gradle.startParameter.taskNames.none { task -> task in listOf(STOP_GENERATOR_TASK, START_GENERATOR_TASK, WRITE_CONFIGURATION_TASK) }) {
-        runGenerator(configuration)
+    if (!validateGeneratorRunning(configuration)) {
+        log(GENERATOR_MESSAGE)
     }
 
     tasks.register(START_GENERATOR_TASK) {
@@ -70,6 +72,11 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         delete = emptySet()
         delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
     }
+}
+
+private fun validateGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
+    val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
+    return !controllerFile.exists() || controllerFile.readText() == AVAILABLE.name
 }
 
 private fun stopGenerator(configuration: GeneratorConfiguration) {

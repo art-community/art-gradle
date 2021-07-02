@@ -23,23 +23,7 @@ import org.gradle.api.Project
 
 fun Project.logger(context: String) = ContextLogger(context, this)
 
-fun Project.quiet(message: String, context: String = project.name) {
-    logger.quiet(LOG_TEMPLATE(context, message))
-}
-
-fun Project.success(message: String, context: String = project.name) {
-    logger.quiet(LOG_TEMPLATE(context, message))
-}
-
-fun Project.warning(message: String, context: String = project.name) {
-    logger.quiet(LOG_TEMPLATE(context, message))
-}
-
-fun Project.attention(message: String, context: String = project.name) {
-    logger.quiet(LOG_TEMPLATE(context, message))
-}
-
-fun Project.additional(message: String, context: String = project.name) {
+fun Project.log(message: String, context: String = project.name) {
     logger.quiet(LOG_TEMPLATE(context, message))
 }
 

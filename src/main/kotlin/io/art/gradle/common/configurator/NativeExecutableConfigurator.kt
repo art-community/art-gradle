@@ -25,7 +25,7 @@ import io.art.gradle.common.constants.GraalAgentOutputMode.OVERWRITE
 import io.art.gradle.common.constants.GraalJavaVersion.JAVA_8
 import io.art.gradle.common.constants.GraalPlatformName.DARWIN
 import io.art.gradle.common.graal.downloadGraal
-import io.art.gradle.common.logger.warning
+import io.art.gradle.common.logger.log
 import io.art.gradle.common.model.GraalPaths
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
@@ -40,7 +40,7 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
         mainClass ?: return
 
         if (native.graalJavaVersion == JAVA_8 && native.graalPlatform == DARWIN) {
-            warning(GRAAL_VM_JDK_8_DARWIN_WARING)
+            log(GRAAL_VM_JDK_8_DARWIN_WARING)
             return
         }
 
