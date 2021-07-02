@@ -68,6 +68,11 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { stopGenerator(configuration) }
     }
 
+    tasks.register(CLEAN_GENERATOR_TASK) {
+        group = ART
+        doLast { configuration.workingDirectory.toFile().deleteRecursively() }
+    }
+
     tasks.withType(Delete::class.java) {
         delete = emptySet()
         delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
@@ -76,7 +81,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
 private fun validateGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
-    return !controllerFile.exists() || controllerFile.readText() == AVAILABLE.name
+    return controllerFile.exists() && controllerFile.readText() != AVAILABLE.name
 }
 
 private fun stopGenerator(configuration: GeneratorConfiguration) {

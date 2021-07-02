@@ -41,8 +41,8 @@ class ExternalJvmPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         externalPlugin = this
         project = target
-        configuration = target.extensions.create(ART)
         target.runCatching {
+            configuration = target.extensions.create(ART)
             addEmbeddedConfiguration()
             afterEvaluate {
                 configureEmbeddedConfiguration()
