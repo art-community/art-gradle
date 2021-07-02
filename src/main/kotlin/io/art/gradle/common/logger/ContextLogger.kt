@@ -36,21 +36,10 @@ class ContextLogger(private val context: String, private val project: Project) {
     fun info(message: String) = project.info(message, context)
     fun debug(message: String) = project.debug(message, context)
     fun line() = project.log(EMPTY_STRING)
+    fun output() = outputStream()
+    fun error() = outputStream()
 
-    fun output() = object : OutputStream() {
-        val buffer = ByteArrayOutputStream()
-
-        override fun write(byte: Int) = buffer.write(byte)
-
-        override fun flush() = buffer.toString()
-                .lineSequence()
-                .filter { line -> line.isNotBlank() }
-                .map { line -> LOG_TEMPLATE(context, line) }
-                .joinToString(NEW_LINE)
-                .let(project.logger::quiet)
-    }
-
-    fun error() = object : OutputStream() {
+    private fun outputStream() = object : OutputStream() {
         val buffer = ByteArrayOutputStream()
 
         override fun write(byte: Int) = buffer.write(byte)
