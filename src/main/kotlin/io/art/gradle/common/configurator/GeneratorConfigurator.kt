@@ -49,7 +49,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     writeGeneratorConfiguration(configuration)
 
-    if (!validateGeneratorRunning(configuration)) {
+    if (!isGeneratorRunning(configuration) && gradle.startParameter.taskNames !in arrayOf(START_GENERATOR_TASK, STOP_GENERATOR_TASK)) {
         log(GENERATOR_MESSAGE)
     }
 
@@ -79,7 +79,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 }
 
-private fun validateGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
+private fun isGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
     return controllerFile.exists() && controllerFile.readText() != AVAILABLE.name
 }
