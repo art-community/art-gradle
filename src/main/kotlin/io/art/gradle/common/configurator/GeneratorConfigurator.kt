@@ -49,7 +49,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     writeGeneratorConfiguration(configuration)
 
-    if (!isGeneratorRunning(configuration) && gradle.startParameter.taskNames.none { task -> task !in arrayOf(START_GENERATOR_TASK, STOP_GENERATOR_TASK) }) {
+    if (!isGeneratorRunning(configuration)) {
         log(GENERATOR_MESSAGE)
     }
 
