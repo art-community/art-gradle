@@ -52,6 +52,8 @@ const val CLEAN_GENERATOR_TASK = "clean-generator"
 const val START_GENERATOR_TASK = "start-generator"
 const val GENERATOR_MESSAGE = "Generator is not running. Please, call gradle ':start-generator' task"
 
+const val DISABLE_GENERATOR_PROPERTY = "art.generator.disabled"
+
 val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/art/generator/art-generator/$version/art-generator-$version.jar") }
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }

@@ -45,6 +45,10 @@ import java.time.LocalDateTime.now
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
+    if (hasProperty(DISABLE_GENERATOR_PROPERTY) && property(DISABLE_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true) {
+        return
+    }
+
     if (!configuration.forJvm && !configuration.forDart) return
 
     writeGeneratorConfiguration(configuration)
