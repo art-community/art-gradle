@@ -49,7 +49,11 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         return
     }
 
-    if (!configuration.forJvm && !configuration.forDart) return
+    val generatorAvailable = allprojects.any { project ->
+        val generatorConfiguration = findGeneratorConfiguration(project)
+        generatorConfiguration?.forDart == true || generatorConfiguration?.forJvm == true
+    }
+    if (generatorAvailable) return
 
     writeGeneratorConfiguration(configuration)
 
@@ -83,6 +87,9 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 }
 
+private fun findGeneratorConfiguration(project: Project) = project.extensions.findByType()
+        ?: project.extensions.findByType<ExternalConfiguration>()?.generator
+
 private fun isGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
     return controllerFile.exists() && controllerFile.readText() != AVAILABLE.name
@@ -94,7 +101,8 @@ private fun stopGenerator(configuration: GeneratorConfiguration) {
 }
 
 private fun Project.runGenerator(configuration: GeneratorConfiguration) {
-    if (configuration.forJvm) {
+    val forJvm = allprojects.any { project -> findGeneratorConfiguration(project)?.forJvm == true }
+    if (forJvm) {
         configuration.localJarOverridingPath
                 ?.let { generatorJar -> runLocalGeneratorJar(configuration, generatorJar) }
                 ?: runRemoteGeneratorJar(configuration)
@@ -137,10 +145,8 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
 
     val jvmSources = allprojects
             .filter { project ->
-                val extensions = project.extensions
-                val generatorConfiguration = extensions.findByType<GeneratorConfiguration>()
-                val externalConfiguration = extensions.findByType<ExternalConfiguration>()?.generator
-                generatorConfiguration?.forJvm == true || externalConfiguration?.forJvm == true
+                val generatorConfiguration = findGeneratorConfiguration(project)
+                generatorConfiguration?.forJvm == true
             }
             .flatMap { project -> project.collectJvmSources() }
     val dartSources = emptyList<SourceSet>()
