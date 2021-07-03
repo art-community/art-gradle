@@ -57,6 +57,8 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     writeGeneratorConfiguration(configuration)
 
+    if (configuration.disabledRunning) return
+
     if (!isGeneratorRunning(configuration)) {
         log(GENERATOR_MESSAGE)
     }

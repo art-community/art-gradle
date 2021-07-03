@@ -73,6 +73,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var jvmExecutable: Path = Jvm.current().javaExecutable.toPath()
         private set
 
+    var disabledRunning = false
+        private set
+
     fun watcherPeriod(period: Duration) {
         watcherPeriod = period
     }
@@ -122,5 +125,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun jvmExecutable(executable: Path) {
         this.jvmExecutable = executable
+    }
+
+    fun disableRunning() {
+        this.disabledRunning = true
     }
 }
