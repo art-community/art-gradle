@@ -53,7 +53,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         val generatorConfiguration = findGeneratorConfiguration(project)
         generatorConfiguration?.forDart == true || generatorConfiguration?.forJvm == true
     }
-    if (generatorAvailable) return
+    if (!generatorAvailable) return
 
     writeGeneratorConfiguration(configuration)
 
