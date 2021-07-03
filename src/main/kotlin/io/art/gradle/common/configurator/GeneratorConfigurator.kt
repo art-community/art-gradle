@@ -58,6 +58,21 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     writeGeneratorConfiguration(configuration)
 
+    tasks.register(WRITE_CONFIGURATION_TASK) {
+        group = ART
+        doLast { writeGeneratorConfiguration(configuration) }
+    }
+
+    tasks.register(CLEAN_GENERATOR_TASK) {
+        group = ART
+        doLast { configuration.workingDirectory.toFile().deleteRecursively() }
+    }
+
+    tasks.withType(Delete::class.java) {
+        delete = emptySet()
+        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
+    }
+
     if (configuration.disabledRunning) return
 
     if (!isGeneratorRunning(configuration)) {
@@ -69,24 +84,9 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { runGenerator(configuration) }
     }
 
-    tasks.register(WRITE_CONFIGURATION_TASK) {
-        group = ART
-        doLast { writeGeneratorConfiguration(configuration) }
-    }
-
     tasks.register(STOP_GENERATOR_TASK) {
         group = ART
         doLast { stopGenerator(configuration) }
-    }
-
-    tasks.register(CLEAN_GENERATOR_TASK) {
-        group = ART
-        doLast { configuration.workingDirectory.toFile().deleteRecursively() }
-    }
-
-    tasks.withType(Delete::class.java) {
-        delete = emptySet()
-        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
     }
 }
 
