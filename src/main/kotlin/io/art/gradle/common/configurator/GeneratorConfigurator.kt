@@ -31,6 +31,7 @@ import io.art.gradle.common.service.JavaForkRequest
 import io.art.gradle.common.service.ProcessExecutionService.forkJava
 import io.art.gradle.common.service.writeContent
 import io.art.gradle.external.configuration.ExternalConfiguration
+import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.Delete
@@ -50,7 +51,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 
     val generatorAvailable = allprojects.any { project ->
-        val generatorConfiguration = findGeneratorConfiguration(project)
+        val generatorConfiguration = project.findGeneratorConfiguration()
         generatorConfiguration?.forDart == true || generatorConfiguration?.forJvm == true
     }
     if (!generatorAvailable) return
@@ -89,8 +90,8 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 }
 
-private fun findGeneratorConfiguration(project: Project) = project.extensions.findByType()
-        ?: project.extensions.findByType<ExternalConfiguration>()?.generator
+private fun Project.findGeneratorConfiguration() = extensions.findByType<InternalGeneratorConfiguration>()
+        ?: extensions.findByType<ExternalConfiguration>()?.generator
 
 private fun isGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
@@ -103,7 +104,7 @@ private fun stopGenerator(configuration: GeneratorConfiguration) {
 }
 
 private fun Project.runGenerator(configuration: GeneratorConfiguration) {
-    val forJvm = allprojects.any { project -> findGeneratorConfiguration(project)?.forJvm == true }
+    val forJvm = allprojects.any { project -> project.findGeneratorConfiguration()?.forJvm == true }
     if (forJvm) {
         configuration.localJarOverridingPath
                 ?.let { generatorJar -> runLocalGeneratorJar(configuration, generatorJar) }
@@ -145,12 +146,13 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
 
     val consoleWriter = mapOf("type" to "console")
 
-    val jvmSources = allprojects
-            .filter { project ->
-                val generatorConfiguration = findGeneratorConfiguration(project)
-                generatorConfiguration?.forJvm == true
-            }
-            .flatMap { project -> project.collectJvmSources() }
+    val jvmSources = mutableListOf<SourceSet>()
+    allprojects.forEach { project ->
+        val generatorConfiguration = project.findGeneratorConfiguration() ?: return@forEach
+        if (generatorConfiguration.forJvm) {
+            jvmSources.addAll(project.collectJvmSources(generatorConfiguration))
+        }
+    }
     val dartSources = emptyList<SourceSet>()
     val allSources = jvmSources + dartSources
 
@@ -184,12 +186,10 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
             .writeText(Yaml().dump(configurationContent))
 }
 
-private fun Project.collectJvmSources(): Set<SourceSet> {
-    val extensions = project.extensions
-    val configuration = extensions.findByType() ?: extensions.findByType<ExternalConfiguration>()!!.generator
+private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Set<SourceSet> {
     val sources = mutableSetOf<SourceSet>()
-    val availableFiles = fileTree(project.projectDir).matching { configuration.sourcesPattern(this) }.files
-    project.convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
+    val availableFiles = fileTree(projectDir).matching { configuration.sourcesPattern(this) }.files
+    convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
         set.allSource.sourceDirectories
                 .asSequence()
                 .filter { directory -> availableFiles.any { file -> file.startsWith(directory) } }
@@ -206,7 +206,7 @@ private fun Project.collectJvmSources(): Set<SourceSet> {
                     if (languages.isNotEmpty()) sources.add(SourceSet(
                             languages = languages,
                             root = directory.absolutePath,
-                            classpath = project.collectClasspath(),
+                            classpath = collectClasspath(),
                             module = configuration.module
                     ))
                 }

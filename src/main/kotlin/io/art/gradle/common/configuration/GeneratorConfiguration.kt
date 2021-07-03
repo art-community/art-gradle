@@ -43,7 +43,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
-    var module: String = project.name.capitalize()
+    var module: String = project.name
         private set
 
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
