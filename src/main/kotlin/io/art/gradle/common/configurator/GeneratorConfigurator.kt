@@ -215,7 +215,7 @@ private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Se
 }
 
 private fun Project.collectClasspath(): String {
-    val classpath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME)
+    val classpath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME) + configurations.getByName(TEST_COMPILE_CLASS_PATH_CONFIGURATION_NAME)
     if (OperatingSystem.current().isWindows) {
         return classpath.files.joinToString(SEMICOLON)
     }
