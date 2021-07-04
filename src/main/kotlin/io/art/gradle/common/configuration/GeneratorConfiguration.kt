@@ -32,6 +32,7 @@ data class SourceSet(
         val classpath: String,
         val module: String,
         val `package`: String,
+        val sources: String,
 )
 
 open class GeneratorConfiguration @Inject constructor(project: Project) {

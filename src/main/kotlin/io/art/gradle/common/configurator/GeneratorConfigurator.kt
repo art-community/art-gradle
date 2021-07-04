@@ -100,7 +100,7 @@ private fun isGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
 
 private fun stopGenerator(configuration: GeneratorConfiguration) {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
-    controllerFile.writeContent("${STOPPING.name}#${GENERATOR_DATE_TIME_FORMATTER.format(now())}")
+    controllerFile.writeContent("${STOPPING.name}#${GENERATOR_DATE_TIME_FORMATTER.format(now())}#0")
 }
 
 private fun Project.runGenerator(configuration: GeneratorConfiguration) {
@@ -176,7 +176,8 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
                         "root" to source.root,
                         "classpath" to source.classpath,
                         "module" to source.module,
-                        "package" to source.`package`
+                        "package" to source.`package`,
+                        "sources" to source.sources
                 )
             },
     )
@@ -190,6 +191,10 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
 private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Set<SourceSet> {
     val sources = mutableSetOf<SourceSet>()
     val availableFiles = fileTree(projectDir).matching { configuration.sourcesPattern(this) }.files
+    val compilingSources = convention.getPlugin<JavaPluginConvention>().sourceSets.flatMap { set -> set.allSource.sourceDirectories }.let { files ->
+        if (OperatingSystem.current().isWindows) return@let files.joinToString(SEMICOLON)
+        return@let files.joinToString(COLON)
+    }
     convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
         set.allSource.sourceDirectories
                 .asSequence()
@@ -209,7 +214,8 @@ private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Se
                             root = directory.absolutePath,
                             classpath = collectClasspath(),
                             module = configuration.module,
-                            `package` = configuration.`package`
+                            `package` = configuration.`package`,
+                            sources = compilingSources
                     ))
                 }
     }
