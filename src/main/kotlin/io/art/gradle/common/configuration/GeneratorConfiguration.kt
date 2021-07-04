@@ -31,6 +31,7 @@ data class SourceSet(
         val root: String,
         val classpath: String,
         val module: String,
+        val `package`: String,
 )
 
 open class GeneratorConfiguration @Inject constructor(project: Project) {
@@ -44,6 +45,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         private set
 
     var module: String = project.name
+        private set
+
+    var `package`: String = EMPTY_STRING
         private set
 
     var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
@@ -95,8 +99,9 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
         workingDirectory = path
     }
 
-    fun module(module: String) {
+    fun module(module: String, `package`: String = EMPTY_STRING) {
         this.module = module
+        this.`package` = `package`
     }
 
     fun version(version: String) {

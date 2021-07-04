@@ -175,7 +175,8 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
                         "languages" to source.languages.map { language -> language.name },
                         "root" to source.root,
                         "classpath" to source.classpath,
-                        "module" to source.module
+                        "module" to source.module,
+                        "package" to source.`package`
                 )
             },
     )
@@ -207,7 +208,8 @@ private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Se
                             languages = languages,
                             root = directory.absolutePath,
                             classpath = collectClasspath(),
-                            module = configuration.module
+                            module = configuration.module,
+                            `package` = configuration.`package`
                     ))
                 }
     }
