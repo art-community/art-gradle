@@ -39,6 +39,7 @@ import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getPlugin
 import org.yaml.snakeyaml.Yaml
+import java.io.File
 import java.nio.file.Path
 import java.time.LocalDateTime.now
 
@@ -160,13 +161,11 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
             "controller" to controllerFile.toFile().absolutePath,
             "logging" to mapOf(
                     "default" to mapOf(
-                            "writers" to listOf(
-                                    when {
-                                        configuration.loggingToConsole -> consoleWriter
-                                        configuration.loggingToDirectory -> fileWriter
-                                        else -> emptyMap()
-                                    }
-                            )
+                            "writers" to when {
+                                configuration.loggingToConsole -> listOf(consoleWriter)
+                                configuration.loggingToDirectory -> listOf(fileWriter)
+                                else -> emptyList()
+                            }
                     )
             ),
             "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
@@ -223,9 +222,16 @@ private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Se
 }
 
 private fun Project.collectClasspath(): String {
-    val classpath = configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME) + configurations.getByName(TEST_COMPILE_CLASS_PATH_CONFIGURATION_NAME)
+    val classpath = mutableSetOf<File>()
+    classpath += configurations.getByName(COMPILE_CLASS_PATH_CONFIGURATION_NAME)
+    configurations
+            .findByName(TEST_COMPILE_CLASS_PATH_CONFIGURATION_NAME)
+            ?.let { configuration -> classpath += configuration.files }
+    configurations
+            .findByName(TEST_FIXTURES_COMPILE_CLASS_PATH_CONFIGURATION_NAME)
+            ?.let { configuration -> classpath += configuration.files }
     if (OperatingSystem.current().isWindows) {
-        return classpath.files.joinToString(SEMICOLON)
+        return classpath.joinToString(SEMICOLON)
     }
-    return classpath.files.joinToString(COLON)
+    return classpath.joinToString(COLON)
 }
