@@ -177,8 +177,8 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
                         "module" to source.module,
                         "package" to source.`package`,
                         "sources" to source.sources,
-                        "exclusions" to configuration.classesExclusions,
-                        "inclusions" to configuration.classesInclusions
+                        "exclusions" to source.classesExclusions.toMutableList(),
+                        "inclusions" to source.classesInclusions.toMutableList()
                 )
             },
     )
@@ -216,7 +216,9 @@ private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Se
                             classpath = collectClasspath(),
                             module = configuration.module,
                             `package` = configuration.`package`,
-                            sources = compilingSources
+                            sources = compilingSources,
+                            classesExclusions = configuration.classesExclusions,
+                            classesInclusions = configuration.classesInclusions,
                     ))
                 }
     }

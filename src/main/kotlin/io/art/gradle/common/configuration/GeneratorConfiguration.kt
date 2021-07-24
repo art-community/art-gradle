@@ -33,6 +33,8 @@ data class SourceSet(
         val module: String,
         val `package`: String,
         val sources: String,
+        val classesExclusions: Set<String>,
+        val classesInclusions: Set<String>,
 )
 
 open class GeneratorConfiguration @Inject constructor(project: Project) {
@@ -136,11 +138,11 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     }
 
     fun excludeClasses(pattern: String) {
-        this.classesExclusions += pattern
+        this.classesExclusions.add(pattern)
     }
 
     fun includeClasses(pattern: String) {
-        this.classesInclusions += pattern
+        this.classesInclusions.add(pattern)
     }
 
     fun jvmExecutable(executable: Path) {
