@@ -176,7 +176,9 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
                         "classpath" to source.classpath,
                         "module" to source.module,
                         "package" to source.`package`,
-                        "sources" to source.sources
+                        "sources" to source.sources,
+                        "exclusions" to configuration.classesExclusions,
+                        "inclusions" to configuration.classesInclusions
                 )
             },
     )

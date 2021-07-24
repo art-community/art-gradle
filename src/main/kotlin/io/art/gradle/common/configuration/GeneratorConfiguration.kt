@@ -75,6 +75,12 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
     var sourcesPattern: PatternFilterable.() -> PatternFilterable = { this }
         private set
 
+    var classesExclusions = mutableSetOf<String>()
+        private set
+
+    var classesInclusions = mutableSetOf<String>()
+        private set
+
     var jvmExecutable: Path = Jvm.current().javaExecutable.toPath()
         private set
 
@@ -127,6 +133,14 @@ open class GeneratorConfiguration @Inject constructor(project: Project) {
 
     fun sourcesPattern(pattern: PatternFilterable.() -> PatternFilterable) {
         this.sourcesPattern = pattern
+    }
+
+    fun excludeClasses(pattern: String) {
+        this.classesExclusions += pattern
+    }
+
+    fun includeClasses(pattern: String) {
+        this.classesInclusions += pattern
     }
 
     fun jvmExecutable(executable: Path) {
