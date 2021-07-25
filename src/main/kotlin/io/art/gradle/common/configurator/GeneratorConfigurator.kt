@@ -76,7 +76,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     if (configuration.disabledRunning) return
 
-    if (!isGeneratorRunning(configuration)) {
+    if (!isGeneratorRunning(configuration) && !gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
         log(GENERATOR_MESSAGE)
     }
 
