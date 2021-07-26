@@ -41,7 +41,7 @@ data class SourceSet(
 )
 
 open class GeneratorConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
-    val sourceConfiguration: GeneratorSourceConfiguration = objectFactory.newInstance()
+    val sourceConfiguration: GeneratorSourceConfiguration = objectFactory.newInstance(project)
 
     var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set

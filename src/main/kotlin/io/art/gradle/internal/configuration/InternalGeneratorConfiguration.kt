@@ -23,4 +23,4 @@ import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-open class InternalGeneratorConfiguration @Inject constructor(project: Project) : GeneratorConfiguration(project)
+open class InternalGeneratorConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) : GeneratorConfiguration(project, objectFactory)
