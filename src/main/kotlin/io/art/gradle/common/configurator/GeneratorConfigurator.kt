@@ -19,6 +19,7 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.GeneratorConfiguration
+import io.art.gradle.common.configuration.GeneratorSourceConfiguration
 import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
@@ -52,7 +53,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 
     val generatorAvailable = allprojects.any { project ->
-        val generatorConfiguration = project.findGeneratorConfiguration()
+        val generatorConfiguration = project.findGeneratorSourceConfiguration()
         generatorConfiguration?.forDart == true || generatorConfiguration?.forJvm == true
     }
     if (!generatorAvailable) return
@@ -91,8 +92,11 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 }
 
-private fun Project.findGeneratorConfiguration() = extensions.findByType<InternalGeneratorConfiguration>()
-        ?: extensions.findByType<ExternalConfiguration>()?.generator
+private fun Project.findGeneratorSourceConfiguration(): GeneratorSourceConfiguration? {
+    val internal = extensions.findByType<InternalGeneratorConfiguration>()?.sourceConfiguration
+    val external = extensions.findByType<ExternalConfiguration>()?.generator?.sourceConfiguration
+    return internal ?: external
+}
 
 private fun isGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
@@ -105,7 +109,7 @@ private fun stopGenerator(configuration: GeneratorConfiguration) {
 }
 
 private fun Project.runGenerator(configuration: GeneratorConfiguration) {
-    val forJvm = allprojects.any { project -> project.findGeneratorConfiguration()?.forJvm == true }
+    val forJvm = allprojects.any { project -> project.findGeneratorSourceConfiguration()?.forJvm == true }
     if (forJvm) {
         configuration.localJarOverridingPath
                 ?.let { generatorJar -> runLocalGeneratorJar(configuration, generatorJar) }
@@ -149,7 +153,7 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
 
     val jvmSources = mutableListOf<SourceSet>()
     allprojects.forEach { project ->
-        val generatorConfiguration = project.findGeneratorConfiguration() ?: return@forEach
+        val generatorConfiguration = project.findGeneratorSourceConfiguration() ?: return@forEach
         if (generatorConfiguration.forJvm) {
             jvmSources.addAll(project.collectJvmSources(generatorConfiguration))
         }
@@ -189,7 +193,7 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfigur
             .writeText(Yaml().dump(configurationContent))
 }
 
-private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Set<SourceSet> {
+private fun Project.collectJvmSources(configuration: GeneratorSourceConfiguration): Set<SourceSet> {
     val sources = mutableSetOf<SourceSet>()
     val availableFiles = fileTree(projectDir).matching { configuration.sourcesPattern(this) }.files
     val compilingSources = convention.getPlugin<JavaPluginConvention>().sourceSets.flatMap { set -> set.allSource.sourceDirectories }.let { files ->
