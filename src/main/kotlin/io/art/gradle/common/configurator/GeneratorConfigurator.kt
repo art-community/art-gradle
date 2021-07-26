@@ -228,8 +228,8 @@ private fun Project.collectJvmSources(configuration: GeneratorConfiguration): Se
 private fun Project.collectClasspath(): String {
     val classpath = mutableSetOf<File>()
     classpath += configurations
-            .filter { configuraton -> configuraton.name.startsWith(COMPILE_CLASS_PATH_CONFIGURATION_NAME) }
-            .flatMap { configuraton -> configuraton.files }
+            .filter { configuration -> configuration.name.endsWith(COMPILE_CLASS_PATH_CONFIGURATION_NAME) }
+            .flatMap { configuration -> configuration.files }
     if (OperatingSystem.current().isWindows) {
         return classpath.joinToString(SEMICOLON)
     }
