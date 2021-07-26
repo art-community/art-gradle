@@ -19,6 +19,7 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.GeneratorConfiguration
+import io.art.gradle.common.configuration.GeneratorMainConfiguration
 import io.art.gradle.common.configuration.GeneratorSourceConfiguration
 import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
@@ -58,37 +59,37 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
     if (!generatorAvailable) return
 
-    writeGeneratorConfiguration(configuration)
+    writeGeneratorConfiguration(configuration.mainConfiguration)
 
     tasks.register(WRITE_CONFIGURATION_TASK) {
         group = ART
-        doLast { writeGeneratorConfiguration(configuration) }
+        doLast { writeGeneratorConfiguration(configuration.mainConfiguration) }
     }
 
     tasks.register(CLEAN_GENERATOR_TASK) {
         group = ART
-        doLast { configuration.workingDirectory.toFile().deleteRecursively() }
+        doLast { configuration.mainConfiguration.workingDirectory.toFile().deleteRecursively() }
     }
 
     tasks.withType(Delete::class.java) {
         delete = emptySet()
-        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.workingDirectory.toFile() })
+        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.mainConfiguration.workingDirectory.toFile() })
     }
 
-    if (configuration.disabledRunning) return
+    if (configuration.mainConfiguration.disabledRunning) return
 
-    if (!isGeneratorRunning(configuration) && !gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
+    if (!isGeneratorRunning(configuration.mainConfiguration) && !gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
         log(GENERATOR_MESSAGE)
     }
 
     tasks.register(START_GENERATOR_TASK) {
         group = ART
-        doLast { runGenerator(configuration) }
+        doLast { runGenerator(configuration.mainConfiguration) }
     }
 
     tasks.register(STOP_GENERATOR_TASK) {
         group = ART
-        doLast { stopGenerator(configuration) }
+        doLast { stopGenerator(configuration.mainConfiguration) }
     }
 }
 
@@ -98,17 +99,17 @@ private fun Project.findGeneratorSourceConfiguration(): GeneratorSourceConfigura
     return internal ?: external
 }
 
-private fun isGeneratorRunning(configuration: GeneratorConfiguration): Boolean {
+private fun isGeneratorRunning(configuration: GeneratorMainConfiguration): Boolean {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
     return controllerFile.exists() && controllerFile.readText() != AVAILABLE.name
 }
 
-private fun stopGenerator(configuration: GeneratorConfiguration) {
+private fun stopGenerator(configuration: GeneratorMainConfiguration) {
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
     controllerFile.writeContent("${STOPPING.name}#${GENERATOR_DATE_TIME_FORMATTER.format(now())}#0")
 }
 
-private fun Project.runGenerator(configuration: GeneratorConfiguration) {
+private fun Project.runGenerator(configuration: GeneratorMainConfiguration) {
     val forJvm = allprojects.any { project -> project.findGeneratorSourceConfiguration()?.forJvm == true }
     if (forJvm) {
         configuration.localJarOverridingPath
@@ -117,7 +118,7 @@ private fun Project.runGenerator(configuration: GeneratorConfiguration) {
     }
 }
 
-private fun Project.runRemoteGeneratorJar(configuration: GeneratorConfiguration) {
+private fun Project.runRemoteGeneratorJar(configuration: GeneratorMainConfiguration) {
     val generatorJar = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version))
     if (!generatorJar.toFile().exists()) {
         downloadJvmGenerator(configuration)
@@ -125,7 +126,7 @@ private fun Project.runRemoteGeneratorJar(configuration: GeneratorConfiguration)
     runLocalGeneratorJar(configuration, generatorJar)
 }
 
-private fun Project.runLocalGeneratorJar(configuration: GeneratorConfiguration, generatorJar: Path) {
+private fun Project.runLocalGeneratorJar(configuration: GeneratorMainConfiguration, generatorJar: Path) {
     writeGeneratorConfiguration(configuration)
     val request = JavaForkRequest(
             executable = configuration.jvmExecutable,
@@ -139,7 +140,7 @@ private fun Project.runLocalGeneratorJar(configuration: GeneratorConfiguration, 
     forkJava(request)
 }
 
-private fun Project.writeGeneratorConfiguration(configuration: GeneratorConfiguration) {
+private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConfiguration) {
     configuration.workingDirectory.apply { if (!toFile().exists()) toFile().mkdirs() }
 
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)

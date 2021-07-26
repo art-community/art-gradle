@@ -42,7 +42,66 @@ data class SourceSet(
 
 open class GeneratorConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
     val sourceConfiguration: GeneratorSourceConfiguration = objectFactory.newInstance(project)
+    val mainConfiguration: GeneratorMainConfiguration = objectFactory.newInstance(project)
 
+    fun main(action: Action<in GeneratorMainConfiguration>) {
+        action.execute(mainConfiguration)
+    }
+
+    fun source(action: Action<in GeneratorSourceConfiguration>) {
+        action.execute(sourceConfiguration)
+    }
+}
+
+open class GeneratorSourceConfiguration @Inject constructor(project: Project) {
+    var forJvm = false
+        private set
+
+    var forDart = false
+        private set
+
+    var module: String = project.name
+        private set
+
+    var `package`: String = EMPTY_STRING
+        private set
+
+    var sourcesPattern: PatternFilterable.() -> PatternFilterable = { this }
+        private set
+
+    var classesExclusions = mutableSetOf<String>()
+        private set
+
+    var classesInclusions = mutableSetOf<String>()
+        private set
+
+    fun module(module: String, `package`: String = EMPTY_STRING) {
+        this.module = module
+        this.`package` = `package`
+    }
+
+    fun jvm(enabled: Boolean = true) {
+        this.forJvm = enabled
+    }
+
+    fun dart(enabled: Boolean = true) {
+        this.forDart = enabled
+    }
+
+    fun sourcesPattern(pattern: PatternFilterable.() -> PatternFilterable) {
+        this.sourcesPattern = pattern
+    }
+
+    fun excludeClasses(pattern: String) {
+        this.classesExclusions.add(pattern)
+    }
+
+    fun includeClasses(pattern: String) {
+        this.classesInclusions.add(pattern)
+    }
+}
+
+open class GeneratorMainConfiguration @Inject constructor(project: Project) {
     var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
@@ -110,57 +169,5 @@ open class GeneratorConfiguration @Inject constructor(project: Project, objectFa
 
     fun disableRunning() {
         this.disabledRunning = true
-    }
-
-    fun source(action: Action<in GeneratorSourceConfiguration>) {
-        action.execute(sourceConfiguration)
-    }
-}
-
-open class GeneratorSourceConfiguration @Inject constructor(project: Project) {
-    var forJvm = false
-        private set
-
-    var forDart = false
-        private set
-
-    var module: String = project.name
-        private set
-
-    var `package`: String = EMPTY_STRING
-        private set
-
-    var sourcesPattern: PatternFilterable.() -> PatternFilterable = { this }
-        private set
-
-    var classesExclusions = mutableSetOf<String>()
-        private set
-
-    var classesInclusions = mutableSetOf<String>()
-        private set
-
-    fun module(module: String, `package`: String = EMPTY_STRING) {
-        this.module = module
-        this.`package` = `package`
-    }
-
-    fun jvm(enabled: Boolean = true) {
-        this.forJvm = enabled
-    }
-
-    fun dart(enabled: Boolean = true) {
-        this.forDart = enabled
-    }
-
-    fun sourcesPattern(pattern: PatternFilterable.() -> PatternFilterable) {
-        this.sourcesPattern = pattern
-    }
-
-    fun excludeClasses(pattern: String) {
-        this.classesExclusions.add(pattern)
-    }
-
-    fun includeClasses(pattern: String) {
-        this.classesInclusions.add(pattern)
     }
 }

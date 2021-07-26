@@ -19,12 +19,13 @@
 package io.art.gradle.common.generator
 
 import io.art.gradle.common.configuration.GeneratorConfiguration
+import io.art.gradle.common.configuration.GeneratorMainConfiguration
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.service.DownloadingRequest
 import io.art.gradle.common.service.FileDownloadService.downloadFile
 
 object GeneratorDownloader {
-    fun downloadJvmGenerator(configuration: GeneratorConfiguration) {
+    fun downloadJvmGenerator(configuration: GeneratorMainConfiguration) {
         val request = DownloadingRequest(
                 url = JVM_GENERATOR_DOWNLOAD_URL(configuration.repositoryUrl, configuration.version),
                 path = configuration.workingDirectory.resolve(JVM_GENERATOR_FILE(configuration.version)),
