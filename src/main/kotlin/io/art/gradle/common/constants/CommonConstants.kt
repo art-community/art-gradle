@@ -13,8 +13,6 @@ const val ART = "art"
 const val STABLE_MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven-stable/"
 
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
-const val TEST_COMPILE_CLASS_PATH_CONFIGURATION_NAME = "testCompileClasspath"
-const val TEST_FIXTURES_COMPILE_CLASS_PATH_CONFIGURATION_NAME = "testFixturesCompileClasspath"
 const val EMBEDDED_CONFIGURATION_NAME = "embedded"
 const val IMPLEMENTATION_CONFIGURATION_NAME = "implementation"
 
