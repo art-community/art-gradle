@@ -1,4 +1,4 @@
-name: ART Gradle Main
+name: ART Gradle Tag
 on:
   push:
     tags:
