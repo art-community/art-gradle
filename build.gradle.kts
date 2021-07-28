@@ -55,8 +55,8 @@ gradlePlugin {
 }
 
 dependencies {
-    implementation("org.eclipse.jgit:org.eclipse.jgit:+")
-    implementation("org.yaml:snakeyaml:+")
+    api("org.eclipse.jgit:org.eclipse.jgit:+")
+    api("org.yaml:snakeyaml:+")
 }
 
 fun configurePublishing(publisherUsername: String, publisherPassword: String) = publishing {
