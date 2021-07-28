@@ -25,7 +25,8 @@ plugins {
 }
 
 group = "io.art.gradle"
-version = "main"
+
+version = findProperty("version") ?: "main"
 
 tasks.withType(type = Wrapper::class) {
     gradleVersion = "7.0"
