@@ -20,10 +20,13 @@ package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.*
 import org.gradle.api.Action
+import org.gradle.api.Named
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.internal.jvm.Jvm
+import org.gradle.kotlin.dsl.domainObjectContainer
 import org.gradle.kotlin.dsl.newInstance
 import java.nio.file.Path
 import java.time.Duration
@@ -41,26 +44,23 @@ data class SourceSet(
 )
 
 open class GeneratorConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
-    val sourceConfiguration: GeneratorSourceConfiguration = objectFactory.newInstance(project)
+    val sourceConfigurations: NamedDomainObjectContainer<GeneratorSourceConfiguration> = objectFactory.domainObjectContainer(GeneratorSourceConfiguration::class, ::GeneratorSourceConfiguration)
     val mainConfiguration: GeneratorMainConfiguration = objectFactory.newInstance(project)
 
     fun main(action: Action<in GeneratorMainConfiguration>) {
         action.execute(mainConfiguration)
     }
 
-    fun source(action: Action<in GeneratorSourceConfiguration>) {
-        action.execute(sourceConfiguration)
+    fun source(module: String, action: Action<in GeneratorSourceConfiguration>) {
+        action.execute(sourceConfigurations.create(module))
     }
 }
 
-open class GeneratorSourceConfiguration @Inject constructor(project: Project) {
+open class GeneratorSourceConfiguration @Inject constructor(val module: String) : Named {
     var forJvm = false
         private set
 
     var forDart = false
-        private set
-
-    var module: String = project.name
         private set
 
     var `package`: String = EMPTY_STRING
@@ -75,9 +75,8 @@ open class GeneratorSourceConfiguration @Inject constructor(project: Project) {
     var classesInclusions = mutableSetOf<String>()
         private set
 
-    fun module(module: String, `package`: String = EMPTY_STRING) {
-        this.module = module
-        this.`package` = `package`
+    fun modulePackage(modulePackage: String = EMPTY_STRING) {
+        this.`package` = modulePackage
     }
 
     fun jvm(enabled: Boolean = true) {
@@ -99,6 +98,8 @@ open class GeneratorSourceConfiguration @Inject constructor(project: Project) {
     fun includeClasses(pattern: String) {
         this.classesInclusions.add(pattern)
     }
+
+    override fun getName(): String = module
 }
 
 open class GeneratorMainConfiguration @Inject constructor(project: Project) {
