@@ -28,7 +28,6 @@ enum class ArtVersion(val version: String) {
 enum class JavaModules(val artifact: String) {
     CORE("core"),
     LOGGING("logging"),
-    VALUE("value"),
     SCHEDULER("scheduler"),
     CONFIGURATOR("configurator"),
     JSON("json"),
@@ -45,7 +44,6 @@ enum class JavaModules(val artifact: String) {
     META("meta"),
     GRAAL("graal"),
     STORAGE("storage"),
-    MODEL("model"),
     LAUNCHER("launcher")
 }
 

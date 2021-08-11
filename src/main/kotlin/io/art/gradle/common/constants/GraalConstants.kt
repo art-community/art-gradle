@@ -18,8 +18,6 @@
 
 package io.art.gradle.common.constants
 
-import io.art.gradle.common.constants.GraalJavaVersion.JAVA_11
-import io.art.gradle.common.constants.GraalJavaVersion.JAVA_8
 import io.art.gradle.common.constants.GraalPlatformName.*
 import io.art.gradle.common.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
@@ -40,13 +38,6 @@ val GRAAL_UPDATER_EXECUTABLE = when {
     else -> "gu"
 }
 
-val GRAAL_BASE_RESOURCE_CONFIGURATION_PATH = { javaVersion: GraalJavaVersion, resource: String ->
-    when (javaVersion) {
-        JAVA_8 -> "graal/jdk-8/$resource"
-        JAVA_11 -> "graal/jdk-11/$resource"
-    }
-}
-
 var GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS = listOf("install", "native-image")
 var GRAAL_UPDATE_LLVM_ARGUMENTS = listOf("install", "llvm-toolchain")
 
@@ -65,23 +56,8 @@ val GRAAL_DOWNLOAD_URL = { archive: String, version: String ->
     URL("$GRAALVM_RELEASES_BASE_URL/vm-${version}/${archive}")
 }
 
-const val GRAAL_JNI_CONFIGURATION = "jni-config.json"
-const val GRAAL_PROXY_CONFIGURATION = "proxy-config.json"
-const val GRAAL_REFLECTION_CONFIGURATION = "reflect-config.json"
-const val GRAAL_RESOURCE_CONFIGURATION = "resource-config.json"
-const val GRAAL_SERIALIZATION_CONFIGURATION = "serialization-config.json"
 const val GRAAL_CALLER_FILTER_CONFIGURATION = "caller-filter.json"
 const val GRAAL_ACCESS_FILTER_CONFIGURATION = "access-filter.json"
-
-val GRAAL_CONFIGURATION_FILES = listOf(
-        GRAAL_JNI_CONFIGURATION,
-        GRAAL_PROXY_CONFIGURATION,
-        GRAAL_REFLECTION_CONFIGURATION,
-        GRAAL_RESOURCE_CONFIGURATION,
-        GRAAL_SERIALIZATION_CONFIGURATION,
-        GRAAL_CALLER_FILTER_CONFIGURATION,
-        GRAAL_ACCESS_FILTER_CONFIGURATION
-)
 
 var GRAAL_DEFAULT_OPTIONS = listOf(
         "-H:+ReportExceptionStackTraces",
@@ -94,12 +70,8 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
         "--install-exit-handlers",
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
-        "--allow-incomplete-classpath",
-        "--initialize-at-build-time=io.art,com.fasterxml.jackson,org.yaml,com.google,com.typesafe,io.vavr,io.github.resilience4j,io.projectreactor,io.tarantool",
-        "--initialize-at-run-time=io.netty",
+        "--allow-incomplete-classpath"
 )
-
-val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
 
 val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath: Path, graalOptions: List<String> ->
     """

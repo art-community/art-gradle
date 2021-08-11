@@ -83,10 +83,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(LOGGING)
         }
 
-        fun value() {
-            modules.add(VALUE)
-        }
-
         fun scheduler() {
             modules.add(SCHEDULER)
         }
@@ -147,15 +143,11 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
         }
 
         fun graal() {
-            modules.add(JavaModules.GRAAL)
+            modules.add(GRAAL)
         }
 
         fun storage() {
             modules.add(STORAGE)
-        }
-
-        fun model() {
-            modules.add(MODEL)
         }
 
         fun launcher() {
