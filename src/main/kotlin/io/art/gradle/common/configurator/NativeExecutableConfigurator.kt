@@ -169,7 +169,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
 private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: GraalPaths) = with(configuration) {
     val executablePath = directory.resolve(configuration.executableName).toFile()
     val graalPath = directory.resolve(GRAAL)
-    val configurationPath = graalPath.resolve(CONFIGURATION)
+    val configurationPath = graalPath.resolve(CONFIGURATION).touch()
 
     commandLine(paths.nativeImage.absolutePath)
 
