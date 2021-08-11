@@ -27,6 +27,7 @@ import io.art.gradle.common.constants.GraalPlatformName.DARWIN
 import io.art.gradle.common.graal.downloadGraal
 import io.art.gradle.common.logger.log
 import io.art.gradle.common.model.GraalPaths
+import io.art.gradle.common.service.touch
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
@@ -136,7 +137,7 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
 
 private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths: GraalPaths) = with(configuration) {
     val executablePath = directory.resolve(configuration.executableName).toFile()
-    val graalPath = directory.resolve(GRAAL)
+    val graalPath = directory.resolve(GRAAL).touch()
 
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
         val executable = paths.nativeImage.absolutePath
