@@ -56,9 +56,6 @@ val GRAAL_DOWNLOAD_URL = { archive: String, version: String ->
     URL("$GRAALVM_RELEASES_BASE_URL/vm-${version}/${archive}")
 }
 
-const val GRAAL_CALLER_FILTER_CONFIGURATION = "caller-filter.json"
-const val GRAAL_ACCESS_FILTER_CONFIGURATION = "access-filter.json"
-
 var GRAAL_DEFAULT_OPTIONS = listOf(
         "-H:+ReportExceptionStackTraces",
         "-H:+JNI",

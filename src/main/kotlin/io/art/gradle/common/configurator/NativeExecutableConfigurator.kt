@@ -107,6 +107,8 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
             val configurationPath = native.agentConfiguration.configurationPath
                     ?: directory.resolve(GRAAL).resolve(CONFIGURATION)
 
+            configurationPath.touch()
+
             executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
 
             native.agentConfiguration.apply {
@@ -119,11 +121,8 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
 
                 configurationWritePeriod?.let { period -> options += ",${GRAAL_AGENT_WRITE_PERIOD_OPTION(period.seconds)}" }
                 configurationWriteInitialDelay?.let { delay -> options += ",${GRAAL_AGENT_WRITE_INITIAL_DELAY_OPTION(delay.seconds)}" }
-
-                val accessFilter = accessFilter ?: configurationPath.resolve(GRAAL_ACCESS_FILTER_CONFIGURATION)
-                val callerFilter = callerFilter ?: configurationPath.resolve(GRAAL_CALLER_FILTER_CONFIGURATION)
-                accessFilter.let { path -> options += ",${GRAAL_AGENT_ACCESS_FILTER_OPTION(path)}" }
-                callerFilter.let { path -> options += ",${GRAAL_AGENT_CALLER_FILTER_OPTION(path)}" }
+                accessFilter?.let { path -> options += ",${GRAAL_AGENT_ACCESS_FILTER_OPTION(path)}" }
+                callerFilter?.let { path -> options += ",${GRAAL_AGENT_CALLER_FILTER_OPTION(path)}" }
 
                 agentOptions.forEach { option -> options += ",$option" }
 
