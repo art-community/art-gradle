@@ -48,6 +48,16 @@ enum class JavaModules(val artifact: String) {
 }
 
 enum class KotlinModules(val artifact: String) {
+    CORE("core"),
+    LOGGING("logging"),
+    SCHEDULER("scheduler"),
+    CONFIGURATOR("configurator"),
+    JSON("json"),
+    MESSAGE_PACK("message-pack"),
+    YAML("yaml"),
+    RSOCKET("rsocket"),
+    META("meta"),
+    LAUNCHER("launcher")
 }
 
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"

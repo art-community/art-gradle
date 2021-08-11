@@ -161,5 +161,45 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
         fun kit() {
             modules.addAll(KotlinModules.values())
         }
+
+        fun core() {
+            modules.add(KotlinModules.CORE)
+        }
+
+        fun logging() {
+            modules.add(KotlinModules.LOGGING)
+        }
+
+        fun scheduler() {
+            modules.add(KotlinModules.SCHEDULER)
+        }
+
+        fun configurator() {
+            modules.add(KotlinModules.CONFIGURATOR)
+        }
+
+        fun json() {
+            modules.add(KotlinModules.JSON)
+        }
+
+        fun messagePack() {
+            modules.add(KotlinModules.MESSAGE_PACK)
+        }
+
+        fun yaml() {
+            modules.add(KotlinModules.YAML)
+        }
+
+        fun rsocket() {
+            modules.add(KotlinModules.RSOCKET)
+        }
+
+        fun meta() {
+            modules.add(KotlinModules.META)
+        }
+
+        fun launcher() {
+            modules.add(KotlinModules.LAUNCHER)
+        }
     }
 }
