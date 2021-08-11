@@ -140,12 +140,14 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
 
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
         val executable = paths.nativeImage.absolutePath
+        val configurationPath = graalPath.resolve(CONFIGURATION).touch()
 
         val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
         val defaultOptions = listOf(
                 JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
+                GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
 
         val options = defaultOptions + native.graalOptions + optionsByProperty
@@ -166,6 +168,8 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
 
 private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: GraalPaths) = with(configuration) {
     val executablePath = directory.resolve(configuration.executableName).toFile()
+    val graalPath = directory.resolve(GRAAL)
+    val configurationPath = graalPath.resolve(CONFIGURATION)
 
     commandLine(paths.nativeImage.absolutePath)
 
@@ -173,7 +177,8 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
 
     val defaultOptions = listOf(
             JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
-            executablePath.absolutePath
+            executablePath.absolutePath,
+            GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
     )
 
     val options = defaultOptions + native.graalOptions + optionsByProperty
