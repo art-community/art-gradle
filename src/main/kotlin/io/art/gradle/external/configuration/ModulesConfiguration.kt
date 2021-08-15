@@ -197,6 +197,10 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(KotlinModules.META)
         }
 
+        fun transport() {
+            modules.add(KotlinModules.TRANSPORT)
+        }
+
         fun launcher() {
             modules.add(KotlinModules.LAUNCHER)
         }

@@ -56,6 +56,7 @@ enum class KotlinModules(val artifact: String) {
     YAML("yaml"),
     RSOCKET("rsocket"),
     META("meta"),
+    TRANSPORT("transport"),
     LAUNCHER("launcher")
 }
 
