@@ -15,6 +15,7 @@ const val STABLE_MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/ar
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
 const val EMBEDDED_CONFIGURATION_NAME = "embedded"
 const val IMPLEMENTATION_CONFIGURATION_NAME = "implementation"
+const val API_CONFIGURATION_NAME = "api"
 
 const val BUILD = "build"
 const val CLEAN = "clean"

@@ -18,6 +18,7 @@
 
 package io.art.gradle.external.configuration
 
+import io.art.gradle.common.constants.API_CONFIGURATION_NAME
 import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
 import io.art.gradle.common.constants.IMPLEMENTATION_CONFIGURATION_NAME
 import io.art.gradle.external.constants.ArtVersion.MAIN
@@ -36,10 +37,15 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
     val dependencies: NamedDomainObjectSet<ModuleDependenciesConfiguration> = objectFactory.namedDomainObjectSet(ModuleDependenciesConfiguration::class).apply {
         add(objectFactory.newInstance(IMPLEMENTATION_CONFIGURATION_NAME))
         add(objectFactory.newInstance(EMBEDDED_CONFIGURATION_NAME))
+        add(objectFactory.newInstance(API_CONFIGURATION_NAME))
     }
 
     var version = MAIN.version
         private set
+
+    fun api(action: Action<in ModuleDependenciesConfiguration>) {
+        dependencies.named(API_CONFIGURATION_NAME, action)
+    }
 
     fun implementation(action: Action<in ModuleDependenciesConfiguration>) {
         dependencies.named(IMPLEMENTATION_CONFIGURATION_NAME, action)
@@ -126,7 +132,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
         fun rsocket() {
             modules.add(RSOCKET)
         }
-
 
         fun tarantool() {
             modules.add(TARANTOOL)
