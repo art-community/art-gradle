@@ -99,14 +99,9 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(MESSAGE_PACK)
         }
 
-        fun yamlConfiguration() {
-            modules.add(YAML_CONFIGURATION)
-        }
-
         fun yaml() {
             modules.add(YAML)
         }
-
 
         fun resilience() {
             modules.add(RESILIENCE)
@@ -136,7 +131,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
         fun tarantool() {
             modules.add(TARANTOOL)
         }
-
 
         fun meta() {
             modules.add(META)

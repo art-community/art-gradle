@@ -32,7 +32,6 @@ enum class JavaModules(val artifact: String) {
     CONFIGURATOR("configurator"),
     JSON("json"),
     MESSAGE_PACK("message-pack"),
-    YAML_CONFIGURATION("yaml-configuration"),
     YAML("yaml"),
     RESILIENCE("resilience"),
     TRANSPORT("transport"),
