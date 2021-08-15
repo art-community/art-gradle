@@ -47,7 +47,7 @@ open class GeneratorConfiguration @Inject constructor(project: Project, objectFa
     val sourceConfigurations: NamedDomainObjectContainer<GeneratorSourceConfiguration> = objectFactory.domainObjectContainer(GeneratorSourceConfiguration::class, ::GeneratorSourceConfiguration)
     val mainConfiguration: GeneratorMainConfiguration = objectFactory.newInstance(project)
 
-    fun main(action: Action<in GeneratorMainConfiguration>) {
+    fun main(action: Action<in GeneratorMainConfiguration> = Action { }) {
         action.execute(mainConfiguration)
     }
 
