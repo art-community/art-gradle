@@ -169,7 +169,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         var configurationPath: Path? = null
             private set
 
-        var outputMode: GraalAgentOutputMode = MERGE
+        var outputMode: GraalAgentOutputMode = OVERWRITE
             private set
 
         var configurationWritePeriod: Duration? = null
