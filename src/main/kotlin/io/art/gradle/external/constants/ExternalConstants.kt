@@ -41,7 +41,6 @@ enum class JavaModules(val artifact: String) {
     RSOCKET("rsocket"),
     TARANTOOL("tarantool"),
     META("meta"),
-    GRAAL("graal"),
     STORAGE("storage"),
     LAUNCHER("launcher")
 }

@@ -141,10 +141,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(META)
         }
 
-        fun graal() {
-            modules.add(GRAAL)
-        }
-
         fun storage() {
             modules.add(STORAGE)
         }
