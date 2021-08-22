@@ -37,7 +37,6 @@ import java.nio.file.Paths
 fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
     with(executableConfiguration) {
         if (!nativeEnabled) return
-        mainClass ?: return
 
         if (native.graalJavaVersion == JAVA_8 && native.graalPlatform == DARWIN) {
             log(GRAAL_VM_JDK_8_DARWIN_WARING)
@@ -146,7 +145,7 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
         val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
         dependsOn(jarTask)
         inputs.files(jarTask.outputs.files)
-        mainClass.set(native.agentConfiguration.executableClass ?: this@with.mainClass)
+        this@with.mainClass?.let { main -> mainClass.set(native.agentConfiguration.executableClass ?: main) }
         classpath(jarTask.outputs.files)
         workingDir(directory.toFile())
 

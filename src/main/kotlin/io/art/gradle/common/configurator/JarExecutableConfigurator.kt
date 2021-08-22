@@ -33,8 +33,6 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
         tasks.findByPath(BUILD_EXECUTABLE_JAR_TASK)?.let { return }
         if (!nativeEnabled && !jarEnabled) return
 
-        mainClass ?: return
-
         val buildJar = tasks.register(BUILD_EXECUTABLE_JAR_TASK, Jar::class.java) {
             val jarTask = tasks.getByName(JAR)
             val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
@@ -92,7 +90,7 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
         tasks.register(RUN_EXECUTABLE_JAR_TASK, JavaExec::class.java) {
             dependsOn(buildJar)
             classpath(buildJar.get().outputs.files)
-            mainClass.set(this@with.mainClass)
+            this@with.mainClass?.let(mainClass::set)
             group = ART
             jar.runConfigurator(this)
         }

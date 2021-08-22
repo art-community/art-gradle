@@ -147,5 +147,5 @@ val GRAAL_TEST_EXECUTABLE = { executable: String -> "$executable-test" }
 
 val GRAAL_TEST_OPTIONS = arrayOf(
         "--features=io.art.core.graal.features.GraalTestFeature",
-        "-H:Class=io.art.core.graal.features.GraalJUnitLauncher"
+        "-H:Class=io.art.core.graal.features.GraalTestLauncher"
 )
