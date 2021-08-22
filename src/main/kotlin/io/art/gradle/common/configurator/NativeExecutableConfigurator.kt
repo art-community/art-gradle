@@ -66,12 +66,16 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
             doFirst {
                 val graalPaths = downloadGraal(native)
                 when {
-                    OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths)
-                    else -> useUnixBuilder(this@with, graalPaths)
+                    OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths, executableName)
+                    else -> useUnixBuilder(this@with, graalPaths, executableName)
                 }
             }
 
             native.buildConfigurator(this)
+        }
+
+        if (native.enableTest) {
+            configureNativeTest(this)
         }
 
         tasks.findByPath(RUN_EXECUTABLE_NATIVE_TASK)?.let { return@let }
@@ -87,6 +91,50 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
 
             native.runConfigurator(this)
         }
+    }
+}
+
+private fun Project.configureNativeTest(executableConfiguration: ExecutableConfiguration) {
+    project.tasks.findByPath(BUILD_TEST_NATIVE_TASK)?.let { return }
+
+    val testNative = project.tasks.register(BUILD_TEST_NATIVE_TASK, Exec::class.java) {
+        group = ART
+
+        val jarTask = project.tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
+
+        dependsOn(jarTask)
+
+        if (executableConfiguration.native.runAgentBeforeBuild) {
+            dependsOn(RUN_WITH_NATIVE_IMAGE_AGENT)
+        }
+
+        inputs.files(jarTask.outputs.files)
+
+        doFirst {
+            val executableName = GRAAL_TEST_EXECUTABLE(executableConfiguration.executableName)
+            val graalPaths = project.downloadGraal(executableConfiguration.native)
+            when {
+                OperatingSystem.current().isWindows -> useWindowsBuilder(executableConfiguration, graalPaths, executableName)
+                else -> useUnixBuilder(executableConfiguration, graalPaths, executableName)
+            }
+        }
+        executableConfiguration.native.testBuildConfigurator(this)
+    }
+
+
+    project.tasks.findByPath(RUN_TEST_NATIVE_TASK)?.let { return@let }
+
+    project.tasks.register(RUN_TEST_NATIVE_TASK, Exec::class.java) {
+        group = ART
+        dependsOn(testNative)
+        val executableName = GRAAL_TEST_EXECUTABLE(executableConfiguration.executableName)
+
+        when {
+            OperatingSystem.current().isWindows -> commandLine(executableConfiguration.directory.resolve("$executableName$DOT_EXE").toFile())
+            else -> commandLine(executableConfiguration.directory.resolve(executableName).toFile())
+        }
+
+        executableConfiguration.native.testRunConfigurator(this)
     }
 }
 
@@ -134,8 +182,8 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
     }
 }
 
-private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths: GraalPaths) = with(configuration) {
-    val executablePath = directory.resolve(configuration.executableName).toFile()
+private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
+    val executablePath = directory.resolve(executableName).toFile()
     val graalPath = directory.resolve(GRAAL).touch()
 
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
@@ -145,12 +193,16 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
         val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
         val defaultOptions = listOf(
-                JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
+                JAR_OPTION, directory.resolve("$executable$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
 
-        val options = defaultOptions + native.graalOptions + optionsByProperty
+        val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
+
+        if (native.enableTest) {
+            options += GRAAL_TEST_OPTIONS
+        }
 
         val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY)?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
@@ -166,8 +218,8 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
     }
 }
 
-private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: GraalPaths) = with(configuration) {
-    val executablePath = directory.resolve(configuration.executableName).toFile()
+private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
+    val executablePath = directory.resolve(executableName).toFile()
     val graalPath = directory.resolve(GRAAL)
     val configurationPath = graalPath.resolve(CONFIGURATION).touch()
 
@@ -181,7 +233,11 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
             GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
     )
 
-    val options = defaultOptions + native.graalOptions + optionsByProperty
+    val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
+
+    if (native.enableTest) {
+        options += GRAAL_TEST_OPTIONS
+    }
 
     args(native.graalOptionsReplacer(options))
 }

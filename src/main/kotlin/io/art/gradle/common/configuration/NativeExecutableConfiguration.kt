@@ -83,10 +83,19 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var llvm = false
         private set
 
+    var enableTest = false
+        private set
+
     var runConfigurator: Exec.() -> Unit = {}
         private set
 
+    var testRunConfigurator: Exec.() -> Unit = {}
+        private set
+
     var buildConfigurator: Exec.() -> Unit = {}
+        private set
+
+    var testBuildConfigurator: Exec.() -> Unit = {}
         private set
 
     fun windowsVisualStudioVars(absoluteScriptPath: String) {
@@ -158,8 +167,21 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         this.runConfigurator = runConfigurator
     }
 
+    fun configureTestRun(runConfigurator: Exec.() -> Unit) {
+        this.testRunConfigurator = runConfigurator
+    }
+
     fun configureBuild(buildConfigurator: Exec.() -> Unit) {
         this.buildConfigurator = buildConfigurator
+    }
+
+
+    fun configureTestBuild(testBuildConfigurator: Exec.() -> Unit) {
+        this.testBuildConfigurator = testBuildConfigurator
+    }
+
+    fun test(test: Boolean = true) {
+        enableTest = test
     }
 
     open class NativeImageAgentConfiguration {
@@ -234,5 +256,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         fun configureRun(configurator: JavaExec.() -> Unit) {
             runConfigurator = configurator
         }
+
     }
 }

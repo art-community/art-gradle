@@ -136,7 +136,16 @@ const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY = "windowsVisualStudioVars"
 const val GRAAL_OPTIONS_PROPERTY = "native-options"
 
 const val BUILD_EXECUTABLE_NATIVE_TASK = "build-executable-native"
+const val BUILD_TEST_NATIVE_TASK = "build-test-native"
 const val RUN_EXECUTABLE_NATIVE_TASK = "run-executable-native"
+const val RUN_TEST_NATIVE_TASK = "run-test-native"
 const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"
 
 const val GRAAL_BIN = "bin"
+
+val GRAAL_TEST_EXECUTABLE = { executable: String -> "$executable-test" }
+
+val GRAAL_TEST_OPTIONS = arrayOf(
+        "--features=org.graalvm.junit.platform.JUnitPlatformFeature",
+        "-H:Class=org.graalvm.junit.platform.NativeImageJUnitLauncher"
+)
