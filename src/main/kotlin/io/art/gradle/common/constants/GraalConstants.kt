@@ -138,3 +138,5 @@ const val GRAAL_OPTIONS_PROPERTY = "native-options"
 const val BUILD_EXECUTABLE_NATIVE_TASK = "build-executable-native"
 const val RUN_EXECUTABLE_NATIVE_TASK = "run-executable-native"
 const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"
+
+const val GRAAL_BIN = "bin"

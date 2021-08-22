@@ -36,11 +36,9 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
         directory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
             val binariesDirectory = directory
                     .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-                    .walkTopDown()
-                    .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-                    ?.parentFile
+                    .resolve(GRAAL_BIN)
 
-            if (directory.exists() && binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.exists() == true) {
+            if (directory.exists() && binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).exists()) {
                 if (configuration.llvm) {
                     exec {
                         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
