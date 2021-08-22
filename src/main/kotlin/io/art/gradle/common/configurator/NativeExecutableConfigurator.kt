@@ -235,7 +235,7 @@ private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: G
     val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
 
     if (native.enableTest) {
-        options += GRAAL_TEST_OPTIONS
+        options += (GRAAL_TEST_OPTIONS + "-Dgraal.test.directory=${directory}")
     }
 
     args(native.graalOptionsReplacer(options))
