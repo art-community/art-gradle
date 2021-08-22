@@ -146,6 +146,6 @@ const val GRAAL_BIN = "bin"
 val GRAAL_TEST_EXECUTABLE = { executable: String -> "$executable-test" }
 
 val GRAAL_TEST_OPTIONS = arrayOf(
-        "--features=org.graalvm.junit.platform.JUnitPlatformFeature",
-        "-H:Class=org.graalvm.junit.platform.NativeImageJUnitLauncher"
+        "--features=io.art.core.graal.features.GraalTestFeature",
+        "-H:Class=io.art.core.graal.features.GraalJUnitLauncher"
 )
