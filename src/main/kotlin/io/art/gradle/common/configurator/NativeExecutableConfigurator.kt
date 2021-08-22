@@ -200,7 +200,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
         val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
 
         if (native.enableTest) {
-            options += GRAAL_TEST_OPTIONS
+            options += (GRAAL_TEST_OPTIONS + "-Dgraal.test.directory=${directory}")
         }
 
         val scriptPath = project.findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY)?.let { property -> Paths.get(property as String) }
