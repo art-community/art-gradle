@@ -192,7 +192,7 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
         val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
         val defaultOptions = listOf(
-                JAR_OPTION, directory.resolve("$executable$DOT_JAR").toAbsolutePath().toString(),
+                JAR_OPTION, directory.resolve("$executableName$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
