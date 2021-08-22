@@ -22,6 +22,7 @@ import io.art.gradle.common.configuration.ExecutableConfiguration
 import io.art.gradle.common.constants.*
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
@@ -36,19 +37,10 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
         val buildJar = tasks.register(BUILD_EXECUTABLE_JAR_TASK, Jar::class.java) {
             val jarTask = tasks.getByName(JAR)
             val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
+            val testEmbedded = configurations.getByName(TEST_EMBEDDED_CONFIGURATION_NAME)
 
-            embedded.incoming.resolutionResult.allDependencies {
-                if (from.id is ProjectComponentIdentifier) {
-                    val id = from.id as ProjectComponentIdentifier
-                    gradle.includedBuilds
-                            .filter { build -> id.build.name == build.name }
-                            .forEach { build -> dependsOn(build.task(":${id.projectName}:$JAR")) }
-                    rootProject
-                            .subprojects
-                            .filter { subProject -> id.build.isCurrentBuild && subProject.name == id.projectName }
-                            .forEach { subProject -> dependsOn(":${subProject.name}:$JAR") }
-                }
-            }
+            addGradleBuildDependencies(embedded, this)
+            addGradleBuildDependencies(testEmbedded, this)
 
             dependsOn(jarTask)
 
@@ -76,6 +68,8 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
 
             from(embedded.map { if (it.isDirectory) it else zipTree(it) })
 
+            from(testEmbedded.map { if (it.isDirectory) it else zipTree(it) })
+
             exclude(jar.exclusions)
 
             destinationDirectory.set(directory.toFile())
@@ -93,6 +87,21 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
             this@with.mainClass?.let(mainClass::set)
             group = ART
             jar.runConfigurator(this)
+        }
+    }
+}
+
+private fun Project.addGradleBuildDependencies(configuration: Configuration, jar: Jar) {
+    configuration.incoming.resolutionResult.allDependencies {
+        if (from.id is ProjectComponentIdentifier) {
+            val id = from.id as ProjectComponentIdentifier
+            project.gradle.includedBuilds
+                    .filter { build -> id.build.name == build.name }
+                    .forEach { build -> jar.dependsOn(build.task(":${id.projectName}:$JAR")) }
+            project.rootProject
+                    .subprojects
+                    .filter { subProject -> id.build.isCurrentBuild && subProject.name == id.projectName }
+                    .forEach { subProject -> jar.dependsOn(":${subProject.name}:$JAR") }
         }
     }
 }
