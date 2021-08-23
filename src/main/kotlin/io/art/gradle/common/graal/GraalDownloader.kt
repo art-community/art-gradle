@@ -36,7 +36,7 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
         graalDirectory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
             val binariesDirectory = graalDirectory
                     .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-                    .resolve(GRAAL_BIN)
+                    .resolve(BIN)
 
             val nativeExecutable = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
             if (graalDirectory.exists() && nativeExecutable.exists()) {
@@ -101,7 +101,7 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
 
     val binariesDirectory = graalDirectory
             .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-            .resolve(GRAAL_BIN)
+            .resolve(BIN)
 
     exec {
         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)

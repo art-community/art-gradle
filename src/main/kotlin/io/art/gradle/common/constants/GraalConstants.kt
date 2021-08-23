@@ -144,4 +144,3 @@ const val RUN_NATIVE_TEST_TASK = "run-native-test"
 const val RUN_NATIVE_AGENT = "run-native-agent"
 const val RUN_NATIVE_TEST_AGENT = "run-native-test-agent"
 
-const val GRAAL_BIN = "bin"

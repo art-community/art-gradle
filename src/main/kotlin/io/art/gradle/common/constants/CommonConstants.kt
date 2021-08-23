@@ -34,6 +34,7 @@ const val DOT_JAR = ".jar"
 const val DOT_LOCK = ".lock"
 const val DOT_STOP = ".stop"
 const val POWERSHELL = "powershell"
+const val BIN = "bin"
 
 const val TAR = "tar"
 const val TAR_EXTRACT_ZIP_OPTIONS = "xzf"
