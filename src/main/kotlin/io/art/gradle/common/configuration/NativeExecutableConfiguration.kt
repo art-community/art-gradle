@@ -89,7 +89,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var buildConfigurator: Exec.() -> Unit = {}
         private set
 
-    fun windowsVisualStudioVars(absoluteScriptPath: String) {
+    fun graalWindowsVisualStudioVars(absoluteScriptPath: String) {
         graalWindowsVcVarsPath = Paths.get(absoluteScriptPath)
     }
 

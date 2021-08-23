@@ -171,7 +171,7 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
                 .findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY)
                 ?.let { property -> Paths.get(property as String) }
                 ?: native.graalWindowsVcVarsPath
-                ?: getenv()[GRAAL_WINDOWS_VISUAL_STUDIO_VARS_ENVIRONMENT_VARIABLE]?.let(Paths::get)
+                ?: getenv()[GRAAL_WINDOWS_VISUAL_STUDIO_VARS_ENVIRONMENT]?.let(Paths::get)
                 ?: throw graalWindowsVSVarsPathIsEmpty()
 
         if (!scriptPath.toFile().exists()) {

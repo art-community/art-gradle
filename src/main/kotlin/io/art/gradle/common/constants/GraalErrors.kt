@@ -31,7 +31,7 @@ fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
         art {
             executable {
                 native {
-                    windowsVisualStudioVars("D:/Development/Microsoft Visual Studio/VC/Auxiliary/Build/vcvars64.bat")
+                    graalWindowsVisualStudioVars("D:/Development/Microsoft Visual Studio/VC/Auxiliary/Build/vcvars64.bat")
                 }
             }
         }
