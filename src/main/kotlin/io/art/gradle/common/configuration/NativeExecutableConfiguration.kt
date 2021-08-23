@@ -138,7 +138,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         this.graalWindowsVcVarsPath = graalWindowsVcVarsPath
     }
 
-    fun useLlvm(use: Boolean = true) {
+    fun llvm(use: Boolean = true) {
         llvm = use
 
         if (use) {
@@ -149,12 +149,20 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         graalOptions.remove(GRAAL_LLVM_OPTION)
     }
 
-    fun useMusl(use: Boolean = true) {
+    fun musl(use: Boolean = true) {
         if (use) {
             graalOptions.add(GRAAL_MUSL_OPTION)
             return
         }
         graalOptions.remove(GRAAL_MUSL_OPTION)
+    }
+
+    fun static(static: Boolean = true) {
+        if (static) {
+            graalOptions.add(GRAAL_STATIC_OPTION)
+            return
+        }
+        graalOptions.remove(GRAAL_STATIC_OPTION)
     }
 
     fun agent(runBeforeNativeBuild: Boolean = false, action: Action<in NativeImageAgentConfiguration> = Action {}) {
@@ -174,7 +182,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     fun configureBuild(buildConfigurator: Exec.() -> Unit) {
         this.buildConfigurator = buildConfigurator
     }
-
 
     fun configureTestBuild(testBuildConfigurator: Exec.() -> Unit) {
         this.testBuildConfigurator = testBuildConfigurator

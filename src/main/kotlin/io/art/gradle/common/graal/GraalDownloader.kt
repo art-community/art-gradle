@@ -38,7 +38,8 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
                     .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
                     .resolve(GRAAL_BIN)
 
-            if (directory.exists() && binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).exists()) {
+            val nativeExecutable = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
+            if (directory.exists() && nativeExecutable.exists()) {
                 if (configuration.llvm) {
                     exec {
                         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
@@ -49,7 +50,7 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
                 return@withLock GraalPaths(
                         base = directory,
                         binary = binariesDirectory,
-                        nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
+                        nativeImage = nativeExecutable
                 )
             }
 
@@ -102,7 +103,8 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
             .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
             .walkTopDown()
             .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-            ?.parentFile ?: throw unableToFindGraalUpdater()
+            ?.parentFile
+            ?: throw unableToFindGraalUpdater()
 
     exec {
         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)

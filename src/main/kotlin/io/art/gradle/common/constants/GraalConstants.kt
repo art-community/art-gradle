@@ -121,6 +121,7 @@ enum class GraalAgentOutputMode {
 
 const val GRAAL_LLVM_OPTION = "-H:CompilerBackend=llvm"
 const val GRAAL_MUSL_OPTION = "--libc=musl"
+const val GRAAL_STATIC_OPTION = "--static"
 
 val GRAAL_AGENT_OUTPUT_DIR_OPTION = { path: Path -> "config-output-dir=${path.toAbsolutePath()}" }
 val GRAAL_AGENT_MERGE_DIR_OPTION = { path: Path -> "config-merge-dir=${path.toAbsolutePath()}" }
@@ -130,15 +131,15 @@ val GRAAL_AGENT_ACCESS_FILTER_OPTION = { path: Path -> "access-filter-file=${pat
 val GRAAL_AGENT_CALLER_FILTER_OPTION = { path: Path -> "caller-filter-file=${path.toAbsolutePath()}" }
 const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"
 
-val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(5)
+val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(10)
 
 const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY = "windowsVisualStudioVars"
 const val GRAAL_OPTIONS_PROPERTY = "native-options"
 
-const val BUILD_EXECUTABLE_NATIVE_TASK = "build-executable-native"
-const val BUILD_TEST_NATIVE_TASK = "build-test-native"
-const val RUN_EXECUTABLE_NATIVE_TASK = "run-executable-native"
-const val RUN_TEST_NATIVE_TASK = "run-test-native"
+const val BUILD_EXECUTABLE_NATIVE_TASK = "build-native-executable"
+const val BUILD_TEST_NATIVE_TASK = "build-native-test"
+const val RUN_EXECUTABLE_NATIVE_TASK = "run-native-executable"
+const val RUN_TEST_NATIVE_TASK = "run-native-test"
 const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"
 
 const val GRAAL_BIN = "bin"

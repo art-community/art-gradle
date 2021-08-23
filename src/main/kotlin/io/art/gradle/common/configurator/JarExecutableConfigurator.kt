@@ -37,10 +37,8 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
         val buildJar = tasks.register(BUILD_EXECUTABLE_JAR_TASK, Jar::class.java) {
             val jarTask = tasks.getByName(JAR)
             val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
-            val testEmbedded = configurations.getByName(TEST_EMBEDDED_CONFIGURATION_NAME)
 
             addGradleBuildDependencies(embedded, this)
-            addGradleBuildDependencies(testEmbedded, this)
 
             dependsOn(jarTask)
 
@@ -67,8 +65,6 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
             from(jarTask.outputs.files.map { if (it.isDirectory) it else zipTree(it) })
 
             from(embedded.map { if (it.isDirectory) it else zipTree(it) })
-
-            from(testEmbedded.map { if (it.isDirectory) it else zipTree(it) })
 
             exclude(jar.exclusions)
 

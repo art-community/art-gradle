@@ -21,8 +21,6 @@ package io.art.gradle.common.configurator
 import io.art.gradle.common.configuration.ExecutableConfiguration
 import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
 import io.art.gradle.common.constants.IMPLEMENTATION_CONFIGURATION_NAME
-import io.art.gradle.common.constants.TEST_EMBEDDED_CONFIGURATION_NAME
-import io.art.gradle.common.constants.TEST_IMPLEMENTATION_CONFIGURATION_NAME
 import org.gradle.api.Project
 
 fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration) {
@@ -32,16 +30,10 @@ fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration
 
 fun Project.addEmbeddedConfiguration() {
     configurations.create(EMBEDDED_CONFIGURATION_NAME)
-    configurations.create(TEST_EMBEDDED_CONFIGURATION_NAME)
 }
 
 fun Project.configureEmbeddedConfiguration() {
     val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
-    val testEmbedded = configurations.getByName(TEST_EMBEDDED_CONFIGURATION_NAME)
-
     val implementation = configurations.findByName(IMPLEMENTATION_CONFIGURATION_NAME)
     implementation?.extendsFrom(embedded)
-
-    val testImplementation = configurations.findByName(TEST_IMPLEMENTATION_CONFIGURATION_NAME)
-    testImplementation?.extendsFrom(testEmbedded)
 }
