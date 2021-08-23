@@ -19,13 +19,35 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.ExecutableConfiguration
-import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
-import io.art.gradle.common.constants.IMPLEMENTATION_CONFIGURATION_NAME
+import io.art.gradle.common.constants.*
 import org.gradle.api.Project
 
 fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration) {
-    configureJar(executableConfiguration)
-    configureNative(executableConfiguration)
+    if (executableConfiguration.jarEnabled || executableConfiguration.nativeEnabled) {
+        val creation = JarExecutableCreationConfiguration(
+                configuration = executableConfiguration.jar,
+                runTask = RUN_JAR_EXECUTABLE_TASK,
+                buildTask = BUILD_JAR_EXECUTABLE_TASK,
+                dependencyConfiguration = EMBEDDED_CONFIGURATION_NAME,
+                mainClass = executableConfiguration.mainClass,
+                directory = executableConfiguration.directory,
+                executable = executableConfiguration.executableName
+        )
+        configureJar(creation)
+    }
+    if (executableConfiguration.nativeEnabled) {
+        val creation = NativeExecutableCreationConfiguration(
+                configuration = executableConfiguration.native,
+                runTask = RUN_NATIVE_EXECUTABLE_TASK,
+                buildTask = BUILD_NATIVE_EXECUTABLE_TASK,
+                buildJarTask = BUILD_JAR_EXECUTABLE_TASK,
+                runAgentTask = RUN_NATIVE_AGENT,
+                mainClass = executableConfiguration.mainClass,
+                executable = executableConfiguration.executableName,
+                directory = executableConfiguration.directory
+        )
+        configureNative(creation)
+    }
 }
 
 fun Project.addEmbeddedConfiguration() {

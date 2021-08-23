@@ -18,7 +18,7 @@
 
 package io.art.gradle.common.configurator
 
-import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.configuration.NativeExecutableConfiguration
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GraalAgentOutputMode.MERGE
 import io.art.gradle.common.constants.GraalAgentOutputMode.OVERWRITE
@@ -32,69 +32,83 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
+import java.nio.file.Path
 import java.nio.file.Paths
 
-fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
-    with(executableConfiguration) {
-        if (!nativeEnabled) return
+data class NativeExecutableCreationConfiguration(
+        val configuration: NativeExecutableConfiguration,
+        val runTask: String,
+        val buildTask: String,
+        val buildJarTask: String,
+        val runAgentTask: String,
+        val mainClass: String?,
+        val executable: String,
+        val directory: Path,
+)
 
-        if (native.graalJavaVersion == JAVA_8 && native.graalPlatform == DARWIN) {
-            log(GRAAL_VM_JDK_8_DARWIN_WARING)
-            return
+fun Project.configureNative(executableConfiguration: NativeExecutableCreationConfiguration) {
+    val native = executableConfiguration.configuration
+    if (native.graalJavaVersion == JAVA_8 && native.graalPlatform == DARWIN) {
+        log(GRAAL_VM_JDK_8_DARWIN_WARING)
+        return
+    }
+
+    if (native.enableAgent) {
+        configureAgent(executableConfiguration)
+    }
+
+    tasks.findByPath(executableConfiguration.buildTask)?.let { return }
+
+    val executable = executableConfiguration.executable
+    val buildNative = tasks.register(executableConfiguration.buildTask, Exec::class.java) {
+        group = ART
+
+        val jarTask = tasks.getByName(executableConfiguration.buildJarTask)
+
+        dependsOn(jarTask)
+
+        if (native.runAgentBeforeBuild) {
+            dependsOn(executableConfiguration.runAgentTask)
         }
 
-        if (native.enableAgent) {
-            configureAgent(this)
-        }
+        inputs.files(jarTask.outputs.files)
 
-        tasks.findByPath(BUILD_NATIVE_EXECUTABLE_TASK)?.let { return }
-
-        val buildNative = tasks.register(BUILD_NATIVE_EXECUTABLE_TASK, Exec::class.java) {
-            group = ART
-
-            val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
-
-            dependsOn(jarTask)
-
-            if (native.runAgentBeforeBuild) {
-                dependsOn(RUN_NATIVE_AGENT)
-            }
-
-            inputs.files(jarTask.outputs.files)
-
-            doFirst {
-                val graalPaths = downloadGraal(native)
-                when {
-                    OperatingSystem.current().isWindows -> useWindowsBuilder(this@with, graalPaths, executableName)
-                    else -> useUnixBuilder(this@with, graalPaths, executableName)
-                }
-            }
-
-            native.buildConfigurator(this)
-        }
-
-        tasks.findByPath(RUN_NATIVE_EXECUTABLE_TASK)?.let { return@let }
-
-        tasks.register(RUN_NATIVE_EXECUTABLE_TASK, Exec::class.java) {
-            group = ART
-            dependsOn(buildNative)
-
+        doFirst {
+            val graalPaths = downloadGraal(native)
             when {
-                OperatingSystem.current().isWindows -> commandLine(directory.resolve("$executableName$DOT_EXE").toFile())
-                else -> commandLine(directory.resolve(executableName).toFile())
+                OperatingSystem.current().isWindows -> useWindowsBuilder(executableConfiguration, graalPaths, executable)
+                else -> useUnixBuilder(executableConfiguration, graalPaths, executable)
             }
-
-            native.runConfigurator(this)
         }
+
+        native.buildConfigurator(this)
+    }
+
+    tasks.findByPath(executableConfiguration.runTask)?.let { return@let }
+
+    tasks.register(executableConfiguration.runTask, Exec::class.java) {
+        group = ART
+        dependsOn(buildNative)
+
+        val directory = executableConfiguration.directory
+        when {
+            OperatingSystem.current().isWindows -> commandLine(directory.resolve("$executable$DOT_EXE").toFile())
+            else -> {
+                commandLine(directory.resolve(executable).toFile())
+            }
+        }
+
+        native.runConfigurator(this)
     }
 }
 
-private fun Project.configureAgent(executableConfiguration: ExecutableConfiguration) = with(executableConfiguration) {
-    tasks.findByPath(RUN_NATIVE_AGENT)?.let { return@with }
+private fun Project.configureAgent(executableConfiguration: NativeExecutableCreationConfiguration) = with(executableConfiguration) {
+    tasks.findByPath(runAgentTask)?.let { return@with }
 
-    tasks.register(RUN_NATIVE_AGENT, JavaExec::class.java) {
+    tasks.register(runAgentTask, JavaExec::class.java) {
         group = ART
-        val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
+        val native = executableConfiguration.configuration
+        val jarTask = tasks.getByName(buildJarTask)
         dependsOn(jarTask)
         inputs.files(jarTask.outputs.files)
         this@with.mainClass?.let { main -> mainClass.set(native.agentConfiguration.executableClass ?: main) }
@@ -133,18 +147,19 @@ private fun Project.configureAgent(executableConfiguration: ExecutableConfigurat
     }
 }
 
-private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
+private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
     val executablePath = directory.resolve(executableName).toFile()
     val graalPath = directory.resolve(GRAAL).touch()
 
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
         val executable = paths.nativeImage.absolutePath
         val configurationPath = graalPath.resolve(CONFIGURATION).touch()
+        val native = configuration.configuration
 
         val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
         val defaultOptions = listOf(
-                JAR_OPTION, directory.resolve("${configuration.executableName}$DOT_JAR").toAbsolutePath().toString(),
+                JAR_OPTION, directory.resolve("${configuration.executable}$DOT_JAR").toAbsolutePath().toString(),
                 executablePath.absolutePath,
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
@@ -165,17 +180,18 @@ private fun Exec.useWindowsBuilder(configuration: ExecutableConfiguration, paths
     }
 }
 
-private fun Exec.useUnixBuilder(configuration: ExecutableConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
+private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
     val executablePath = directory.resolve(executableName).toFile()
     val graalPath = directory.resolve(GRAAL)
     val configurationPath = graalPath.resolve(CONFIGURATION).touch()
+    val native = configuration.configuration
 
     commandLine(paths.nativeImage.absolutePath)
 
     val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
     val defaultOptions = listOf(
-            JAR_OPTION, directory.resolve("${configuration.executableName}$DOT_JAR").toAbsolutePath().toString(),
+            JAR_OPTION, directory.resolve("${configuration.executable}$DOT_JAR").toAbsolutePath().toString(),
             executablePath.absolutePath,
             GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
     )

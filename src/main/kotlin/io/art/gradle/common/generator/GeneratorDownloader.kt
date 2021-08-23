@@ -18,7 +18,6 @@
 
 package io.art.gradle.common.generator
 
-import io.art.gradle.common.configuration.GeneratorConfiguration
 import io.art.gradle.common.configuration.GeneratorMainConfiguration
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.service.DownloadingRequest

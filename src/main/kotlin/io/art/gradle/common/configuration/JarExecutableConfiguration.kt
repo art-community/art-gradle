@@ -48,7 +48,6 @@ open class JarExecutableConfiguration @Inject constructor() {
     var exclusions = DEFAULT_JAR_EXCLUSIONS.toMutableSet()
         private set
 
-
     fun resolveDuplicates(strategy: DuplicatesStrategy) {
         duplicateStrategy = strategy
     }

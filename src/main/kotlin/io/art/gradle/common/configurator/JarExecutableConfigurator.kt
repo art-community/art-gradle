@@ -18,7 +18,7 @@
 
 package io.art.gradle.common.configurator
 
-import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.configuration.JarExecutableConfiguration
 import io.art.gradle.common.constants.*
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -27,64 +27,73 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
+import java.nio.file.Path
 
 
-fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
-    with(executableConfiguration) {
-        tasks.findByPath(BUILD_EXECUTABLE_JAR_TASK)?.let { return }
-        if (!nativeEnabled && !jarEnabled) return
+data class JarExecutableCreationConfiguration(
+        val configuration: JarExecutableConfiguration,
+        val runTask: String,
+        val buildTask: String,
+        val dependencyConfiguration: String,
+        val mainClass: String?,
+        val executable: String,
+        val directory: Path,
+)
 
-        val buildJar = tasks.register(BUILD_EXECUTABLE_JAR_TASK, Jar::class.java) {
-            val jarTask = tasks.getByName(JAR)
-            val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
+fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
+    val jar = configuration.configuration
+    tasks.findByPath(configuration.buildTask)?.let { return }
 
-            addGradleBuildDependencies(embedded, this)
+    val buildJar = tasks.register(configuration.buildTask, Jar::class.java) {
+        val jarTask = tasks.getByName(JAR)
+        val embedded = configurations.getByName(configuration.dependencyConfiguration)
 
-            dependsOn(jarTask)
+        addGradleBuildDependencies(embedded, this)
 
-            if (jar.asBuildDependency) {
-                tasks.getByPath(BUILD).dependsOn(BUILD_EXECUTABLE_JAR_TASK)
-            }
+        dependsOn(jarTask)
 
-            group = ART
-
-            isZip64 = true
-
-            duplicatesStrategy = jar.duplicateStrategy
-
-            val attributes: MutableMap<String, String> = mutableMapOf()
-            mainClass?.let { main -> attributes += MAIN_CLASS_MANIFEST_ATTRIBUTE to main }
-            if (jar.multiRelease && JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_1_9)) {
-                attributes[MULTI_RELEASE_MANIFEST_ATTRIBUTE] = TRUE.toString()
-            }
-            attributes += jar.manifestAttributes
-
-            manifest {
-                attributes(jar.manifestAttributesReplacer(attributes))
-            }
-
-            from(jarTask.outputs.files.map { if (it.isDirectory) it else zipTree(it) })
-
-            from(embedded.map { if (it.isDirectory) it else zipTree(it) })
-
-            exclude(jar.exclusions)
-
-            destinationDirectory.set(directory.toFile())
-
-            archiveFileName.set("$executableName.${archiveExtension.get()}")
-
-            jar.buildConfigurator(this)
+        if (jar.asBuildDependency) {
+            tasks.getByPath(BUILD).dependsOn(configuration.buildTask)
         }
 
-        tasks.findByPath(RUN_EXECUTABLE_JAR_TASK)?.let { return }
+        group = ART
 
-        tasks.register(RUN_EXECUTABLE_JAR_TASK, JavaExec::class.java) {
-            dependsOn(buildJar)
-            classpath(buildJar.get().outputs.files)
-            this@with.mainClass?.let(mainClass::set)
-            group = ART
-            jar.runConfigurator(this)
+        isZip64 = true
+
+        duplicatesStrategy = jar.duplicateStrategy
+
+        val attributes: MutableMap<String, String> = mutableMapOf()
+        configuration.mainClass?.let { main -> attributes += MAIN_CLASS_MANIFEST_ATTRIBUTE to main }
+        if (jar.multiRelease && JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_1_9)) {
+            attributes[MULTI_RELEASE_MANIFEST_ATTRIBUTE] = TRUE.toString()
         }
+        attributes += jar.manifestAttributes
+
+        manifest {
+            attributes(jar.manifestAttributesReplacer(attributes))
+        }
+
+        from(jarTask.outputs.files.map { if (it.isDirectory) it else zipTree(it) })
+
+        from(embedded.map { if (it.isDirectory) it else zipTree(it) })
+
+        exclude(jar.exclusions)
+
+        destinationDirectory.set(configuration.directory.toFile())
+
+        archiveFileName.set("${configuration.executable}.${archiveExtension.get()}")
+
+        jar.buildConfigurator(this)
+    }
+
+    tasks.findByPath(configuration.runTask)?.let { return }
+
+    tasks.register(configuration.runTask, JavaExec::class.java) {
+        dependsOn(buildJar)
+        classpath(buildJar.get().outputs.files)
+        configuration.mainClass?.let(mainClass::set)
+        group = ART
+        jar.runConfigurator(this)
     }
 }
 

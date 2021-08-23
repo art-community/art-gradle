@@ -23,6 +23,8 @@ const val BUILD = "build"
 const val CLEAN = "clean"
 
 const val EXECUTABLE = "executable"
+const val TEST = "test"
+const val TEST_EXECUTABLE = "test-executable"
 
 const val OS_ARCH_PROPERTY = "os.arch"
 const val CONFIGURATION = "configuration"

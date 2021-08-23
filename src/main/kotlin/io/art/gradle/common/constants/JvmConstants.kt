@@ -21,12 +21,11 @@ package io.art.gradle.common.constants
 const val MAIN_CLASS_MANIFEST_ATTRIBUTE = "Main-Class"
 const val MULTI_RELEASE_MANIFEST_ATTRIBUTE = "Multi-Release"
 const val JAR = "jar"
-const val BUILD_EXECUTABLE_JAR_TASK = "build-jar-executable"
-const val RUN_EXECUTABLE_JAR_TASK = "run-jar-executable"
-const val BUILD_TEST_JAR_TASK = "build-jar-test"
-const val RUN_TEST_JAR_TASK = "run-jar-test"
+const val BUILD_JAR_EXECUTABLE_TASK = "build-jar-executable"
+const val RUN_JAR_EXECUTABLE_TASK = "run-jar-executable"
+const val BUILD_JAR_TEST_TASK = "build-jar-test"
+const val RUN_JAR_TEST_TASK = "run-jar-test"
 const val JAVA = "java"
 const val JAR_OPTION = "-jar"
-const val CLASSPATH_OPTION = "-cp"
 
 val DEFAULT_JAR_EXCLUSIONS = setOf("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/**.RSA", "META-INF/MANIFEST.MF")

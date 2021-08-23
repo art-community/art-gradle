@@ -141,12 +141,6 @@ const val BUILD_NATIVE_TEST_TASK = "build-native-test"
 const val RUN_NATIVE_EXECUTABLE_TASK = "run-native-executable"
 const val RUN_NATIVE_TEST_TASK = "run-native-test"
 const val RUN_NATIVE_AGENT = "run-native-agent"
+const val RUN_NATIVE_TEST_AGENT = "run-native-test-agent"
 
 const val GRAAL_BIN = "bin"
-
-val GRAAL_TEST_EXECUTABLE = { executable: String -> "$executable-test" }
-
-val GRAAL_TEST_OPTIONS = arrayOf(
-        "--features=io.art.core.graal.features.GraalTestFeature",
-        "-H:Class=io.art.core.graal.features.GraalTestLauncher"
-)

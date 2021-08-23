@@ -20,7 +20,7 @@ package io.art.gradle.external.configuration
 
 import io.art.gradle.common.configuration.ExecutableConfiguration
 import io.art.gradle.common.configuration.GeneratorConfiguration
-import io.art.gradle.external.configuration.ModulesConfiguration
+import io.art.gradle.common.configuration.TestConfiguration
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
@@ -29,11 +29,16 @@ import javax.inject.Inject
 
 open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactory) {
     val executable = objectFactory.newInstance<ExecutableConfiguration>(externalPlugin.project)
+    val test = objectFactory.newInstance<TestConfiguration>(externalPlugin.project)
     val generator = objectFactory.newInstance<GeneratorConfiguration>(externalPlugin.project)
     val modules = objectFactory.newInstance<ModulesConfiguration>()
 
     fun executable(action: Action<in ExecutableConfiguration>) {
         action.execute(executable)
+    }
+
+    fun test(action: Action<in TestConfiguration>) {
+        action.execute(test)
     }
 
     fun generator(action: Action<in GeneratorConfiguration>) {
