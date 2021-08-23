@@ -156,6 +156,16 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         graalOptions.remove(GRAAL_STATIC_OPTION)
     }
 
+    fun verbose(verbose: Boolean = true) {
+        if (verbose) {
+            graalOptions.add(GRAAL_VERBOSE_OPTION)
+            graalOptions.add(GRAAL_NATIVE_IMAGE_INFO_OPTION)
+            return
+        }
+        graalOptions.remove(GRAAL_VERBOSE_OPTION)
+        graalOptions.remove(GRAAL_NATIVE_IMAGE_INFO_OPTION)
+    }
+
     fun agent(runBeforeNativeBuild: Boolean = false, action: Action<in NativeImageAgentConfiguration> = Action {}) {
         enableAgent = true
         runAgentBeforeBuild = runBeforeNativeBuild
