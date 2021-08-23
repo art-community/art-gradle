@@ -5,7 +5,7 @@ import io.art.gradle.common.configuration.TestConfiguration
 import io.art.gradle.common.configurator.*
 import io.art.gradle.common.constants.EXECUTABLE
 import io.art.gradle.common.constants.GENERATOR
-import io.art.gradle.common.constants.TEST
+import io.art.gradle.common.constants.TEST_EXECUTION
 import io.art.gradle.common.logger.error
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import io.art.gradle.internal.configurator.configurePublishing
@@ -35,7 +35,7 @@ class InternalJvmPlugin : Plugin<Project> {
         project = target
         target.runCatching {
             executable = target.extensions.create(EXECUTABLE, target)
-            test = target.extensions.create(TEST, target)
+            test = target.extensions.create(TEST_EXECUTION, target)
             generator = target.extensions.create(GENERATOR, target)
             addEmbeddedConfiguration()
             addTestEmbeddedConfiguration()
