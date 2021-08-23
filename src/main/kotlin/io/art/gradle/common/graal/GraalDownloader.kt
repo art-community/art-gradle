@@ -31,15 +31,15 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 private const val bufferSize = DEFAULT_BUFFER_SIZE * 2
 
 fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths {
-    val directory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
+    val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
     return supplyAsync {
-        directory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
-            val binariesDirectory = directory
+        graalDirectory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
+            val binariesDirectory = graalDirectory
                     .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
                     .resolve(GRAAL_BIN)
 
             val nativeExecutable = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
-            if (directory.exists() && nativeExecutable.exists()) {
+            if (graalDirectory.exists() && nativeExecutable.exists()) {
                 if (configuration.llvm) {
                     exec {
                         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).absolutePath)
@@ -48,13 +48,13 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
                 }
 
                 return@withLock GraalPaths(
-                        base = directory,
+                        base = graalDirectory,
                         binary = binariesDirectory,
                         nativeImage = nativeExecutable
                 )
             }
 
-            return@withLock processDownloading(configuration, directory)
+            return@withLock processDownloading(configuration, graalDirectory)
         }
     }.get(GRAAL_DOWNLOAD_TIMEOUT.toMillis(), MILLISECONDS)
 }
@@ -101,10 +101,7 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
 
     val binariesDirectory = graalDirectory
             .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-            .walkTopDown()
-            .find { file -> file.name == GRAAL_UPDATER_EXECUTABLE }
-            ?.parentFile
-            ?: throw unableToFindGraalUpdater()
+            .resolve(GRAAL_BIN)
 
     exec {
         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)
