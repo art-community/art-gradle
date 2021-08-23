@@ -52,7 +52,8 @@ fun Project.configureJar(executableConfiguration: ExecutableConfiguration) {
 
             duplicatesStrategy = jar.duplicateStrategy
 
-            val attributes = mutableMapOf(MAIN_CLASS_MANIFEST_ATTRIBUTE to mainClass!!)
+            val attributes: MutableMap<String, String> = mutableMapOf()
+            mainClass?.let { main -> attributes += MAIN_CLASS_MANIFEST_ATTRIBUTE to main }
             if (jar.multiRelease && JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_1_9)) {
                 attributes[MULTI_RELEASE_MANIFEST_ATTRIBUTE] = TRUE.toString()
             }

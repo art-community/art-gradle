@@ -47,9 +47,9 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
             configureAgent(this)
         }
 
-        tasks.findByPath(BUILD_EXECUTABLE_NATIVE_TASK)?.let { return }
+        tasks.findByPath(BUILD_NATIVE_EXECUTABLE_TASK)?.let { return }
 
-        val buildNative = tasks.register(BUILD_EXECUTABLE_NATIVE_TASK, Exec::class.java) {
+        val buildNative = tasks.register(BUILD_NATIVE_EXECUTABLE_TASK, Exec::class.java) {
             group = ART
 
             val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
@@ -57,7 +57,7 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
             dependsOn(jarTask)
 
             if (native.runAgentBeforeBuild) {
-                dependsOn(RUN_WITH_NATIVE_IMAGE_AGENT)
+                dependsOn(RUN_NATIVE_AGENT)
             }
 
             inputs.files(jarTask.outputs.files)
@@ -73,9 +73,9 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
             native.buildConfigurator(this)
         }
 
-        tasks.findByPath(RUN_EXECUTABLE_NATIVE_TASK)?.let { return@let }
+        tasks.findByPath(RUN_NATIVE_EXECUTABLE_TASK)?.let { return@let }
 
-        tasks.register(RUN_EXECUTABLE_NATIVE_TASK, Exec::class.java) {
+        tasks.register(RUN_NATIVE_EXECUTABLE_TASK, Exec::class.java) {
             group = ART
             dependsOn(buildNative)
 
@@ -90,9 +90,9 @@ fun Project.configureNative(executableConfiguration: ExecutableConfiguration) {
 }
 
 private fun Project.configureAgent(executableConfiguration: ExecutableConfiguration) = with(executableConfiguration) {
-    tasks.findByPath(RUN_WITH_NATIVE_IMAGE_AGENT)?.let { return@with }
+    tasks.findByPath(RUN_NATIVE_AGENT)?.let { return@with }
 
-    tasks.register(RUN_WITH_NATIVE_IMAGE_AGENT, JavaExec::class.java) {
+    tasks.register(RUN_NATIVE_AGENT, JavaExec::class.java) {
         group = ART
         val jarTask = tasks.getByName(BUILD_EXECUTABLE_JAR_TASK)
         dependsOn(jarTask)

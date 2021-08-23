@@ -136,11 +136,11 @@ val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(10)
 const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY = "windowsVisualStudioVars"
 const val GRAAL_OPTIONS_PROPERTY = "native-options"
 
-const val BUILD_EXECUTABLE_NATIVE_TASK = "build-native-executable"
-const val BUILD_TEST_NATIVE_TASK = "build-native-test"
-const val RUN_EXECUTABLE_NATIVE_TASK = "run-native-executable"
-const val RUN_TEST_NATIVE_TASK = "run-native-test"
-const val RUN_WITH_NATIVE_IMAGE_AGENT = "run-executable-with-native-agent"
+const val BUILD_NATIVE_EXECUTABLE_TASK = "build-native-executable"
+const val BUILD_NATIVE_TEST_TASK = "build-native-test"
+const val RUN_NATIVE_EXECUTABLE_TASK = "run-native-executable"
+const val RUN_NATIVE_TEST_TASK = "run-native-test"
+const val RUN_NATIVE_AGENT = "run-native-agent"
 
 const val GRAAL_BIN = "bin"
 
