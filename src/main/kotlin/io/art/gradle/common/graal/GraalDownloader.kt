@@ -24,6 +24,7 @@ import io.art.gradle.common.constants.GraalPlatformName.*
 import io.art.gradle.common.model.GraalPaths
 import io.art.gradle.common.service.withLock
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
 import java.io.File
 import java.util.concurrent.CompletableFuture.supplyAsync
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -34,9 +35,13 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
     val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
     return supplyAsync {
         graalDirectory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
-            val binariesDirectory = graalDirectory
+            var binariesDirectory = graalDirectory
                     .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
                     .resolve(BIN)
+
+            if (OperatingSystem.current().isMacOsX) {
+                binariesDirectory =  binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
+            }
 
             val nativeExecutable = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
             if (graalDirectory.exists() && nativeExecutable.exists()) {
@@ -99,9 +104,12 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
 
     archiveFile.delete()
 
-    val binariesDirectory = graalDirectory
+    var binariesDirectory = graalDirectory
             .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
             .resolve(BIN)
+    if (OperatingSystem.current().isMacOsX) {
+        binariesDirectory =  binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
+    }
 
     exec {
         commandLine(binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath)

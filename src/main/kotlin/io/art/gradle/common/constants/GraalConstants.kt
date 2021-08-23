@@ -23,6 +23,7 @@ import io.art.gradle.common.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
 import java.net.URL
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.time.Duration
 import java.time.Duration.ofMinutes
 
@@ -145,4 +146,6 @@ const val RUN_NATIVE_EXECUTABLE_TASK = "run-native-executable"
 const val RUN_NATIVE_TEST_TASK = "run-native-test"
 const val RUN_NATIVE_AGENT = "run-native-agent"
 const val RUN_NATIVE_TEST_AGENT = "run-native-test-agent"
+
+val GRAAL_MAC_OS_BIN_PATH: Path = Paths.get("Contents").resolve("Home").resolve("bin")
 
