@@ -134,6 +134,7 @@ const val GRAAL_NATIVE_IMAGE_AGENT_OPTION = "-agentlib:native-image-agent"
 val GRAAL_DOWNLOAD_TIMEOUT: Duration = ofMinutes(10)
 
 const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY = "windowsVisualStudioVars"
+const val GRAAL_WINDOWS_VISUAL_STUDIO_VARS_ENVIRONMENT_VARIABLE = "GRAAL_WINDOWS_VC_VARS_PATH"
 const val GRAAL_OPTIONS_PROPERTY = "native-options"
 
 const val BUILD_NATIVE_EXECUTABLE_TASK = "build-native-executable"
