@@ -189,6 +189,10 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(KotlinModules.RSOCKET)
         }
 
+        fun http() {
+            modules.add(KotlinModules.RSOCKET)
+        }
+
         fun meta() {
             modules.add(KotlinModules.META)
         }
