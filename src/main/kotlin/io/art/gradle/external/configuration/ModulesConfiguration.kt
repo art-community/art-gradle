@@ -190,7 +190,7 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
         }
 
         fun http() {
-            modules.add(KotlinModules.RSOCKET)
+            modules.add(KotlinModules.HTTP)
         }
 
         fun meta() {
