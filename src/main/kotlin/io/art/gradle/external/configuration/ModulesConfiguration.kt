@@ -109,10 +109,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(YAML)
         }
 
-        fun resilience() {
-            modules.add(RESILIENCE)
-        }
-
         fun transport() {
             modules.add(TRANSPORT)
         }

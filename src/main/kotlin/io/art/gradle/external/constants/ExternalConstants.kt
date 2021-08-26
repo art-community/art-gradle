@@ -33,7 +33,6 @@ enum class JavaModules(val artifact: String) {
     JSON("json"),
     MESSAGE_PACK("message-pack"),
     YAML("yaml"),
-    RESILIENCE("resilience"),
     TRANSPORT("transport"),
     SERVER("server"),
     COMMUNICATOR("communicator"),
