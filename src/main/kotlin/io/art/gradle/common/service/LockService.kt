@@ -22,9 +22,12 @@ import java.nio.channels.FileChannel.open
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.READ
 import java.nio.file.StandardOpenOption.WRITE
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 
-fun <T> Path.withLock(action: () -> T): T {
+private val lock = ReentrantLock()
+fun <T> Path.withLock(action: () -> T): T = lock.withLock {
     if (!toFile().exists()) {
         return action()
     }
