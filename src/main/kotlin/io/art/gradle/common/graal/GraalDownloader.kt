@@ -26,6 +26,7 @@ import io.art.gradle.common.service.withLock
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import java.io.File
+import java.net.URL
 import java.util.concurrent.CompletableFuture.supplyAsync
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
@@ -40,7 +41,7 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
                     .resolve(BIN)
 
             if (OperatingSystem.current().isMacOsX) {
-                binariesDirectory =  binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
+                binariesDirectory = binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
             }
 
             val nativeExecutable = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)
@@ -79,15 +80,16 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
     }
 
     if (!archiveFile.exists()) {
-        GRAAL_DOWNLOAD_URL(archiveName, configuration.graalVersion).openStream().use { input ->
-            archiveFile.outputStream().use { output ->
-                val buffer = ByteArray(bufferSize)
-                var read: Int
-                while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
-                    output.write(buffer, 0, read)
+        (configuration.graalUrl?.let(::URL) ?: GRAAL_DOWNLOAD_URL(archiveName, configuration.graalVersion))
+                .openStream().use { input ->
+                    archiveFile.outputStream().use { output ->
+                        val buffer = ByteArray(bufferSize)
+                        var read: Int
+                        while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
+                            output.write(buffer, 0, read)
+                        }
+                    }
                 }
-            }
-        }
     }
 
     when (configuration.graalPlatform) {
@@ -108,7 +110,7 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
             .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
             .resolve(BIN)
     if (OperatingSystem.current().isMacOsX) {
-        binariesDirectory =  binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
+        binariesDirectory = binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
     }
 
     exec {

@@ -48,6 +48,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var graalVersion: String = GraalVersion.LATEST.version
         private set
 
+    var graalUrl: String? = null
+        private set
+
     var graalJavaVersion: GraalJavaVersion = when {
         current().isCompatibleWith(JavaVersion.VERSION_1_9) -> GraalJavaVersion.JAVA_11
         else -> GraalJavaVersion.JAVA_8
@@ -95,6 +98,10 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
     fun graalVersion(version: String) {
         this.graalVersion = version
+    }
+
+    fun graalUrl(url: String) {
+        this.graalUrl = url
     }
 
     fun graalVersion(version: GraalVersion) {
