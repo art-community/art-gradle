@@ -64,7 +64,6 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
         "--enable-https",
         "--enable-url-protocols",
         "--enable-url-protocols",
-        "--enable-all-security-services",
         "--install-exit-handlers",
         "--no-fallback",
         "--report-unsupported-elements-at-runtime",
