@@ -28,7 +28,6 @@ import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import io.art.gradle.common.constants.GeneratorState.AVAILABLE
 import io.art.gradle.common.constants.GeneratorState.STOPPING
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
-import io.art.gradle.common.logger.log
 import io.art.gradle.common.service.JavaForkRequest
 import io.art.gradle.common.service.ProcessExecutionService.forkJava
 import io.art.gradle.common.service.writeContent
@@ -79,7 +78,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (configuration.mainConfiguration.disabledRunning) return
 
     if (!isGeneratorRunning(configuration.mainConfiguration) && !gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
-        log(GENERATOR_MESSAGE)
+        runGenerator(configuration.mainConfiguration)
     }
 
     tasks.register(START_GENERATOR_TASK) {
