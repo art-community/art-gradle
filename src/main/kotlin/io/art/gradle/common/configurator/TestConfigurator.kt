@@ -19,11 +19,35 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.configuration.TestConfiguration
-import io.art.gradle.common.constants.TEST_EMBEDDED_CONFIGURATION_NAME
-import io.art.gradle.common.constants.TEST_IMPLEMENTATION_CONFIGURATION_NAME
+import io.art.gradle.common.constants.*
 import org.gradle.api.Project
 
 fun Project.configureTest(testConfiguration: TestConfiguration) {
+    if (testConfiguration.jarEnabled || testConfiguration.nativeEnabled) {
+        val creation = JarExecutableCreationConfiguration(
+                configuration = testConfiguration.jar,
+                runTask = RUN_JAR_TEST_TASK,
+                buildTask = BUILD_JAR_TEST_TASK,
+                dependencyConfiguration = EMBEDDED_CONFIGURATION_NAME,
+                mainClass = testConfiguration.launcherClass,
+                directory = testConfiguration.directory,
+                executable = testConfiguration.executableName
+        )
+        configureJar(creation)
+    }
+    if (testConfiguration.nativeEnabled) {
+        val creation = NativeExecutableCreationConfiguration(
+                configuration = testConfiguration.native,
+                runTask = RUN_NATIVE_TEST_TASK,
+                buildTask = BUILD_NATIVE_TEST_TASK,
+                buildJarTask = BUILD_JAR_TEST_TASK,
+                runAgentTask = RUN_NATIVE_TEST_AGENT,
+                mainClass = testConfiguration.launcherClass,
+                executable = testConfiguration.executableName,
+                directory = testConfiguration.directory
+        )
+        configureNative(creation)
+    }
 }
 
 fun Project.addTestEmbeddedConfiguration() {
@@ -31,7 +55,11 @@ fun Project.addTestEmbeddedConfiguration() {
 }
 
 fun Project.configureTestEmbeddedConfiguration() {
-    val embedded = configurations.getByName(TEST_EMBEDDED_CONFIGURATION_NAME)
-    val implementation = configurations.findByName(TEST_IMPLEMENTATION_CONFIGURATION_NAME)
-    implementation?.extendsFrom(embedded)
+    val embedded = configurations.getByName(EMBEDDED_CONFIGURATION_NAME)
+
+    val testEmbedded = configurations.getByName(TEST_EMBEDDED_CONFIGURATION_NAME)
+    testEmbedded.extendsFrom(embedded)
+
+    val testImplementation = configurations.findByName(TEST_IMPLEMENTATION_CONFIGURATION_NAME)
+    testImplementation?.extendsFrom(testEmbedded)
 }

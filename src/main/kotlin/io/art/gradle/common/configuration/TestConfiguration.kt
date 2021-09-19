@@ -27,6 +27,8 @@ import java.nio.file.Path
 import javax.inject.Inject
 
 open class TestConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
+    var launcherClass: String? = null
+        private set
     var executableName: String = project.name
         private set
     var directory: Path = project.buildDir.resolve(TEST_EXECUTABLE).toPath()
@@ -59,5 +61,9 @@ open class TestConfiguration @Inject constructor(project: Project, objectFactory
     fun native(action: Action<in NativeExecutableConfiguration> = Action { }) {
         action.execute(native)
         nativeEnabled = true
+    }
+
+    fun launcher(launcherClass: String) {
+        this.launcherClass = launcherClass
     }
 }

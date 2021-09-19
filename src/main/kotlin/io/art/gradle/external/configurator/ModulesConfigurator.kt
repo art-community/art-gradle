@@ -18,8 +18,6 @@
 
 package io.art.gradle.external.configurator
 
-import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
-import io.art.gradle.common.constants.GRAAL
 import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
 import io.art.gradle.external.constants.JAVA_GROUP
 import io.art.gradle.external.constants.KOTLIN_GROUP
@@ -54,10 +52,6 @@ fun Project.configureModules() {
                         add(dependency.key, "$KOTLIN_GROUP:${module.artifact}:$version")
                     }
                 }
-            }
-
-            if (externalPlugin.configuration.executable.nativeEnabled) {
-                add(EMBEDDED_CONFIGURATION_NAME, "$JAVA_GROUP:$GRAAL:$version")
             }
         }
     }

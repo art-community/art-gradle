@@ -21,6 +21,7 @@ package io.art.gradle.external.configuration
 import io.art.gradle.common.constants.API_CONFIGURATION_NAME
 import io.art.gradle.common.constants.EMBEDDED_CONFIGURATION_NAME
 import io.art.gradle.common.constants.IMPLEMENTATION_CONFIGURATION_NAME
+import io.art.gradle.common.constants.TEST_EMBEDDED_CONFIGURATION_NAME
 import io.art.gradle.external.constants.ArtVersion.MAIN
 import io.art.gradle.external.constants.JavaModules
 import io.art.gradle.external.constants.JavaModules.*
@@ -37,6 +38,7 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
     val dependencies: NamedDomainObjectSet<ModuleDependenciesConfiguration> = objectFactory.namedDomainObjectSet(ModuleDependenciesConfiguration::class).apply {
         add(objectFactory.newInstance(IMPLEMENTATION_CONFIGURATION_NAME))
         add(objectFactory.newInstance(EMBEDDED_CONFIGURATION_NAME))
+        add(objectFactory.newInstance(TEST_EMBEDDED_CONFIGURATION_NAME))
         add(objectFactory.newInstance(API_CONFIGURATION_NAME))
     }
 
@@ -53,6 +55,10 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
 
     fun embedded(action: Action<in ModuleDependenciesConfiguration>) {
         dependencies.named(EMBEDDED_CONFIGURATION_NAME, action)
+    }
+
+    fun test(action: Action<in ModuleDependenciesConfiguration>) {
+        dependencies.named(TEST_EMBEDDED_CONFIGURATION_NAME, action)
     }
 
     fun version(version: String) {
