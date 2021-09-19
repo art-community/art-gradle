@@ -34,14 +34,12 @@ enum class JavaModules(val artifact: String) {
     MESSAGE_PACK("message-pack"),
     YAML("yaml"),
     TRANSPORT("transport"),
-    SERVER("server"),
-    COMMUNICATOR("communicator"),
     HTTP("http"),
     RSOCKET("rsocket"),
     TARANTOOL("tarantool"),
     META("meta"),
-    STORAGE("storage"),
-    LAUNCHER("launcher")
+    LAUNCHER("launcher"),
+    TESTS("tests")
 }
 
 enum class KotlinModules(val artifact: String) {
@@ -56,7 +54,8 @@ enum class KotlinModules(val artifact: String) {
     HTTP("http"),
     META("meta"),
     TRANSPORT("transport"),
-    LAUNCHER("launcher")
+    LAUNCHER("launcher"),
+    TESTS("tests")
 }
 
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"

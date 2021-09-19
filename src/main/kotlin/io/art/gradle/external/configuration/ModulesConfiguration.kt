@@ -113,14 +113,6 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(TRANSPORT)
         }
 
-        fun server() {
-            modules.add(SERVER)
-        }
-
-        fun communicator() {
-            modules.add(COMMUNICATOR)
-        }
-
         fun http() {
             modules.add(HTTP)
         }
@@ -137,12 +129,12 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
             modules.add(META)
         }
 
-        fun storage() {
-            modules.add(STORAGE)
-        }
-
         fun launcher() {
             modules.add(LAUNCHER)
+        }
+
+        fun tests() {
+            modules.add(TESTS)
         }
     }
 
@@ -199,6 +191,10 @@ open class ModulesConfiguration @Inject constructor(private val objectFactory: O
 
         fun launcher() {
             modules.add(KotlinModules.LAUNCHER)
+        }
+
+        fun tests() {
+            modules.add(KotlinModules.TESTS)
         }
     }
 }
