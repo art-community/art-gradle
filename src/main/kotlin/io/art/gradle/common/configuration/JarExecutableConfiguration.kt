@@ -23,13 +23,12 @@ import org.gradle.api.JavaVersion.VERSION_1_9
 import org.gradle.api.JavaVersion.current
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.DuplicatesStrategy.EXCLUDE
-import org.gradle.api.file.DuplicatesStrategy.INCLUDE
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import javax.inject.Inject
 
 open class JarExecutableConfiguration @Inject constructor() {
-    var duplicateStrategy: DuplicatesStrategy = INCLUDE
+    var duplicateStrategy: DuplicatesStrategy = EXCLUDE
         private set
     var multiRelease = current().isCompatibleWith(VERSION_1_9)
         private set

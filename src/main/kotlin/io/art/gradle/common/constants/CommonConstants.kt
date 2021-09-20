@@ -24,6 +24,7 @@ const val CLEAN = "clean"
 
 const val EXECUTABLE = "executable"
 const val TEST = "test"
+const val MAIN = "main"
 const val TEST_EXECUTION = "testExecution"
 const val TEST_EXECUTABLE = "test-executable"
 
