@@ -21,6 +21,9 @@ package io.art.gradle.common.configurator
 import io.art.gradle.common.configuration.TestConfiguration
 import io.art.gradle.common.constants.*
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getPlugin
 
 fun Project.configureTest(testConfiguration: TestConfiguration) {
     if (testConfiguration.jarEnabled || testConfiguration.nativeEnabled) {
@@ -28,10 +31,11 @@ fun Project.configureTest(testConfiguration: TestConfiguration) {
                 configuration = testConfiguration.jar,
                 runTask = RUN_JAR_TEST_TASK,
                 buildTask = BUILD_JAR_TEST_TASK,
-                dependencyConfiguration = EMBEDDED_CONFIGURATION_NAME,
+                dependencyConfiguration = TEST_EMBEDDED_CONFIGURATION_NAME,
                 mainClass = testConfiguration.launcherClass,
                 directory = testConfiguration.directory,
-                executable = testConfiguration.executableName
+                executable = testConfiguration.executableName,
+                jarConfigurator = { from(project.convention.getPlugin<JavaPluginConvention>().sourceSets[TEST].output) }
         )
         configureJar(creation)
     }

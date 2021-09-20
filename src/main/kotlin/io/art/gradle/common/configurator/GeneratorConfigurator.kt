@@ -38,7 +38,7 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.Delete
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.getPlugin
+import org.gradle.kotlin.dsl.findPlugin
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.nio.file.Path
@@ -204,35 +204,37 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConf
 private fun Project.collectJvmSources(configuration: GeneratorSourceConfiguration): Set<SourceSet> {
     val sources = mutableSetOf<SourceSet>()
     val availableFiles = fileTree(projectDir).matching { configuration.sourcesPattern(this) }.files
-    val compilingSources = convention.getPlugin<JavaPluginConvention>().sourceSets.flatMap { set -> set.allSource.sourceDirectories }.let { files ->
-        if (OperatingSystem.current().isWindows) return@let files.joinToString(SEMICOLON)
-        return@let files.joinToString(COLON)
-    }
-    convention.getPlugin<JavaPluginConvention>().sourceSets.forEach { set ->
-        set.allSource.sourceDirectories
-                .asSequence()
-                .filter { directory -> availableFiles.any { file -> file.startsWith(directory) } }
-                .forEach { directory ->
-                    val hasJava = directory.walkTopDown().any { file -> file.extension == JAVA.extension }
-                    val hasKotlin = directory.walkTopDown().any { file -> file.extension == KOTLIN.extension }
-                    val languages = mutableSetOf<GeneratorLanguage>()
-                    if (hasJava) {
-                        languages += JAVA
+    convention.findPlugin<JavaPluginConvention>()?.apply {
+        val compilingSources = sourceSets.flatMap { set -> set.allSource.sourceDirectories }.let { files ->
+            if (OperatingSystem.current().isWindows) return@let files.joinToString(SEMICOLON)
+            return@let files.joinToString(COLON)
+        }
+        sourceSets.forEach { set ->
+            set.allSource.sourceDirectories
+                    .asSequence()
+                    .filter { directory -> availableFiles.any { file -> file.startsWith(directory) } }
+                    .forEach { directory ->
+                        val hasJava = directory.walkTopDown().any { file -> file.extension == JAVA.extension }
+                        val hasKotlin = directory.walkTopDown().any { file -> file.extension == KOTLIN.extension }
+                        val languages = mutableSetOf<GeneratorLanguage>()
+                        if (hasJava) {
+                            languages += JAVA
+                        }
+                        if (hasKotlin) {
+                            languages += KOTLIN
+                        }
+                        if (languages.isNotEmpty()) sources.add(SourceSet(
+                                languages = languages,
+                                root = directory.absolutePath,
+                                classpath = collectClasspath(),
+                                module = configuration.module,
+                                `package` = configuration.`package`,
+                                sources = compilingSources,
+                                classesExclusions = configuration.classesExclusions,
+                                classesInclusions = configuration.classesInclusions,
+                        ))
                     }
-                    if (hasKotlin) {
-                        languages += KOTLIN
-                    }
-                    if (languages.isNotEmpty()) sources.add(SourceSet(
-                            languages = languages,
-                            root = directory.absolutePath,
-                            classpath = collectClasspath(),
-                            module = configuration.module,
-                            `package` = configuration.`package`,
-                            sources = compilingSources,
-                            classesExclusions = configuration.classesExclusions,
-                            classesInclusions = configuration.classesInclusions,
-                    ))
-                }
+        }
     }
     return sources
 }

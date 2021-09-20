@@ -46,10 +46,12 @@ class ExternalJvmPlugin : Plugin<Project> {
                 configureEmbeddedConfiguration()
                 configureTestEmbeddedConfiguration()
                 configureModules()
+            }
+            gradle.projectsEvaluated {
+                configureGenerator(configuration.generator)
                 configureExecutable(configuration.executable)
                 configureTest(configuration.test)
             }
-            gradle.projectsEvaluated { configureGenerator(configuration.generator) }
         }.onFailure { error -> target.logger.error(error.message, error) }
     }
 }

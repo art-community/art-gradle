@@ -44,10 +44,12 @@ class InternalJvmPlugin : Plugin<Project> {
             afterEvaluate {
                 configureEmbeddedConfiguration()
                 configureTestEmbeddedConfiguration()
+            }
+            gradle.projectsEvaluated {
+                configureGenerator(generator)
                 configureExecutable(executable)
                 configureTest(test)
             }
-            gradle.projectsEvaluated { configureGenerator(generator) }
         }.onFailure(target::error)
     }
 }

@@ -26,6 +26,8 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
+import org.gradle.kotlin.dsl.closureOf
+import org.gradle.kotlin.dsl.configure
 import java.lang.Boolean.TRUE
 import java.nio.file.Path
 
@@ -38,6 +40,7 @@ data class JarExecutableCreationConfiguration(
         val mainClass: String?,
         val executable: String,
         val directory: Path,
+        val jarConfigurator: Jar.() -> Unit = { },
 )
 
 fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
@@ -45,7 +48,7 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
     tasks.findByPath(configuration.buildTask)?.let { return }
 
     val buildJar = tasks.register(configuration.buildTask, Jar::class.java) {
-        val jarTask = tasks.getByName(JAR)
+        val jarTask = tasks.getByName(JAR).apply { configuration.jarConfigurator(this as Jar) }
         val embedded = configurations.getByName(configuration.dependencyConfiguration)
 
         addGradleBuildDependencies(embedded, this)
