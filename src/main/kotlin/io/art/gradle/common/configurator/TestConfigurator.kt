@@ -22,7 +22,6 @@ import io.art.gradle.common.configuration.TestConfiguration
 import io.art.gradle.common.constants.*
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getPlugin
 
 fun Project.configureTest(testConfiguration: TestConfiguration) {
@@ -35,7 +34,11 @@ fun Project.configureTest(testConfiguration: TestConfiguration) {
                 mainClass = testConfiguration.launcherClass,
                 directory = testConfiguration.directory,
                 executable = testConfiguration.executableName,
-                jarConfigurator = { from(project.convention.getPlugin<JavaPluginConvention>().sourceSets[TEST].output) }
+                configurator = {
+                    val testSources = project.convention.getPlugin<JavaPluginConvention>().sourceSets.named(TEST).get()
+                    dependsOn(testSources.classesTaskName)
+                    from(testSources.output)
+                }
         )
         configureJar(creation)
     }
