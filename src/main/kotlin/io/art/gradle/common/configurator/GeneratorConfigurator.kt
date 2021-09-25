@@ -25,7 +25,6 @@ import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
-import io.art.gradle.common.constants.GeneratorState.AVAILABLE
 import io.art.gradle.common.constants.GeneratorState.STOPPING
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import io.art.gradle.common.service.JavaForkRequest
@@ -77,7 +76,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     if (configuration.mainConfiguration.disabledRunning) return
 
-    if (!isGeneratorRunning(configuration.mainConfiguration) && !gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
+    if (!gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
         runGenerator(configuration.mainConfiguration)
     }
 
@@ -96,11 +95,6 @@ private fun Project.findGeneratorSourceConfigurations(): Map<String, GeneratorSo
     val internal = extensions.findByType<InternalGeneratorConfiguration>()?.sourceConfigurations?.asMap
     val external = extensions.findByType<ExternalConfiguration>()?.generator?.sourceConfigurations?.asMap
     return internal ?: external
-}
-
-private fun isGeneratorRunning(configuration: GeneratorMainConfiguration): Boolean {
-    val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER).toFile()
-    return controllerFile.exists() && controllerFile.readText() != AVAILABLE.name
 }
 
 private fun stopGenerator(configuration: GeneratorMainConfiguration) {
