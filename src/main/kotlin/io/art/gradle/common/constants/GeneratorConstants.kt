@@ -58,12 +58,5 @@ val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }
 
-val GENERATOR_JVM_OPTIONS = arrayOf(
-        "-server",
-        "-Xms1g",
-        "-Xmx1g",
-        "-XX:MetaspaceSize=1g",
-        "-XX:MaxMetaspaceSize=1g",
-        "-Dfile.encoding=UTF-8"
-)
+val GENERATOR_JVM_OPTIONS = arrayOf("-server", "-Dfile.encoding=UTF-8")
 var GENERATOR_DATE_TIME_FORMATTER: DateTimeFormatter = ofPattern("dd-MM-yyyy HH:mm:ss.SSS")
