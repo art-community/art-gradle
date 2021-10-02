@@ -74,6 +74,12 @@ fun Project.configureNative(executableConfiguration: NativeExecutableCreationCon
 
         inputs.files(jarTask.outputs.files)
 
+
+        args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
+
+        val executablePath = executableConfiguration.directory.resolve(executableConfiguration.executable).toFile().absolutePath
+        args(SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, executablePath))
+
         doFirst {
             val graalPaths = downloadGraal(native)
             when {
@@ -123,11 +129,6 @@ private fun Project.configureAgent(executableConfiguration: NativeExecutableCrea
 
             configurationPath.touch()
 
-
-            args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
-
-            val executablePath = directory.resolve(executableConfiguration.executable).toFile().absolutePath
-            args(SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, executablePath))
 
             executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
 
