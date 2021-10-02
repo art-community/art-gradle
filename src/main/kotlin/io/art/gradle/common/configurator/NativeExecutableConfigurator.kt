@@ -123,6 +123,12 @@ private fun Project.configureAgent(executableConfiguration: NativeExecutableCrea
 
             configurationPath.touch()
 
+
+            args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
+
+            val executablePath = directory.resolve(executableConfiguration.executable).toFile().absolutePath
+            args(SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, executablePath))
+
             executable(graalPaths.binary.resolve(JAVA).apply { setExecutable(true) }.absolutePath)
 
             native.agentConfiguration.apply {
@@ -182,8 +188,6 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
 
         args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
 
-        args(SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, executablePath.absolutePath))
-
         commandLine(POWERSHELL, absolutePath)
     }
 }
@@ -193,6 +197,8 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     val graalPath = directory.resolve(GRAAL)
     val configurationPath = graalPath.resolve(CONFIGURATION).touch()
     val native = configuration.configuration
+
+    commandLine(paths.nativeImage.absolutePath)
 
     val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
@@ -205,10 +211,4 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
 
     args(native.graalOptionsReplacer(options))
-
-    args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
-
-    args(SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, executablePath.absolutePath))
-
-    commandLine(paths.nativeImage.absolutePath)
 }
