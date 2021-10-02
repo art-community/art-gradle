@@ -166,9 +166,9 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
 
-        val systemProperties = SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath) + native
+        val systemProperties = native
                 .graalSystemProperties
-                .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) }
+                .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) } + SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath)
         val options = (defaultOptions + native.graalOptions + systemProperties + optionsByProperty).toMutableList()
 
         val scriptPath = project
@@ -205,9 +205,9 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     )
 
 
-    val systemProperties = SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath) + native
+    val systemProperties = native
             .graalSystemProperties
-            .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) }
+            .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) } + SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath)
     val options = (defaultOptions + native.graalOptions + systemProperties + optionsByProperty).toMutableList()
 
     args(native.graalOptionsReplacer(options))
