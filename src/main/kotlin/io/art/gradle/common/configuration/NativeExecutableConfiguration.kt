@@ -140,7 +140,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     fun graalSystemProperties(properties: Map<String, String>) {
-        graalSystemProperties += properties
+        graalSystemProperties.putAll(properties)
     }
 
     fun llvm(use: Boolean = true) {
