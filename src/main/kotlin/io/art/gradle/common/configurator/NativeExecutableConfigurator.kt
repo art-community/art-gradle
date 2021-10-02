@@ -194,6 +194,8 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     val configurationPath = graalPath.resolve(CONFIGURATION).touch()
     val native = configuration.configuration
 
+    commandLine(paths.nativeImage.absolutePath)
+
     val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
     val defaultOptions = listOf(
@@ -209,6 +211,4 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     val options = (defaultOptions + native.graalOptions + systemProperties + optionsByProperty).toMutableList()
 
     args(native.graalOptionsReplacer(options))
-
-    commandLine(paths.nativeImage.absolutePath)
 }
