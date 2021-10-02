@@ -147,9 +147,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         graalSystemProperties.putAll(properties)
     }
 
-    fun addGraalCompilerStatic
-            
-
     fun llvm(use: Boolean = true) {
         llvm = use
 
