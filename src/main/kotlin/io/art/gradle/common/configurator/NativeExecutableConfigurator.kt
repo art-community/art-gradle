@@ -155,7 +155,7 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
 
     graalPath.resolve(GRAAL_WINDOWS_LAUNCH_SCRIPT_NAME).toFile().apply {
         val executable = paths.nativeImage.absolutePath
-        val configurationPath = graalPath.resolve(CONFIGURATION).touch()
+        val configurationPath = graalPath.resolve(CONFIGURATION)
         val native = configuration.configuration
 
         val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
@@ -191,7 +191,7 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
 private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfiguration, paths: GraalPaths, executableName: String) = with(configuration) {
     val executablePath = directory.resolve(executableName).toFile()
     val graalPath = directory.resolve(GRAAL)
-    val configurationPath = graalPath.resolve(CONFIGURATION).touch()
+    val configurationPath = graalPath.resolve(CONFIGURATION)
     val native = configuration.configuration
 
     commandLine(paths.nativeImage.absolutePath)
