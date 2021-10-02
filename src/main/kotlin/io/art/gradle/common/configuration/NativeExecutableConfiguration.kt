@@ -83,6 +83,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var graalWindowsVcVarsPath: Path? = null
         private set
 
+    var graalSystemProperties = mutableMapOf<String, String>()
+        private set
+
     var llvm = false
         private set
 
@@ -134,6 +137,10 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
     fun graalWindowsVcVarsPath() {
         this.graalWindowsVcVarsPath = graalWindowsVcVarsPath
+    }
+
+    fun graalSystemProperties(properties: Map<String, String>) {
+        graalSystemProperties += properties
     }
 
     fun llvm(use: Boolean = true) {

@@ -180,6 +180,8 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
 
         writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, listOf(executable) + native.graalOptionsReplacer(options)))
 
+        args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
+
         commandLine(POWERSHELL, absolutePath)
     }
 }
@@ -203,4 +205,6 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
 
     args(native.graalOptionsReplacer(options))
+
+    args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
 }
