@@ -139,6 +139,10 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         this.graalWindowsVcVarsPath = graalWindowsVcVarsPath
     }
 
+    fun addGraalSystemPropery(name: String, value: String) {
+        graalSystemProperties[name] = value
+    }
+
     fun graalSystemProperties(properties: Map<String, String>) {
         graalSystemProperties.putAll(properties)
     }

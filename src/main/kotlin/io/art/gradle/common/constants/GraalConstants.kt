@@ -149,3 +149,6 @@ const val RUN_NATIVE_TEST_AGENT = "run-native-test-agent"
 val GRAAL_MAC_OS_BIN_PATH: Path = Paths.get("Contents").resolve("Home").resolve("bin")
 
 val SYSTEM_PROPERTY = { name: String, value: String -> "-D$name=$value" }
+
+const val GRAAL_NETTY_STATIC_LINK_PROPERTY = "graal.netty.static"
+const val GRAAL_WORKING_PATH_PROPERTY = "graal.working.path"

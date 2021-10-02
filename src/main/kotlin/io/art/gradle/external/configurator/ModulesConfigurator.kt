@@ -18,16 +18,25 @@
 
 package io.art.gradle.external.configurator
 
+import io.art.gradle.common.configuration.ExecutableConfiguration
+import io.art.gradle.common.configuration.NativeExecutableConfiguration
+import io.art.gradle.common.constants.GRAAL_MUSL_OPTION
+import io.art.gradle.common.constants.GRAAL_NETTY_STATIC_LINK_PROPERTY
+import io.art.gradle.common.constants.GRAAL_STATIC_OPTION
 import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
+import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.external.constants.JAVA_GROUP
+import io.art.gradle.external.constants.JavaModules.TRANSPORT
 import io.art.gradle.external.constants.KOTLIN_GROUP
 import io.art.gradle.external.constants.KOTLIN_JVM_PLUGIN_ID
+import io.art.gradle.external.constants.KotlinModules
 import io.art.gradle.external.plugin.externalPlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.api.plugins.JavaPlatformPlugin
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.repositories
 
 fun Project.configureModules() {
@@ -45,14 +54,35 @@ fun Project.configureModules() {
                 if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
                     dependency.value.java.modules.forEach { module ->
                         add(dependency.key, "$JAVA_GROUP:${module.artifact}:$version")
+                        if (module == TRANSPORT) {
+                            addNettyGraalOption()
+                        }
                     }
                 }
+
                 if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
                     dependency.value.kotlin.modules.forEach { module ->
                         add(dependency.key, "$KOTLIN_GROUP:${module.artifact}:$version")
+                        if (module == KotlinModules.TRANSPORT) {
+                            addNettyGraalOption()
+                        }
                     }
                 }
             }
         }
     }
+}
+
+private fun Project.addNettyGraalOption() {
+    val native = findNativeExtension() ?: return
+    if (!native.graalOptions.contains(GRAAL_STATIC_OPTION) || !native.graalOptions.contains(GRAAL_MUSL_OPTION)) {
+        return
+    }
+    native.addGraalSystemPropery(GRAAL_NETTY_STATIC_LINK_PROPERTY, true.toString())
+}
+
+private fun Project.findNativeExtension(): NativeExecutableConfiguration? {
+    val internal = extensions.findByType<ExecutableConfiguration>()?.native
+    val external = extensions.findByType<ExternalConfiguration>()?.executable?.native
+    return internal ?: external
 }
