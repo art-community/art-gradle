@@ -78,7 +78,7 @@ private fun Project.addNettyGraalOption() {
     if (!native.graalOptions.contains(GRAAL_STATIC_OPTION) || !native.graalOptions.contains(GRAAL_MUSL_OPTION)) {
         return
     }
-    native.addGraalSystemPropery(GRAAL_NETTY_STATIC_LINK_PROPERTY, true.toString())
+    native.addGraalSystemProperty(GRAAL_NETTY_STATIC_LINK_PROPERTY, true.toString())
 }
 
 private fun Project.findNativeExtension(): NativeExecutableConfiguration? {

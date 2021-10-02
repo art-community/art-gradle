@@ -74,12 +74,6 @@ fun Project.configureNative(executableConfiguration: NativeExecutableCreationCon
 
         inputs.files(jarTask.outputs.files)
 
-
-        args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
-
-        val executablePath = executableConfiguration.directory.resolve(executableConfiguration.executable).toFile().absolutePath
-        args(SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, executablePath))
-
         doFirst {
             val graalPaths = downloadGraal(native)
             when {
@@ -172,7 +166,10 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
                 GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
         )
 
-        val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
+        val systemProperties = SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath) + native
+                .graalSystemProperties
+                .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) }
+        val options = (defaultOptions + native.graalOptions + systemProperties + optionsByProperty).toMutableList()
 
         val scriptPath = project
                 .findProperty(GRAAL_WINDOWS_VISUAL_STUDIO_VARS_PROPERTY)
@@ -187,8 +184,6 @@ private fun Exec.useWindowsBuilder(configuration: NativeExecutableCreationConfig
 
         writeText(GRAAL_WINDOWS_LAUNCH_SCRIPT(graalPath, scriptPath, listOf(executable) + native.graalOptionsReplacer(options)))
 
-        args(native.graalSystemProperties.map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) })
-
         commandLine(POWERSHELL, absolutePath)
     }
 }
@@ -199,8 +194,6 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
     val configurationPath = graalPath.resolve(CONFIGURATION).touch()
     val native = configuration.configuration
 
-    commandLine(paths.nativeImage.absolutePath)
-
     val optionsByProperty = (project.findProperty(GRAAL_OPTIONS_PROPERTY) as? String)?.split(SPACE) ?: emptyList()
 
     val defaultOptions = listOf(
@@ -209,7 +202,13 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
             GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath)
     )
 
-    val options = (defaultOptions + native.graalOptions + optionsByProperty).toMutableList()
+
+    val systemProperties = SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath) + native
+            .graalSystemProperties
+            .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) }
+    val options = (defaultOptions + native.graalOptions + systemProperties + optionsByProperty).toMutableList()
 
     args(native.graalOptionsReplacer(options))
+
+    commandLine(paths.nativeImage.absolutePath)
 }
