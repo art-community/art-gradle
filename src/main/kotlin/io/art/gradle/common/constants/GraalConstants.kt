@@ -150,5 +150,5 @@ val GRAAL_MAC_OS_BIN_PATH: Path = Paths.get("Contents").resolve("Home").resolve(
 
 val SYSTEM_PROPERTY = { name: String, value: String -> "-D$name=$value" }
 
-const val GRAAL_NETTY_STATIC_LINK_PROPERTY = "netty.static"
-const val GRAAL_WORKING_PATH_PROPERTY = "working.path"
+const val GRAAL_NETTY_STATIC_LINK_PROPERTY = "netty-static"
+const val GRAAL_WORKING_PATH_PROPERTY = "working-path"
