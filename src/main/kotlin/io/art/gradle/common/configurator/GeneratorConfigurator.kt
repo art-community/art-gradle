@@ -46,10 +46,10 @@ import java.nio.file.Path
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
-    val projectProperty = hasProperty(ENABLED_GENERATOR_PROPERTY) && property(ENABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
-    val localProperty = getLocalProperty(ENABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
+    val projectProperty = hasProperty(DISABLED_GENERATOR_PROPERTY) && property(DISABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
+    val localProperty = getLocalProperty(DISABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
 
-    if (!projectProperty && !localProperty) {
+    if (projectProperty || localProperty) {
         return
     }
 

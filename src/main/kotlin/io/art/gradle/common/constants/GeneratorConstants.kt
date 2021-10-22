@@ -48,7 +48,7 @@ const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
 const val RUN_GENERATOR_TASK = "run-generator"
 const val CLEAN_GENERATOR_TASK = "clean-generator"
 
-const val ENABLED_GENERATOR_PROPERTY = "art.generator.enabled"
+const val DISABLED_GENERATOR_PROPERTY = "art.generator.disabled"
 
 val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/art/generator/art-generator/$version/art-generator-$version.jar") }
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
