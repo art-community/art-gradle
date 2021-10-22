@@ -111,7 +111,6 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
             gradle.includedBuilds.forEach(builds::add)
 
             builds.filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }.forEach { build ->
-                println("don: " + ":${dependencyId.projectName}:$JAR")
                 jar.dependsOn(build.task(":${dependencyId.projectName}:$JAR"))
             }
 
