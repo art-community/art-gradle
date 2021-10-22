@@ -175,7 +175,6 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConf
                             }
                     )
             ),
-            "watcher" to mapOf("period" to configuration.watcherPeriod.toMillis()),
             "sources" to allSources.map { source ->
                 mapOf(
                         "languages" to source.languages.map { language -> language.name },

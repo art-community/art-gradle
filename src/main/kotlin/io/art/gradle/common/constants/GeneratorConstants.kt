@@ -30,7 +30,6 @@ const val GENERATOR = "generator"
 
 const val GENERATOR_CONTROLLER = "generator.controller"
 
-val DEFAULT_WATCHER_PERIOD: Duration = ofMillis(500)
 val GENERATOR_DOWNLOAD_TIMEOUT: Duration = ofMinutes(5)
 val GENERATOR_STOP_TIMEOUT: Duration = ofSeconds(30)
 

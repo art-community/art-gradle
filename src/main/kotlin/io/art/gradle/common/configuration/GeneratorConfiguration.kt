@@ -29,7 +29,6 @@ import org.gradle.internal.jvm.Jvm
 import org.gradle.kotlin.dsl.domainObjectContainer
 import org.gradle.kotlin.dsl.newInstance
 import java.nio.file.Path
-import java.time.Duration
 import javax.inject.Inject
 
 data class SourceSet(
@@ -106,9 +105,6 @@ open class GeneratorMainConfiguration @Inject constructor(project: Project) {
     var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
         private set
 
-    var watcherPeriod: Duration = DEFAULT_WATCHER_PERIOD
-        private set
-
     var loggingToConsole = false
         private set
 
@@ -132,10 +128,6 @@ open class GeneratorMainConfiguration @Inject constructor(project: Project) {
 
     var disabledRunning = false
         private set
-
-    fun watcherPeriod(period: Duration) {
-        watcherPeriod = period
-    }
 
     fun consoleLogging() {
         loggingToConsole = true
