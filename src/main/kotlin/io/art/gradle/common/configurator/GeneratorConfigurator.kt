@@ -32,8 +32,11 @@ import io.art.gradle.common.local.getLocalProperty
 import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
@@ -78,24 +81,43 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
             doLast { runGenerator(configuration.mainConfiguration) }
         }
 
-        allprojects.forEach { project ->
-            if (project.hasJavaPlugin) {
-                project.tasks.withType(JavaCompile::class.java).forEach { task ->
-                    task.dependsOn(runGenerator)
-                }
-            }
-
-            if (project.hasKotlinPlugin) {
-                project.tasks
-                        .filter { task -> task.javaClass.name == KOTLIN_COMPILE_TASK_CLASS }
-                        .forEach { task -> task.dependsOn(runGenerator) }
-            }
-        }
+        configureRunDependencies(runGenerator)
     }
 
     tasks.withType(Delete::class.java) {
         delete = emptySet()
         delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.mainConfiguration.workingDirectory.toFile() })
+    }
+}
+
+private fun Project.configureRunDependencies(runGenerator: TaskProvider<Task>) {
+    fun dependsOnIncludedBuild(project: Project, task: Task) {
+        project.configurations.findByName(EMBEDDED_CONFIGURATION_NAME)?.let { embedded ->
+            embedded.incoming.resolutionResult.allDependencies {
+                if (from.id is ProjectComponentIdentifier) {
+                    val id = from.id as ProjectComponentIdentifier
+                    project.gradle.includedBuilds
+                            .filter { build -> id.build.name == build.name }
+                            .forEach { build -> task.dependsOn(build.task(":${build.name}:${task.name}")) }
+                }
+            }
+        }
+    }
+
+    allprojects.forEach { project ->
+        if (project.hasJavaPlugin) {
+            project.tasks.withType(JavaCompile::class.java).forEach { task ->
+                task.dependsOn(runGenerator)
+                dependsOnIncludedBuild(project, task)
+            }
+        }
+
+        if (project.hasKotlinPlugin) {
+            project.tasks.filter { task -> task.javaClass.name == KOTLIN_COMPILE_TASK_CLASS }.forEach { task ->
+                task.dependsOn(runGenerator)
+                dependsOnIncludedBuild(project, task)
+            }
+        }
     }
 }
 
