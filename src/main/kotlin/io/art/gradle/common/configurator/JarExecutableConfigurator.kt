@@ -107,8 +107,12 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
             val dependencyId = from.id as ProjectComponentIdentifier
 
             val builds = mutableListOf<IncludedBuild>()
-            gradle.parent?.includedBuilds?.forEach(builds::add)
-            gradle.includedBuilds.forEach(builds::add)
+            var current = gradle
+            while (true) {
+                current.includedBuilds.forEach(builds::add)
+                current.parent ?: break
+                current = current.parent!!
+            }
 
             builds.filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }.forEach { build ->
                 jar.dependsOn(build.task(":${dependencyId.projectName}:$JAR"))
