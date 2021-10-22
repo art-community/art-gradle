@@ -25,23 +25,24 @@ import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
-import io.art.gradle.common.constants.GeneratorState.STOPPING
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import io.art.gradle.common.service.JavaForkRequest
 import io.art.gradle.common.service.ProcessExecutionService.forkJava
-import io.art.gradle.common.service.writeContent
 import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.plugins.JavaLibraryPlugin
+import org.gradle.api.plugins.JavaPlatformPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.findPlugin
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.nio.file.Path
-import java.time.LocalDateTime.now
 
 
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
@@ -69,25 +70,25 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { configuration.mainConfiguration.workingDirectory.toFile().deleteRecursively() }
     }
 
+    if (!configuration.mainConfiguration.disabledRunning) {
+        tasks.register(RUN_GENERATOR_TASK) {
+            group = ART
+
+            if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
+                tasks.withType(JavaCompile::class.java).forEach { task -> task.dependsOn(this) }
+            }
+
+            if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
+                tasks.findByName(KOTLIN_COMPILE_TASK)?.dependsOn(this)
+            }
+
+            doLast { runGenerator(configuration.mainConfiguration) }
+        }
+    }
+
     tasks.withType(Delete::class.java) {
         delete = emptySet()
         delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.mainConfiguration.workingDirectory.toFile() })
-    }
-
-    if (configuration.mainConfiguration.disabledRunning) return
-
-    if (!gradle.startParameter.taskNames.contains(START_GENERATOR_TASK)) {
-        runGenerator(configuration.mainConfiguration)
-    }
-
-    tasks.register(START_GENERATOR_TASK) {
-        group = ART
-        doLast { runGenerator(configuration.mainConfiguration) }
-    }
-
-    tasks.register(STOP_GENERATOR_TASK) {
-        group = ART
-        doLast { stopGenerator(configuration.mainConfiguration) }
     }
 }
 
@@ -95,11 +96,6 @@ private fun Project.findGeneratorSourceConfigurations(): Map<String, GeneratorSo
     val internal = extensions.findByType<InternalGeneratorConfiguration>()?.sourceConfigurations?.asMap
     val external = extensions.findByType<ExternalConfiguration>()?.generator?.sourceConfigurations?.asMap
     return internal ?: external
-}
-
-private fun stopGenerator(configuration: GeneratorMainConfiguration) {
-    val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
-    controllerFile.writeContent("${STOPPING.name}#${GENERATOR_DATE_TIME_FORMATTER.format(now())}#0")
 }
 
 private fun Project.runGenerator(configuration: GeneratorMainConfiguration) {

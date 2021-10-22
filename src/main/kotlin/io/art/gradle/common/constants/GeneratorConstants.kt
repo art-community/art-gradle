@@ -47,10 +47,8 @@ enum class GeneratorState {
 }
 
 const val WRITE_CONFIGURATION_TASK = "write-generator-configuration"
-const val STOP_GENERATOR_TASK = "stop-generator"
+const val RUN_GENERATOR_TASK = "run-generator"
 const val CLEAN_GENERATOR_TASK = "clean-generator"
-const val START_GENERATOR_TASK = "start-generator"
-const val GENERATOR_MESSAGE = "Generator is not running. Please, call gradle ':start-generator' task"
 
 const val DISABLE_GENERATOR_PROPERTY = "art.generator.disabled"
 
