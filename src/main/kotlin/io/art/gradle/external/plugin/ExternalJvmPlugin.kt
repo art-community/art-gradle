@@ -42,18 +42,12 @@ class ExternalJvmPlugin : Plugin<Project> {
             configuration = target.extensions.create(ART)
             addEmbeddedConfiguration()
             addTestEmbeddedConfiguration()
-            println(target.gradle.parent?.includedBuilds?.map { b -> b.name })
-            println(target.gradle.includedBuilds.map { b -> b.name })
             afterEvaluate {
-                println(target.gradle.parent?.includedBuilds?.map { b -> b.name })
-                println(target.gradle.includedBuilds.map { b -> b.name })
                 configureEmbeddedConfiguration()
                 configureTestEmbeddedConfiguration()
                 configureModules()
             }
             gradle.projectsEvaluated {
-                println(target.gradle.parent?.includedBuilds?.map { b -> b.name })
-                println(target.gradle.includedBuilds.map { b -> b.name })
                 configureGenerator(configuration.generator)
                 configureExecutable(configuration.executable)
                 configureTest(configuration.test)

@@ -24,6 +24,7 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
+import org.gradle.api.initialization.IncludedBuild
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
@@ -105,12 +106,14 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
         if (from.id is ProjectComponentIdentifier) {
             val dependencyId = from.id as ProjectComponentIdentifier
 
-            gradle.includedBuilds
-                    .filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }
-                    .forEach { build ->
-                        println("don: " + ":${dependencyId.projectName}:$JAR")
-                        jar.dependsOn(build.task(":${dependencyId.projectName}:$JAR"))
-                    }
+            val builds = mutableListOf<IncludedBuild>()
+            gradle.parent?.includedBuilds?.forEach(builds::add)
+            gradle.includedBuilds.forEach(builds::add)
+
+            builds.filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }.forEach { build ->
+                println("don: " + ":${dependencyId.projectName}:$JAR")
+                jar.dependsOn(build.task(":${dependencyId.projectName}:$JAR"))
+            }
 
             project.rootProject
                     .subprojects
