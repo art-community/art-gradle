@@ -74,18 +74,19 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     }
 
     if (!configuration.mainConfiguration.disabledRunning) {
-        tasks.register(RUN_GENERATOR_TASK) {
+        val runGenerator = tasks.register(RUN_GENERATOR_TASK) {
             group = ART
-
-            if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
-                tasks.withType(JavaCompile::class.java).forEach { task -> task.dependsOn(this) }
-            }
-
-            if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
-                tasks.findByName(KOTLIN_COMPILE_TASK)?.dependsOn(this)
-            }
-
             doLast { runGenerator(configuration.mainConfiguration) }
+        }
+
+        if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
+            tasks.withType(JavaCompile::class.java).forEach { task ->
+                task.dependsOn(runGenerator)
+            }
+        }
+
+        if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
+            tasks.filter { task -> task.javaClass.name == KOTLIN_COMPILE_TASK_CLASS }.forEach { task -> task.dependsOn(runGenerator) }
         }
     }
 
@@ -129,10 +130,10 @@ private fun Project.runLocalGeneratorJar(configuration: GeneratorMainConfigurati
     javaexec {
         executable = configuration.jvmExecutable.toFile().absolutePath
         workingDir(configuration.workingDirectory)
-        main = GENERATOR_MAIN
+        jvmArgs(*GENERATOR_JVM_OPTIONS)
+        jvmArgs(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
         classpath = files(generatorJar.toFile())
-        args(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
-        args(*GENERATOR_JVM_OPTIONS)
+        main = GENERATOR_MAIN
     }
 }
 

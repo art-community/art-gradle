@@ -22,9 +22,8 @@ import java.net.URL
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
-import java.time.Duration.*
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ofPattern
+import java.time.Duration.ofMinutes
+import java.time.Duration.ofSeconds
 
 const val GENERATOR = "generator"
 
@@ -55,5 +54,5 @@ val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }
 
-val GENERATOR_JVM_OPTIONS = arrayOf("-server", "-Dfile.encoding=UTF-8")
+val GENERATOR_JVM_OPTIONS = arrayOf("-Xms1g", "-Dfile.encoding=UTF-8")
 const val GENERATOR_MAIN = "io.art.generator.Generator"
