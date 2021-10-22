@@ -56,4 +56,4 @@ val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }
 
 val GENERATOR_JVM_OPTIONS = arrayOf("-server", "-Dfile.encoding=UTF-8")
-var GENERATOR_DATE_TIME_FORMATTER: DateTimeFormatter = ofPattern("dd-MM-yyyy HH:mm:ss.SSS")
+const val GENERATOR_MAIN = "io.art.generator.Generator"

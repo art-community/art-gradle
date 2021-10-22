@@ -27,8 +27,6 @@ import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import io.art.gradle.common.local.getLocalProperty
-import io.art.gradle.common.service.JavaForkRequest
-import io.art.gradle.common.service.ProcessExecutionService.forkJava
 import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
@@ -128,16 +126,14 @@ private fun Project.runRemoteGeneratorJar(configuration: GeneratorMainConfigurat
 
 private fun Project.runLocalGeneratorJar(configuration: GeneratorMainConfiguration, generatorJar: Path) {
     writeGeneratorConfiguration(configuration)
-    val request = JavaForkRequest(
-            executable = configuration.jvmExecutable,
-            jar = generatorJar,
-            arguments = listOf(
-                    JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)),
-                    *GENERATOR_JVM_OPTIONS
-            ),
-            directory = configuration.workingDirectory
-    )
-    forkJava(request)
+    javaexec {
+        executable = configuration.jvmExecutable.toFile().absolutePath
+        workingDir(configuration.workingDirectory)
+        main = GENERATOR_MAIN
+        classpath = files(generatorJar.toFile())
+        args(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
+        args(*GENERATOR_JVM_OPTIONS)
+    }
 }
 
 private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConfiguration) {
