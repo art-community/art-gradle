@@ -25,14 +25,13 @@ import io.art.gradle.common.configuration.SourceSet
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
+import io.art.gradle.common.detector.hasJavaPlugin
+import io.art.gradle.common.detector.hasKotlinPlugin
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
 import io.art.gradle.common.local.getLocalProperty
 import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.api.plugins.JavaLibraryPlugin
-import org.gradle.api.plugins.JavaPlatformPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.compile.JavaCompile
@@ -79,14 +78,18 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
             doLast { runGenerator(configuration.mainConfiguration) }
         }
 
-        if (plugins.hasPlugin(JavaBasePlugin::class.java) || plugins.hasPlugin(JavaLibraryPlugin::class.java) || plugins.hasPlugin(JavaPlatformPlugin::class.java)) {
-            tasks.withType(JavaCompile::class.java).forEach { task ->
-                task.dependsOn(runGenerator)
+        allprojects.forEach { project ->
+            if (hasJavaPlugin) {
+                project.tasks.withType(JavaCompile::class.java).forEach { task ->
+                    task.dependsOn(runGenerator)
+                }
             }
-        }
 
-        if (plugins.hasPlugin(KOTLIN_JVM_PLUGIN_ID)) {
-            tasks.filter { task -> task.javaClass.name == KOTLIN_COMPILE_TASK_CLASS }.forEach { task -> task.dependsOn(runGenerator) }
+            if (hasKotlinPlugin) {
+                project.tasks
+                        .filter { task -> task.javaClass.name == KOTLIN_COMPILE_TASK_CLASS }
+                        .forEach { task -> task.dependsOn(runGenerator) }
+            }
         }
     }
 
