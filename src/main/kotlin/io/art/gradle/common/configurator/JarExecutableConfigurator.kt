@@ -105,6 +105,7 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
         if (from.id is ProjectComponentIdentifier) {
             val dependencyId = from.id as ProjectComponentIdentifier
 
+            println(project.gradle.includedBuilds.map { b -> b.name })
             project.gradle.includedBuilds
                     .filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }
                     .forEach { build ->
