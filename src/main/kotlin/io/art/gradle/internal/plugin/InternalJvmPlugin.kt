@@ -41,14 +41,11 @@ class InternalJvmPlugin : Plugin<Project> {
             addTestEmbeddedConfiguration()
             configureRepositories()
             configurePublishing()
-            println(target.gradle.includedBuilds.map { b -> b.name })
             afterEvaluate {
                 configureEmbeddedConfiguration()
                 configureTestEmbeddedConfiguration()
-                println(target.gradle.includedBuilds.map { b -> b.name })
             }
             gradle.projectsEvaluated {
-                println(target.gradle.includedBuilds.map { b -> b.name })
                 configureGenerator(generator)
                 configureExecutable(executable)
                 configureTest(test)
