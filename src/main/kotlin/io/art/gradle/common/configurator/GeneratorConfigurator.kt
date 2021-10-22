@@ -95,10 +95,10 @@ private fun Project.configureRunDependencies(runGenerator: TaskProvider<Task>) {
         project.configurations.findByName(EMBEDDED_CONFIGURATION_NAME)?.let { embedded ->
             embedded.incoming.resolutionResult.allDependencies {
                 if (from.id is ProjectComponentIdentifier) {
-                    val id = from.id as ProjectComponentIdentifier
+                    val dependencyId = from.id as ProjectComponentIdentifier
                     project.gradle.includedBuilds
-                            .filter { build -> id.build.name == build.name }
-                            .forEach { build -> task.dependsOn(build.task(":${build.name}:${task.name}")) }
+                            .filter { build -> dependencyId.build.name == build.name }
+                            .forEach { build -> task.dependsOn(build.task(":${task.name}")) }
                 }
             }
         }

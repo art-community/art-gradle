@@ -103,13 +103,15 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
 private fun Project.addGradleBuildDependencies(configuration: Configuration, jar: Jar) {
     configuration.incoming.resolutionResult.allDependencies {
         if (from.id is ProjectComponentIdentifier) {
-            val id = from.id as ProjectComponentIdentifier
+            val dependencyId = from.id as ProjectComponentIdentifier
+
             project.gradle.includedBuilds
-                    .filter { build -> id.build.name == build.name }
-                    .forEach { build -> jar.dependsOn(build.task(":${id.projectName}:$JAR")) }
+                    .filter { build -> dependencyId.build.name == build.name }
+                    .forEach { build -> jar.dependsOn(build.task(":$JAR")) }
+
             project.rootProject
                     .subprojects
-                    .filter { subProject -> id.build.isCurrentBuild && subProject.name == id.projectName }
+                    .filter { subProject -> dependencyId.build.isCurrentBuild && subProject.name == dependencyId.projectName }
                     .forEach { subProject -> jar.dependsOn(":${subProject.name}:$JAR") }
         }
     }
