@@ -106,7 +106,7 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
             val dependencyId = from.id as ProjectComponentIdentifier
 
             project.gradle.includedBuilds
-                    .filter { build -> dependencyId.build.name == build.name }
+                    .filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }
                     .forEach { build -> jar.dependsOn(build.task(":$JAR")) }
 
             project.rootProject
