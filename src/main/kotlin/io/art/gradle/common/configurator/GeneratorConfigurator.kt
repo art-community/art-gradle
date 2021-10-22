@@ -79,13 +79,13 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         }
 
         allprojects.forEach { project ->
-            if (hasJavaPlugin) {
+            if (project.hasJavaPlugin) {
                 project.tasks.withType(JavaCompile::class.java).forEach { task ->
                     task.dependsOn(runGenerator)
                 }
             }
 
-            if (hasKotlinPlugin) {
+            if (project.hasKotlinPlugin) {
                 project.tasks
                         .filter { task -> task.javaClass.name == KOTLIN_COMPILE_TASK_CLASS }
                         .forEach { task -> task.dependsOn(runGenerator) }
