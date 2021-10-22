@@ -47,3 +47,5 @@ val LOG_TEMPLATE = { context: String, line: String -> "($context): $line" }
 
 const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
 const val KOTLIN_COMPILE_TASK = "compileKotlin"
+
+const val LOCAL_PROPERTIES_FILE = "local.properties"

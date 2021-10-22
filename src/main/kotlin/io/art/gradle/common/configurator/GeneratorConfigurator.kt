@@ -26,6 +26,7 @@ import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GeneratorLanguage.JAVA
 import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
+import io.art.gradle.common.local.getLocalProperty
 import io.art.gradle.common.service.JavaForkRequest
 import io.art.gradle.common.service.ProcessExecutionService.forkJava
 import io.art.gradle.external.configuration.ExternalConfiguration
@@ -48,7 +49,10 @@ import java.nio.file.Path
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
-    if (hasProperty(DISABLE_GENERATOR_PROPERTY) && property(DISABLE_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true) {
+    val projectProperty = hasProperty(ENABLED_GENERATOR_PROPERTY) && property(ENABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
+    val localProperty = getLocalProperty(ENABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
+
+    if (!projectProperty && !localProperty) {
         return
     }
 
@@ -56,6 +60,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         project.findGeneratorSourceConfigurations()
                 ?.any { configuration -> configuration.value.forDart || configuration.value.forJvm } == true
     }
+
     if (!generatorAvailable) return
 
     writeGeneratorConfiguration(configuration.mainConfiguration)
