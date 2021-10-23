@@ -71,13 +71,15 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { configuration.mainConfiguration.workingDirectory.toFile().deleteRecursively() }
     }
 
-    if (!configuration.mainConfiguration.disabledRunning && !booleanProperty(DISABLED_AUTO_GENERATOR_PROPERTY)) {
+    if (!configuration.mainConfiguration.disabledRunning) {
         val runGenerator = tasks.register(RUN_GENERATOR_TASK) {
             group = ART
             doLast { runGenerator(configuration.mainConfiguration) }
         }
 
-        configureRunDependencies(runGenerator)
+        if (!booleanProperty(DISABLED_AUTO_GENERATOR_PROPERTY)) {
+            configureRunDependencies(runGenerator)
+        }
     }
 
     tasks.withType(Delete::class.java) {
