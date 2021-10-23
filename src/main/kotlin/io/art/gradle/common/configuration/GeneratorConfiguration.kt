@@ -129,6 +129,9 @@ open class GeneratorMainConfiguration @Inject constructor(project: Project) {
     var disabledRunning = false
         private set
 
+    var automaticRunning = false
+        private set
+
     fun consoleLogging() {
         loggingToConsole = true
         loggingToDirectory = false
@@ -162,5 +165,9 @@ open class GeneratorMainConfiguration @Inject constructor(project: Project) {
 
     fun disableRunning() {
         this.disabledRunning = true
+    }
+
+    fun automaticRunning() {
+        this.automaticRunning = true
     }
 }
