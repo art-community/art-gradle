@@ -140,7 +140,7 @@ private fun Project.runLocalGeneratorJar(configuration: GeneratorMainConfigurati
         jvmArgs(*GENERATOR_JVM_OPTIONS)
         jvmArgs(JVM_GENERATOR_CONFIGURATION_ARGUMENT(configuration.workingDirectory.resolve(MODULE_YML)))
         classpath = files(generatorJar.toFile())
-        main = GENERATOR_MAIN
+        mainClass.set(GENERATOR_MAIN)
     }
 }
 
