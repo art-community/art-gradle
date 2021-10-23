@@ -7,7 +7,7 @@ import java.util.*
 val Project.localProperties: Properties?
     get() = file(projectDir.resolve(LOCAL_PROPERTIES_FILE))
             .takeIf { file -> file.exists() }
-            ?.let { file -> Properties().apply { load(file.inputStream()) } }
+            ?.let { file -> Properties().apply { file.inputStream().use(::load) } }
 
 fun Project.getLocalProperty(name: String) = localProperties?.get(name)
 
