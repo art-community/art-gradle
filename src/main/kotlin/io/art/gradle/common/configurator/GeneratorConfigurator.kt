@@ -77,7 +77,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
             doLast { runGenerator(configuration.mainConfiguration) }
         }
 
-        if (!booleanProperty(DISABLED_AUTO_GENERATOR_PROPERTY)) {
+        if (booleanProperty(ENABLED_AUTO_GENERATOR_PROPERTY)) {
             configureRunDependencies(runGenerator)
         }
     }
