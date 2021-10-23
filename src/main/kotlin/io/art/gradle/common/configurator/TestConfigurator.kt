@@ -21,8 +21,8 @@ package io.art.gradle.common.configurator
 import io.art.gradle.common.configuration.TestConfiguration
 import io.art.gradle.common.constants.*
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.kotlin.dsl.getPlugin
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.kotlin.dsl.getByType
 
 fun Project.configureTest(testConfiguration: TestConfiguration) {
     if (testConfiguration.jarEnabled || testConfiguration.nativeEnabled) {
@@ -35,7 +35,7 @@ fun Project.configureTest(testConfiguration: TestConfiguration) {
                 directory = testConfiguration.directory,
                 executable = testConfiguration.executableName,
                 configurator = {
-                    val testSources = project.convention.getPlugin<JavaPluginConvention>().sourceSets.named(TEST).get()
+                    val testSources = project.extensions.getByType<JavaPluginExtension>().sourceSets.named(TEST).get()
                     dependsOn(testSources.classesTaskName)
                     from(testSources.output)
                 }

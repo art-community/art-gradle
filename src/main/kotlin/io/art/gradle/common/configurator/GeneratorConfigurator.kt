@@ -33,13 +33,12 @@ import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.findPlugin
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.nio.file.Path
@@ -203,7 +202,7 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConf
 private fun Project.collectJvmSources(configuration: GeneratorSourceConfiguration): Set<SourceSet> {
     val sources = mutableSetOf<SourceSet>()
     val availableFiles = fileTree(projectDir).matching { configuration.sourcesPattern(this) }.files
-    convention.findPlugin<JavaPluginConvention>()?.apply {
+    extensions.findByType<JavaPluginExtension>()?.apply {
         val compilingSources = sourceSets.flatMap { set -> set.allSource.sourceDirectories }.let { files ->
             if (OperatingSystem.current().isWindows) return@let files.joinToString(SEMICOLON)
             return@let files.joinToString(COLON)
