@@ -28,7 +28,7 @@ import io.art.gradle.common.constants.GeneratorLanguage.KOTLIN
 import io.art.gradle.common.detector.hasJavaPlugin
 import io.art.gradle.common.detector.hasKotlinPlugin
 import io.art.gradle.common.generator.GeneratorDownloader.downloadJvmGenerator
-import io.art.gradle.common.local.getLocalProperty
+import io.art.gradle.common.local.booleanProperty
 import io.art.gradle.external.configuration.ExternalConfiguration
 import io.art.gradle.internal.configuration.InternalGeneratorConfiguration
 import org.gradle.api.Project
@@ -48,10 +48,7 @@ import java.nio.file.Path
 fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     if (rootProject != this) return
 
-    val projectProperty = hasProperty(DISABLED_GENERATOR_PROPERTY) && property(DISABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
-    val localProperty = getLocalProperty(DISABLED_GENERATOR_PROPERTY)?.toString()?.toBoolean() == true
-
-    if (projectProperty || localProperty) {
+    if (booleanProperty(DISABLED_GENERATOR_PROPERTY)) {
         return
     }
 
@@ -74,7 +71,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
         doLast { configuration.mainConfiguration.workingDirectory.toFile().deleteRecursively() }
     }
 
-    if (!configuration.mainConfiguration.disabledRunning) {
+    if (!configuration.mainConfiguration.disabledRunning && !booleanProperty(DISABLED_AUTO_GENERATOR_PROPERTY)) {
         val runGenerator = tasks.register(RUN_GENERATOR_TASK) {
             group = ART
             doLast { runGenerator(configuration.mainConfiguration) }
