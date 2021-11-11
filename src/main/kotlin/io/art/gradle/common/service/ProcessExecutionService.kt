@@ -30,14 +30,14 @@ data class JavaForkRequest(
 )
 
 object ProcessExecutionService {
-    fun fork(command: Array<String>, directory: Path) {
+    fun forkProcess(command: Array<String>, directory: Path) {
         runCatching {
             getRuntime().exec(command, emptyArray(), directory.toFile())
         }
     }
 
-    fun fork(command: String, arguments: Array<String>, directory: Path) {
-        fork(listOf(command, *arguments).toTypedArray(), directory)
+    fun forkProcess(command: String, arguments: Array<String>, directory: Path) {
+        forkProcess(listOf(command, *arguments).toTypedArray(), directory)
     }
 
     fun forkJava(request: JavaForkRequest) {
@@ -46,6 +46,6 @@ object ProcessExecutionService {
                 *request.arguments.toTypedArray(),
                 JAR_OPTION, request.jar.toFile().absolutePath,
         )
-        fork(forkArguments.toTypedArray(), request.directory)
+        forkProcess(forkArguments.toTypedArray(), request.directory)
     }
 }
