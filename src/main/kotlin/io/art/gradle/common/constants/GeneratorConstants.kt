@@ -57,3 +57,20 @@ val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${pa
 
 val GENERATOR_JVM_OPTIONS = arrayOf("-Xms1g", "-Dfile.encoding=UTF-8")
 const val GENERATOR_MAIN = "io.art.generator.Generator"
+
+const val LANGUAGES_KEY = "languages"
+const val INCLUSIONS_KEY = "inclusions"
+const val EXCLUSIONS_KEY = "exclusions"
+const val CLASSPATH_KEY = "classpath"
+const val SOURCES_KEY = "sources"
+const val ROOT_KEY = "root"
+const val MODULE_KEY = "module"
+const val PACKAGE_KEY = "package"
+const val CONTROLLER_KEY = "controller"
+const val TYPE_KEY = "type"
+const val CONSOLE_KEY = "console"
+const val FILE_KEY = "file"
+const val DIRECTORY_KEY = "directory"
+const val LOGGING_KEY = "logging"
+const val DEFAULT_KEY = "default"
+const val WRITERS_KEY = "writers"

@@ -150,11 +150,11 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConf
     val controllerFile = configuration.workingDirectory.resolve(GENERATOR_CONTROLLER)
 
     val fileWriter = mapOf(
-            "type" to "file",
-            "directory" to configuration.loggingDirectory.toFile().absolutePath
+            TYPE_KEY to FILE_KEY,
+            DIRECTORY_KEY to configuration.loggingDirectory.toFile().absolutePath
     )
 
-    val consoleWriter = mapOf("type" to "console")
+    val consoleWriter = mapOf(TYPE_KEY to CONSOLE_KEY)
 
     val jvmSources = mutableListOf<SourceSet>()
     allprojects.forEach { project ->
@@ -169,26 +169,26 @@ private fun Project.writeGeneratorConfiguration(configuration: GeneratorMainConf
     val allSources = jvmSources + dartSources
 
     val configurationContent = mapOf(
-            "controller" to controllerFile.toFile().absolutePath,
-            "logging" to mapOf(
-                    "default" to mapOf(
-                            "writers" to when {
+            CONTROLLER_KEY to controllerFile.toFile().absolutePath,
+            LOGGING_KEY to mapOf(
+                    DEFAULT_KEY to mapOf(
+                            WRITERS_KEY to when {
                                 configuration.loggingToConsole -> listOf(consoleWriter)
                                 configuration.loggingToDirectory -> listOf(fileWriter)
                                 else -> emptyList()
                             }
                     )
             ),
-            "sources" to allSources.map { source ->
+            SOURCES_KEY to allSources.map { source ->
                 mapOf(
-                        "languages" to source.languages.map { language -> language.name },
-                        "root" to source.root,
-                        "classpath" to source.classpath,
-                        "module" to source.module,
-                        "package" to source.`package`,
-                        "sources" to source.sources,
-                        "exclusions" to source.classesExclusions.toMutableList(),
-                        "inclusions" to source.classesInclusions.toMutableList()
+                        LANGUAGES_KEY to source.languages.map { language -> language.name },
+                        ROOT_KEY to source.root,
+                        CLASSPATH_KEY to source.classpath,
+                        MODULE_KEY to source.module,
+                        PACKAGE_KEY to source.`package`,
+                        SOURCES_KEY to source.sources,
+                        EXCLUSIONS_KEY to source.classesExclusions.toMutableList(),
+                        INCLUSIONS_KEY to source.classesInclusions.toMutableList()
                 )
             },
     )
