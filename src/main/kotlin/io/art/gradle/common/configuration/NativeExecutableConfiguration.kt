@@ -45,7 +45,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var runAgentBeforeBuild = false
         private set
 
-    var graalVersion: String = GraalVersion.VERSION_21_2_0.version
+    var graalVersion: String = GraalVersion.LATEST.version
         private set
 
     var graalUrl: String? = null
