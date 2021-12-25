@@ -18,7 +18,10 @@
 
 package io.art.gradle.common.configuration
 
-import io.art.gradle.common.constants.*
+import io.art.gradle.common.constants.GENERATOR
+import io.art.gradle.common.constants.GeneratorLanguage
+import io.art.gradle.common.constants.MAIN_BRANCH
+import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectContainer
@@ -62,7 +65,7 @@ open class GeneratorSourceConfiguration @Inject constructor(val module: String) 
     var forDart = false
         private set
 
-    var `package`: String = EMPTY_STRING
+    var `package`: String = module
         private set
 
     var sourcesPattern: PatternFilterable.() -> PatternFilterable = { this }
@@ -74,7 +77,7 @@ open class GeneratorSourceConfiguration @Inject constructor(val module: String) 
     var classesInclusions = mutableSetOf<String>()
         private set
 
-    fun modulePackage(modulePackage: String = EMPTY_STRING) {
+    fun modulePackage(modulePackage: String) {
         this.`package` = modulePackage
     }
 
