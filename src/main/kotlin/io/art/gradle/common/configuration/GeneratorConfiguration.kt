@@ -65,7 +65,7 @@ open class GeneratorSourceConfiguration @Inject constructor(val module: String) 
     var forDart = false
         private set
 
-    var `package`: String = module
+    var `package`: String = module.toLowerCase()
         private set
 
     var sourcesPattern: PatternFilterable.() -> PatternFilterable = { this }
