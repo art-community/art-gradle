@@ -13,4 +13,6 @@ val Project.publishingRepositoryUrl
     get() = when (git?.repository?.branch) {
         MAIN_BRANCH -> STABLE_MAVEN_REPOSITORY
         else -> UNSTABLE_MAVEN_REPOSITORY
+    }.apply {
+        println(git?.repository?.branch)
     }
