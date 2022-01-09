@@ -22,6 +22,7 @@ fun Project.configurePublishing() {
         ART_GENERATOR -> generatorPublishing(publisherUsername, publisherPassword)
         ART_KOTLIN -> mavenPublishing(publisherUsername, publisherPassword)
         ART_EXAMPLE -> mavenPublishing(publisherUsername, publisherPassword)
+        ART_FIBERS -> mavenPublishing(publisherUsername, publisherPassword)
     }
 }
 

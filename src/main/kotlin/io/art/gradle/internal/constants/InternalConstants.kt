@@ -7,6 +7,7 @@ const val ART_JAVA = "art-java"
 const val ART_GENERATOR = "art-generator"
 const val ART_KOTLIN = "art-kotlin"
 const val ART_EXAMPLE = "art-example"
+const val ART_FIBERS = "art-fibers"
 const val ART_COMMUNITY_REPOSITORY = "github.com/art-community"
 const val ART_COMMUNITY_URL = "https://$ART_COMMUNITY_REPOSITORY"
 
