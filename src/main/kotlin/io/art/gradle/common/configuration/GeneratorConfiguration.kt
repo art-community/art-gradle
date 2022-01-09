@@ -20,7 +20,7 @@ package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.GENERATOR
 import io.art.gradle.common.constants.GeneratorLanguage
-import io.art.gradle.common.constants.MAIN_BRANCH
+import io.art.gradle.common.constants.MAIN_VERSION
 import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
 import org.gradle.api.Action
 import org.gradle.api.Named
@@ -117,7 +117,7 @@ open class GeneratorMainConfiguration @Inject constructor(project: Project) {
     var loggingDirectory: Path = workingDirectory
         private set
 
-    var version = MAIN_BRANCH
+    var version = MAIN_VERSION
         private set
 
     var repositoryUrl: String = STABLE_MAVEN_REPOSITORY
