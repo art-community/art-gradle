@@ -21,7 +21,7 @@ package io.art.gradle.common.configuration
 import io.art.gradle.common.constants.GENERATOR
 import io.art.gradle.common.constants.GeneratorLanguage
 import io.art.gradle.common.constants.MAIN_VERSION
-import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
+import io.art.gradle.common.constants.MAVEN_REPOSITORY
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectContainer
@@ -120,7 +120,7 @@ open class GeneratorMainConfiguration @Inject constructor(project: Project) {
     var version = MAIN_VERSION
         private set
 
-    var repositoryUrl: String = STABLE_MAVEN_REPOSITORY
+    var repositoryUrl: String = MAVEN_REPOSITORY
         private set
 
     var localJarOverridingPath: Path? = null

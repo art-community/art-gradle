@@ -23,7 +23,7 @@ import io.art.gradle.common.configuration.NativeExecutableConfiguration
 import io.art.gradle.common.constants.GRAAL_MUSL_OPTION
 import io.art.gradle.common.constants.GRAAL_NETTY_STATIC_LINK_PROPERTY
 import io.art.gradle.common.constants.GRAAL_STATIC_OPTION
-import io.art.gradle.common.constants.STABLE_MAVEN_REPOSITORY
+import io.art.gradle.common.constants.MAVEN_REPOSITORY
 import io.art.gradle.common.detector.hasJavaPlugin
 import io.art.gradle.common.detector.hasKotlinPlugin
 import io.art.gradle.external.configuration.ExternalConfiguration
@@ -43,7 +43,7 @@ fun Project.configureModules() {
 
         repositories {
             maven {
-                url = uri(STABLE_MAVEN_REPOSITORY)
+                url = uri(MAVEN_REPOSITORY)
             }
         }
 
