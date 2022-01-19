@@ -159,6 +159,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     fun musl(use: Boolean = true) {
+        if (OperatingSystem.current().isWindows || OperatingSystem.current().isMacOsX) {
+            return
+        }
         if (use) {
             graalOptions.add(GRAAL_MUSL_OPTION)
             return
@@ -167,6 +170,9 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     fun static(static: Boolean = true) {
+        if (OperatingSystem.current().isWindows || OperatingSystem.current().isMacOsX) {
+            return
+        }
         if (static) {
             graalOptions.add(GRAAL_STATIC_OPTION)
             return
