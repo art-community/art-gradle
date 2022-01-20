@@ -13,6 +13,7 @@ const val ART = "art"
 const val MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven/"
 
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
+const val COMPILNE_ONLY_CONFIGURATION_NAME = "compileOnly"
 const val EMBEDDED_CONFIGURATION_NAME = "embedded"
 const val TEST_EMBEDDED_CONFIGURATION_NAME = "testEmbedded"
 const val IMPLEMENTATION_CONFIGURATION_NAME = "implementation"
@@ -49,3 +50,6 @@ const val KOTLIN_JVM_PLUGIN_ID = "org.jetbrains.kotlin.jvm"
 const val KOTLIN_COMPILE_TASK_CLASS = "org.jetbrains.kotlin.gradle.tasks.KotlinCompile"
 
 const val LOCAL_PROPERTIES_FILE = "local.properties"
+
+const val GRAAL_DEPENDENCY_GROUP = "org.graalvm.nativeimage"
+const val GRAAL_DEPENDENCY_ARTIFACT = "svm"

@@ -32,6 +32,7 @@ open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactor
     val test = objectFactory.newInstance<TestConfiguration>(externalPlugin.project)
     val generator = objectFactory.newInstance<GeneratorConfiguration>(externalPlugin.project)
     val modules = objectFactory.newInstance<ModulesConfiguration>()
+    val libraries = objectFactory.newInstance<LibrariesConfiguration>()
 
     fun executable(action: Action<in ExecutableConfiguration>) {
         action.execute(executable)
@@ -47,6 +48,10 @@ open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactor
 
     fun modules(action: Action<in ModulesConfiguration>) {
         action.execute(modules)
+    }
+
+    fun libraries(action: Action<in LibrariesConfiguration>) {
+        action.execute(libraries)
     }
 }
 

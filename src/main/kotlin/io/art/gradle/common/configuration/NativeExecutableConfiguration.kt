@@ -158,6 +158,22 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         graalOptions.remove(GRAAL_LLVM_OPTION)
     }
 
+
+    fun disableGC() {
+        graalOptions.add(GRAAL_EPSILON_OPTION)
+    }
+
+    fun useG1() {
+        if (OperatingSystem.current().isWindows || OperatingSystem.current().isMacOsX) {
+            return
+        }
+        graalOptions.add(GRAAL_G1_OPTION)
+    }
+
+    fun useSerialGC() {
+        graalOptions.add(GRAAL_SERIAL_TOPN)
+    }
+
     fun musl(use: Boolean = true) {
         if (OperatingSystem.current().isWindows || OperatingSystem.current().isMacOsX) {
             return

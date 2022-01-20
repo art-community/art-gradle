@@ -122,6 +122,9 @@ enum class GraalAgentOutputMode {
 
 const val GRAAL_LLVM_OPTION = "-H:CompilerBackend=llvm"
 const val GRAAL_MUSL_OPTION = "--libc=musl"
+const val GRAAL_EPSILON_OPTION = "--gc=epsilon"
+const val GRAAL_G1_OPTION = "--gc=g1"
+const val GRAAL_SERIAL_TOPN = "--gc=serial"
 const val GRAAL_STATIC_OPTION = "--static"
 const val GRAAL_VERBOSE_OPTION = "--verbose"
 const val GRAAL_NATIVE_IMAGE_INFO_OPTION = "--native-image-info"
