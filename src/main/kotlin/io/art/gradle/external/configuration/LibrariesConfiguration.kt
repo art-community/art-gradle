@@ -18,10 +18,7 @@
 
 package io.art.gradle.external.configuration
 
-import io.art.gradle.common.constants.COMPILNE_ONLY_CONFIGURATION_NAME
-import io.art.gradle.common.constants.GRAAL_DEPENDENCY_ARTIFACT
-import io.art.gradle.common.constants.GRAAL_DEPENDENCY_GROUP
-import io.art.gradle.common.constants.GraalVersion
+import io.art.gradle.common.constants.*
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.domainObjectSet
 import javax.inject.Inject
@@ -34,6 +31,19 @@ open class LibrariesConfiguration @Inject constructor(private val objectFactory:
                 GRAAL_DEPENDENCY_GROUP,
                 GRAAL_DEPENDENCY_ARTIFACT,
                 version.version
+        )
+    }
+
+    fun lombok(version: String) {
+        dependencies += Library(COMPILNE_ONLY_CONFIGURATION_NAME,
+                LOMBOK_DEPENDENCY_GROUP,
+                LOMBOK_DEPENDENCY_ARTIFACT,
+                version
+        )
+        dependencies += Library(ANNOTATION_PROCESSOR_CONFIGURATION_NAME,
+                LOMBOK_DEPENDENCY_GROUP,
+                LOMBOK_DEPENDENCY_ARTIFACT,
+                version
         )
     }
 

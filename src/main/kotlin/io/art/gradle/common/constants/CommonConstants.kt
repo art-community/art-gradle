@@ -1,5 +1,7 @@
 package io.art.gradle.common.constants
 
+import org.gradle.kotlin.dsl.provideDelegate
+
 const val EMPTY_STRING = ""
 const val SPACE = " "
 const val NEW_LINE = "\n"
@@ -12,6 +14,7 @@ const val MAIN_VERSION = "main"
 const val ART = "art"
 const val MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven/"
 
+const val ANNOTATION_PROCESSOR_CONFIGURATION_NAME = "annotationProcessor"
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
 const val COMPILNE_ONLY_CONFIGURATION_NAME = "compileOnly"
 const val EMBEDDED_CONFIGURATION_NAME = "embedded"
@@ -53,3 +56,6 @@ const val LOCAL_PROPERTIES_FILE = "local.properties"
 
 const val GRAAL_DEPENDENCY_GROUP = "org.graalvm.nativeimage"
 const val GRAAL_DEPENDENCY_ARTIFACT = "svm"
+
+const val LOMBOK_DEPENDENCY_GROUP = "org.projectlombok"
+const val LOMBOK_DEPENDENCY_ARTIFACT = "lombok"
