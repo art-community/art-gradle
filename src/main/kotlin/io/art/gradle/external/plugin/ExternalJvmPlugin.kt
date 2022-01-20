@@ -21,6 +21,7 @@ package io.art.gradle.external.plugin
 import io.art.gradle.common.configurator.*
 import io.art.gradle.common.constants.ART
 import io.art.gradle.external.configuration.ExternalConfiguration
+import io.art.gradle.external.configurator.configureLibraries
 import io.art.gradle.external.configurator.configureModules
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -46,6 +47,7 @@ class ExternalJvmPlugin : Plugin<Project> {
                 configureEmbeddedConfiguration()
                 configureTestEmbeddedConfiguration()
                 configureModules()
+                configureLibraries()
             }
             gradle.projectsEvaluated {
                 configureGenerator(configuration.generator)
