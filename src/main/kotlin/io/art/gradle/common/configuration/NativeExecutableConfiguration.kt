@@ -174,7 +174,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     fun useSerialGC() {
-        graalOptions.add(GRAAL_SERIAL_TOPN)
+        graalOptions.add(GRAAL_SERIAL_OPTION)
     }
 
     fun musl(use: Boolean = true) {
