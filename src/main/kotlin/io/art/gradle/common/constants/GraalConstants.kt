@@ -111,7 +111,8 @@ enum class GraalJavaVersion(val version: String) {
 }
 
 enum class GraalVersion(val version: String) {
-    LATEST("21.3.0"),
+    LATEST("22.0.0"),
+    VERSION_21_3_0("21.3.0"),
     VERSION_21_2_0("21.2.0")
 }
 
