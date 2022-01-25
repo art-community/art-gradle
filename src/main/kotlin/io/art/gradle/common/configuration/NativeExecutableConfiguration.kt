@@ -71,7 +71,10 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         }
     }
 
-    var graalDirectory: Path? = null
+    var graalDownloadingDirectory: Path? = null
+        private set
+
+    var graalLocalDirectory: Path? = null
         private set
 
     var graalOptions: MutableList<String> = GRAAL_DEFAULT_OPTIONS.toMutableList()
@@ -124,7 +127,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     fun graalDirectory(directory: Path) {
-        this.graalDirectory = directory
+        this.graalDownloadingDirectory = directory
     }
 
     fun replaceGraalOptions(options: (current: List<String>) -> List<String>) {
@@ -294,5 +297,8 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
             runConfigurator = configurator
         }
 
+        fun useLocal(directory: String) {
+            graalLocalDirectory = Paths.get(directory)
+        }
     }
 }

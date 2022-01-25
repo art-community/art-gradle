@@ -33,7 +33,18 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 private const val bufferSize = DEFAULT_BUFFER_SIZE * 2
 
 fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths {
-    val graalDirectory = configuration.graalDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
+    configuration.graalLocalDirectory?.takeIf { path -> path.toFile().exists() }?.let { directory ->
+        var binary = directory.toFile().resolve(BIN)
+        if (OperatingSystem.current().isMacOsX) {
+            binary = binary.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
+        }
+        return GraalPaths(
+                base = directory.toFile(),
+                binary = binary,
+                nativeImage = binary.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
+        )
+    }
+    val graalDirectory = configuration.graalDownloadingDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
     return supplyAsync {
         graalDirectory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
             var binariesDirectory = graalDirectory
