@@ -224,6 +224,10 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
 
+    fun useLocal(directory: String) {
+        graalLocalDirectory = Paths.get(directory)
+    }
+
     open class NativeImageAgentConfiguration {
         var executableClass: String? = null
             private set
@@ -295,10 +299,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
         fun configureRun(configurator: JavaExec.() -> Unit) {
             runConfigurator = configurator
-        }
-
-        fun useLocal(directory: String) {
-            graalLocalDirectory = Paths.get(directory)
         }
     }
 }
