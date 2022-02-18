@@ -27,7 +27,7 @@ open class LibrariesConfiguration @Inject constructor(private val objectFactory:
     val dependencies = objectFactory.domainObjectSet(Library::class)
 
     fun graal(version: GraalVersion = GraalVersion.LATEST) {
-        dependencies += Library(COMPILNE_ONLY_CONFIGURATION_NAME,
+        dependencies += Library(COMPILE_ONLY_CONFIGURATION_NAME,
                 GRAAL_DEPENDENCY_GROUP,
                 GRAAL_DEPENDENCY_ARTIFACT,
                 version.version
@@ -35,7 +35,7 @@ open class LibrariesConfiguration @Inject constructor(private val objectFactory:
     }
 
     fun lombok(version: String) {
-        dependencies += Library(COMPILNE_ONLY_CONFIGURATION_NAME,
+        dependencies += Library(COMPILE_ONLY_CONFIGURATION_NAME,
                 LOMBOK_DEPENDENCY_GROUP,
                 LOMBOK_DEPENDENCY_ARTIFACT,
                 version

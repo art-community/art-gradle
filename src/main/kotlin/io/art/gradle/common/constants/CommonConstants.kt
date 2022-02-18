@@ -4,6 +4,7 @@ import org.gradle.kotlin.dsl.provideDelegate
 
 const val EMPTY_STRING = ""
 const val SPACE = " "
+const val SHELL_AND = "&&"
 const val NEW_LINE = "\n"
 const val DOT = "."
 const val DOLLAR = "$"
@@ -16,7 +17,7 @@ const val MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven
 
 const val ANNOTATION_PROCESSOR_CONFIGURATION_NAME = "annotationProcessor"
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
-const val COMPILNE_ONLY_CONFIGURATION_NAME = "compileOnly"
+const val COMPILE_ONLY_CONFIGURATION_NAME = "compileOnly"
 const val EMBEDDED_CONFIGURATION_NAME = "embedded"
 const val TEST_EMBEDDED_CONFIGURATION_NAME = "testEmbedded"
 const val IMPLEMENTATION_CONFIGURATION_NAME = "implementation"
@@ -27,6 +28,7 @@ const val BUILD = "build"
 const val CLEAN = "clean"
 
 const val EXECUTABLE = "executable"
+const val DEPENDENCIES = "dependencies"
 const val TEST = "test"
 const val MAIN = "main"
 const val TEST_EXECUTION = "testExecution"

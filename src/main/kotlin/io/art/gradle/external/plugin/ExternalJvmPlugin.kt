@@ -48,6 +48,7 @@ class ExternalJvmPlugin : Plugin<Project> {
                 configureTestEmbeddedConfiguration()
                 configureModules()
                 configureLibraries()
+                configureSourceDependencies()
             }
             gradle.projectsEvaluated {
                 configureGenerator(configuration.generator)

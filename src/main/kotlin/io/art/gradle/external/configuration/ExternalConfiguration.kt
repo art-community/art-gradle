@@ -18,6 +18,7 @@
 
 package io.art.gradle.external.configuration
 
+import SourceDependenciesConfiguration
 import io.art.gradle.common.configuration.ExecutableConfiguration
 import io.art.gradle.common.configuration.GeneratorConfiguration
 import io.art.gradle.common.configuration.TestConfiguration
@@ -33,6 +34,7 @@ open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactor
     val generator = objectFactory.newInstance<GeneratorConfiguration>(externalPlugin.project)
     val modules = objectFactory.newInstance<ModulesConfiguration>()
     val libraries = objectFactory.newInstance<LibrariesConfiguration>()
+    val sources = objectFactory.newInstance<SourceDependenciesConfiguration>()
 
     fun executable(action: Action<in ExecutableConfiguration>) {
         action.execute(executable)
@@ -52,6 +54,10 @@ open class ExternalConfiguration @Inject constructor(objectFactory: ObjectFactor
 
     fun libraries(action: Action<in LibrariesConfiguration>) {
         action.execute(libraries)
+    }
+
+    fun sources(action: Action<in SourceDependenciesConfiguration>) {
+        action.execute(sources)
     }
 }
 
