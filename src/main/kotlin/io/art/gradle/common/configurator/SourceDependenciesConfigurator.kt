@@ -50,26 +50,19 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             }
 
             if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
-                if (File(DOS_TO_UNIX_FILE).exists()) {
-                    dos2Unix(dependencyDirectory, dependencyDirectory.resolve(MAKE_FILE))
-                }
+                dos2Unix(dependencyDirectory, dependencyDirectory.resolve(MAKE_FILE))
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 return@doLast
             }
 
             if (dependencyDirectory.resolve(CONFIGURE_SCRIPT).exists()) {
-                if (File(DOS_TO_UNIX_FILE).exists()) {
-                    dos2Unix(dependencyDirectory, dependencyDirectory.resolve(CONFIGURE_FILE))
-                }
+                dos2Unix(dependencyDirectory, dependencyDirectory.resolve(CONFIGURE_FILE))
                 executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 return@doLast
             }
 
-            if (File(DOS_TO_UNIX_FILE).exists()) {
-                dos2Unix(dependencyDirectory, dependencyDirectory.resolve(AUTOGEN_FILE))
-            }
-
+            dos2Unix(dependencyDirectory, dependencyDirectory.resolve(AUTOGEN_FILE))
             executeDependencyCommand(dependency.autogenCommand(), dependencyDirectory)
             executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
             executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
@@ -78,6 +71,9 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
 }
 
 private fun Project.dos2Unix(dependencyDirectory: File, file: File) {
+    if (!File(DOS_TO_UNIX_FILE).exists()) {
+        return
+    }
     val logger = logger(project.name)
     exec {
         commandLine(DOS_TO_UNIX_FILE, file)
