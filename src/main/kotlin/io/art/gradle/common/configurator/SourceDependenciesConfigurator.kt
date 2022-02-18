@@ -20,10 +20,7 @@ package io.art.gradle.common.configurator
 
 import SourceDependenciesConfiguration
 import UnixSourceDependency
-import io.art.gradle.common.constants.AUTOGEN_FILE
-import io.art.gradle.common.constants.BUILD
-import io.art.gradle.common.constants.DOS_TO_UNIX_FILE
-import io.art.gradle.common.constants.MAKE_FILE
+import io.art.gradle.common.constants.*
 import io.art.gradle.common.logger.logger
 import io.art.gradle.external.plugin.externalPlugin
 import org.eclipse.jgit.api.Git
@@ -52,31 +49,68 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
                         .fetch()
                         .call()
             }
-            when (dependencyDirectory.resolve(MAKE_FILE).exists()) {
-                true -> exec {
+
+            if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
+                if (File(DOS_TO_UNIX_FILE).exists()) {
+                    exec {
+                        commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(MAKE_FILE))
+                        workingDir(dependencyDirectory)
+                        errorOutput = logger.error()
+                    }
+                }
+                exec {
                     commandLine(*dependency.makeCommand())
-                    workingDir(sources.directory.resolve(dependency.name))
-                    standardOutput = logger.output()
+                    workingDir(dependencyDirectory)
                     errorOutput = logger.error()
                 }
-                false -> {
-                    if (File(DOS_TO_UNIX_FILE).exists()) {
-                        exec {
-                            commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(AUTOGEN_FILE))
-                            workingDir(dependencyDirectory)
-                            standardOutput = logger.output()
-                            errorOutput = logger.error()
-                        }
-                    }
-                    dependency.fullCommands().forEach { command ->
-                        exec {
-                            commandLine(*command)
-                            workingDir(dependencyDirectory)
-                            standardOutput = logger.output()
-                            errorOutput = logger.error()
-                        }
+                return@doLast
+            }
+
+            if (dependencyDirectory.resolve(CONFIGURE_SCRIPT).exists()) {
+                if (File(DOS_TO_UNIX_FILE).exists()) {
+                    exec {
+                        commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(CONFIGURE_SCRIPT))
+                        workingDir(dependencyDirectory)
+                        errorOutput = logger.error()
                     }
                 }
+                exec {
+                    commandLine(*dependency.configureCommand())
+                    workingDir(dependencyDirectory)
+                    errorOutput = logger.error()
+                }
+                exec {
+                    commandLine(*dependency.makeCommand())
+                    workingDir(dependencyDirectory)
+                    errorOutput = logger.error()
+                }
+                return@doLast
+            }
+
+            if (File(DOS_TO_UNIX_FILE).exists()) {
+                exec {
+                    commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(AUTOGEN_FILE))
+                    workingDir(dependencyDirectory)
+                    errorOutput = logger.error()
+                }
+            }
+
+            exec {
+                commandLine(*dependency.autogenCommand())
+                workingDir(dependencyDirectory)
+                errorOutput = logger.error()
+            }
+
+            exec {
+                commandLine(*dependency.configureCommand())
+                workingDir(dependencyDirectory)
+                errorOutput = logger.error()
+            }
+
+            exec {
+                commandLine(*dependency.makeCommand())
+                workingDir(dependencyDirectory)
+                errorOutput = logger.error()
             }
         }
     }

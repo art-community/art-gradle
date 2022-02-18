@@ -53,20 +53,11 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         makeOptions + "-j $cores"
     }
 
-    fun fullCommands(): List<Array<String>> {
-        val autogen = bashCommand(arrayOf(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE)))
-        val configure = bashCommand(arrayOf(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE)))
-        val make = bashCommand(arrayOf(MAKE, makeOptions.joinToString(SPACE)))
-        return listOf(autogen, configure, make)
-    }
+    fun autogenCommand(): Array<String> = bashCommand(arrayOf(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE)))
 
-    fun makeCommand(): Array<String> {
-        val command = arrayOf(
-                MAKE,
-                makeOptions.joinToString(SPACE)
-        )
-        return bashCommand(command)
-    }
+    fun configureCommand(): Array<String> = bashCommand(arrayOf(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE)))
+
+    fun makeCommand(): Array<String> = bashCommand(arrayOf(MAKE, makeOptions.joinToString(SPACE)))
 
     override fun getName(): String = name
 }
