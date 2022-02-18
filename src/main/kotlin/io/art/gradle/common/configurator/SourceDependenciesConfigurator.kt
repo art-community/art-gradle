@@ -18,7 +18,9 @@
 
 package io.art.gradle.common.configurator
 
+import CmakeSourceDependency
 import SourceDependenciesConfiguration
+import SourceDependency
 import UnixSourceDependency
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.logger.logger
@@ -28,6 +30,7 @@ import java.io.File
 
 fun Project.configureSourceDependencies(configuration: SourceDependenciesConfiguration) {
     configuration.unixDependencies.forEach { dependency -> configureUnix(dependency, configuration) }
+    configuration.cmakeDependencies.forEach { dependency -> configureCmake(dependency, configuration) }
 }
 
 private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {
@@ -68,7 +71,37 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
     }
 }
 
-private fun Project.copyDependencyBuiltFiles(dependency: UnixSourceDependency, dependencyDirectory: File) {
+private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: SourceDependenciesConfiguration) {
+    tasks.register("$BUILD-${dependency.name}") {
+        group = BUILD
+        if (dependency.buildDependency) tasks.findByPath(BUILD)?.dependsOn(this)
+        doLast {
+            val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
+            if (!dependencyDirectory.exists()) {
+                dependencyDirectory.mkdirs()
+                Git.cloneRepository()
+                        .setDirectory(dependencyDirectory)
+                        .setURI(dependency.url!!)
+                        .setCloneSubmodules(true)
+                        .call()
+            }
+
+            if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
+                executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
+                copyDependencyBuiltFiles(dependency, dependencyDirectory)
+                return@doLast
+            }
+
+
+            dos2Unix(dependencyDirectory)
+            executeDependencyCommand(dependency.cmakeCommand(), dependencyDirectory)
+            executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
+            copyDependencyBuiltFiles(dependency, dependencyDirectory)
+        }
+    }
+}
+
+private fun Project.copyDependencyBuiltFiles(dependency: SourceDependency, dependencyDirectory: File) {
     dependency.builtFiles().forEach { (from, to) ->
         copy {
             from(dependencyDirectory.resolve(from).absolutePath)

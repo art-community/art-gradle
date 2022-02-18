@@ -1,3 +1,4 @@
+import CmakeSourceDependency.BuildType.*
 import io.art.gradle.common.constants.*
 import org.gradle.api.Action
 import org.gradle.api.Named
@@ -13,6 +14,7 @@ open class SourceDependenciesConfiguration @Inject constructor(project: Project,
     var directory: Path = project.buildDir.resolve(DEPENDENCIES).toPath()
         private set
     val unixDependencies: NamedDomainObjectContainer<UnixSourceDependency> = objectFactory.domainObjectContainer(UnixSourceDependency::class, ::UnixSourceDependency)
+    val cmakeDependencies: NamedDomainObjectContainer<CmakeSourceDependency> = objectFactory.domainObjectContainer(CmakeSourceDependency::class, ::CmakeSourceDependency)
 
     fun directory(directory: Path) {
         this.directory = directory
@@ -22,6 +24,10 @@ open class SourceDependenciesConfiguration @Inject constructor(project: Project,
         action.execute(unixDependencies.create(name))
     }
 
+    fun cmake(name: String, action: Action<in CmakeSourceDependency>) {
+        action.execute(cmakeDependencies.create(name))
+    }
+
     fun lxc(static: Boolean = true, action: Action<in UnixSourceDependency> = Action {}) {
         val lxc = builtinLxc(static)
         action.execute(lxc)
@@ -29,7 +35,11 @@ open class SourceDependenciesConfiguration @Inject constructor(project: Project,
     }
 }
 
-open class UnixSourceDependency @Inject constructor(private val name: String) : Named {
+interface SourceDependency {
+    fun builtFiles(): Map<String, String>
+}
+
+open class UnixSourceDependency @Inject constructor(private val name: String) : Named, SourceDependency {
     private val autogenOptions: MutableList<String> = mutableListOf()
     private val configureOptions: MutableList<String> = mutableListOf()
     private val makeOptions: MutableList<String> = mutableListOf()
@@ -83,7 +93,87 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
 
     fun makeCommand(): Array<String> = bashCommand(MAKE, makeOptions.joinToString(SPACE))
 
-    fun builtFiles() = builtFiles
+    override fun builtFiles() = builtFiles
 
     override fun getName(): String = name
+}
+
+open class CmakeSourceDependency @Inject constructor(private val name: String) : Named, SourceDependency {
+    private val cmakeOptions: MutableList<String> = mutableListOf()
+    private val makeOptions: MutableList<String> = mutableListOf()
+    private val builtFiles: MutableMap<String, String> = mutableMapOf()
+
+    var buildType = RELEASE_DEBUG
+        private set
+
+    var buildDependency = false
+        private set
+
+    var url: String? = null
+        private set
+
+    fun url(url: String) {
+        this.url = url
+    }
+
+    fun cmakeOptions(vararg options: String) {
+        cmakeOptions += options
+    }
+
+    fun makeOptions(vararg options: String) {
+        makeOptions + options
+    }
+
+    fun parallel(cores: Int = Runtime.getRuntime().availableProcessors()) {
+        makeOptions + "-j $cores"
+    }
+
+    fun copy(from: String, to: String) {
+        builtFiles += from to to
+    }
+
+    fun copy(from: Path, to: Path) {
+        builtFiles += from.toString() to to.toString()
+    }
+
+    fun copy(from: File, to: File) {
+        builtFiles += from.toString() to to.toString()
+    }
+
+    fun cmakeRelease() {
+        buildType = RELEASE
+    }
+
+    fun cmakeDebug() {
+        buildType = DEBUG
+    }
+
+    fun cmakeReleaseDebug() {
+        buildType = RELEASE_DEBUG
+    }
+
+    fun buildDependency(buildDependency: Boolean = true) {
+        this.buildDependency = buildDependency
+    }
+
+    fun cmakeCommand(): Array<String> {
+        when (buildType) {
+            DEBUG -> cmakeOptions(CMAKE_BUILD_TYPE_DEBUG)
+            RELEASE -> cmakeOptions(CMAKE_BUILD_TYPE_RELEASE)
+            RELEASE_DEBUG -> cmakeOptions(CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG)
+        }
+        return bashCommand(CMAKE, cmakeOptions.joinToString(SPACE))
+    }
+
+    fun makeCommand(): Array<String> = bashCommand(MAKE, makeOptions.joinToString(SPACE))
+
+    override fun builtFiles() = builtFiles
+
+    override fun getName(): String = name
+
+    enum class BuildType(val option: String) {
+        DEBUG(CMAKE_BUILD_TYPE_DEBUG),
+        RELEASE(CMAKE_BUILD_TYPE_RELEASE),
+        RELEASE_DEBUG(CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG)
+    }
 }
