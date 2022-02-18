@@ -16,9 +16,10 @@ const val CMAKE_BUILD_TYPE_DEBUG = "-DCMAKE_BUILD_TYPE=Debug"
 const val CMAKE_BUILD_TYPE_RELEASE = "-DCMAKE_BUILD_TYPE=Release"
 const val CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG = "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
 
-const val CMAKE_BUILD_CONFIG_DEBUG = "--config=Debug"
-const val CMAKE_BUILD_CONFIG_RELEASE = "--config=Release"
-const val CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG = "--config=RelWithDebInfo"
+const val CMAKE_BUILD_CONFIG_OPTION = "--config"
+const val CMAKE_BUILD_CONFIG_DEBUG = "Debug"
+const val CMAKE_BUILD_CONFIG_RELEASE = "Release"
+const val CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG = "RelWithDebInfo"
 
 const val DOS_TO_UNIX_FILE = "test /usr/bin/dos2unix && /usr/bin/dos2unix "
 const val BACKWARD_SLASH = "\\"
@@ -28,7 +29,7 @@ const val WINDOWS_DISK_PATH_BACKWARD_SLASH = ":\\"
 const val WINDOWS_DISK_PATH_BACKWARD_SLASH_REGEX = ":\\\\"
 const val WSL_DISK_PREFIX = "/mnt/"
 
-fun bashCommand(vararg arguments: String) = arrayOf("bash", "-c", arguments.joinToString(" "))
+fun bashCommand(vararg arguments: String) = arrayOf("bash", "-c", arguments.joinToString(SPACE))
 
 fun builtinLxc(static: Boolean) = UnixSourceDependency("lxc").apply {
     url("https://github.com/lxc/lxc")

@@ -5,6 +5,7 @@ import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
+import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.domainObjectContainer
 import java.io.File
 import java.nio.file.Path
@@ -160,6 +161,7 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
     }
 
     fun wsl(wsl: Boolean = true) {
+        if (!OperatingSystem.current().isWindows) return
         this.wsl = wsl
     }
 
@@ -169,16 +171,20 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
             RELEASE -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_RELEASE)
             RELEASE_DEBUG -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG)
         }
-        return arrayOf(CMAKE) + cmakeConfigureOptions + DOT
+        val command = arrayOf(CMAKE) + cmakeConfigureOptions + DOT
+        if (wsl) return bashCommand(command.joinToString(SPACE))
+        return command
     }
 
     fun cmakeBuildCommand(): Array<String> {
         when (buildType) {
-            DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_DEBUG)
-            RELEASE -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE)
-            RELEASE_DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG)
+            DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_OPTION, CMAKE_BUILD_CONFIG_DEBUG)
+            RELEASE -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_OPTION, CMAKE_BUILD_CONFIG_RELEASE)
+            RELEASE_DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_OPTION, CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG)
         }
-        return arrayOf(CMAKE) + CMAKE_BUILD + DOT + cmakeBuildOptions
+        val command = arrayOf(CMAKE) + CMAKE_BUILD + DOT + cmakeBuildOptions
+        if (wsl) return bashCommand(command.joinToString(SPACE))
+        return command
     }
 
     override fun builtFiles() = builtFiles
