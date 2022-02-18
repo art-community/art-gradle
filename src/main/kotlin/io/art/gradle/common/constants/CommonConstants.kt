@@ -1,7 +1,5 @@
 package io.art.gradle.common.constants
 
-import org.gradle.kotlin.dsl.provideDelegate
-
 const val EMPTY_STRING = ""
 const val SPACE = " "
 const val SHELL_AND = "&&"
@@ -11,6 +9,8 @@ const val DOLLAR = "$"
 const val SEMICOLON = ";"
 const val COLON = ":"
 const val MAIN_VERSION = "main"
+const val SLASH = "/"
+const val STAR = "*"
 
 const val ART = "art"
 const val MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven/"
