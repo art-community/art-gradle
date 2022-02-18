@@ -34,9 +34,8 @@ fun Project.configureSourceDependencies(configuration: SourceDependenciesConfigu
 }
 
 private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {
-    tasks.register("$BUILD-${dependency.name}") {
+    val task = tasks.register("$BUILD-${dependency.name}") {
         group = BUILD
-        if (dependency.buildDependency) tasks.findByPath(BUILD)?.dependsOn(this)
         doLast {
             val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
             if (!dependencyDirectory.exists()) {
@@ -69,12 +68,12 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             copyDependencyBuiltFiles(dependency, dependencyDirectory)
         }
     }
+    if (dependency.buildDependency) tasks.findByPath(BUILD)?.dependsOn(task)
 }
 
 private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: SourceDependenciesConfiguration) {
-    tasks.register("$BUILD-${dependency.name}") {
+    val task = tasks.register("$BUILD-${dependency.name}") {
         group = BUILD
-        if (dependency.buildDependency) tasks.findByPath(BUILD)?.dependsOn(this)
         doLast {
             val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
             if (!dependencyDirectory.exists()) {
@@ -92,6 +91,7 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
             copyDependencyBuiltFiles(dependency, dependencyDirectory)
         }
     }
+    if (dependency.buildDependency) tasks.findByPath(BUILD)?.dependsOn(task)
 }
 
 private fun Project.copyDependencyBuiltFiles(dependency: SourceDependency, dependencyDirectory: File) {

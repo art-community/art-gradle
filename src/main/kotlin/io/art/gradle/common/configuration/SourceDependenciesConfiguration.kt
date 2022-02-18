@@ -83,8 +83,8 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         builtFiles += from.toString() to to.toString()
     }
 
-    fun buildDependency(buildDependency: Boolean = true) {
-        this.buildDependency = buildDependency
+    fun buildDependsOn(buildDependsOn: Boolean = true) {
+        buildDependency = buildDependsOn
     }
 
     fun autogenCommand(): Array<String> = bashCommand(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE))
@@ -155,8 +155,8 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         buildType = RELEASE_DEBUG
     }
 
-    fun buildDependency(buildDependency: Boolean = true) {
-        this.buildDependency = buildDependency
+    fun buildDependsOn(buildDependsOn: Boolean = true) {
+        buildDependency = buildDependsOn
     }
 
     fun wsl(wsl: Boolean = true) {
