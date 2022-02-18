@@ -20,7 +20,10 @@ package io.art.gradle.common.configurator
 
 import SourceDependenciesConfiguration
 import UnixSourceDependency
-import io.art.gradle.common.constants.*
+import io.art.gradle.common.constants.BUILD
+import io.art.gradle.common.constants.CONFIGURE_SCRIPT
+import io.art.gradle.common.constants.DOS_TO_UNIX_FILE
+import io.art.gradle.common.constants.MAKE_FILE
 import io.art.gradle.common.logger.logger
 import io.art.gradle.external.plugin.externalPlugin
 import org.eclipse.jgit.api.Git
@@ -50,19 +53,19 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             }
 
             if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
-                dos2Unix(dependencyDirectory, dependencyDirectory.resolve(MAKE_FILE))
+                dos2Unix(dependencyDirectory)
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 return@doLast
             }
 
             if (dependencyDirectory.resolve(CONFIGURE_SCRIPT).exists()) {
-                dos2Unix(dependencyDirectory, dependencyDirectory.resolve(CONFIGURE_FILE))
+                dos2Unix(dependencyDirectory)
                 executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 return@doLast
             }
 
-            dos2Unix(dependencyDirectory, dependencyDirectory.resolve(AUTOGEN_FILE))
+            dos2Unix(dependencyDirectory)
             executeDependencyCommand(dependency.autogenCommand(), dependencyDirectory)
             executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
             executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
@@ -70,15 +73,17 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
     }
 }
 
-private fun Project.dos2Unix(dependencyDirectory: File, file: File) {
+private fun Project.dos2Unix(dependencyDirectory: File) {
     if (!File(DOS_TO_UNIX_FILE).exists()) {
         return
     }
     val logger = logger(project.name)
-    exec {
-        commandLine(DOS_TO_UNIX_FILE, file)
-        workingDir(dependencyDirectory)
-        errorOutput = logger.error()
+    dependencyDirectory.listFiles()!!.forEach { file ->
+        exec {
+            commandLine(DOS_TO_UNIX_FILE, file)
+            workingDir(dependencyDirectory)
+            errorOutput = logger.error()
+        }
     }
 }
 
