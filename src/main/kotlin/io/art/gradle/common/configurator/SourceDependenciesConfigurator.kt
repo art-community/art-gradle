@@ -22,14 +22,12 @@ import SourceDependenciesConfiguration
 import UnixSourceDependency
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.logger.logger
-import io.art.gradle.external.plugin.externalPlugin
 import org.eclipse.jgit.api.Git
 import org.gradle.api.Project
 import java.io.File
 
-fun Project.configureSourceDependencies() {
-    val sources = externalPlugin.configuration.sources
-    sources.unixDependencies.forEach { dependency -> configureUnix(dependency, sources) }
+fun Project.configureSourceDependencies(configuration: SourceDependenciesConfiguration) {
+    configuration.unixDependencies.forEach { dependency -> configureUnix(dependency, configuration) }
 }
 
 private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {

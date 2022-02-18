@@ -3,12 +3,14 @@ package io.art.gradle.common.constants
 import UnixSourceDependency
 import org.gradle.internal.os.OperatingSystem
 
+const val SOURCES = "sources"
+
 const val AUTOGEN_SCRIPT = "./autogen.sh"
 const val CONFIGURE_SCRIPT = "./configure"
 const val MAKE = "make"
 const val MAKE_FILE = "Makefile"
 const val DOS_TO_UNIX_FILE = "test /usr/bin/dos2unix && /usr/bin/dos2unix "
-var BACKWARD_SLASH = "\\"
+const val BACKWARD_SLASH = "\\"
 const val BACKWARD_SLASH_REGEX = "\\\\"
 const val WINDOWS_DISK_PATH_SLASH = ":/"
 const val WINDOWS_DISK_PATH_BACKWARD_SLASH = ":\\"

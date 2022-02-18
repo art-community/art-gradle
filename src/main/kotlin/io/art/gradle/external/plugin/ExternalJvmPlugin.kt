@@ -48,12 +48,12 @@ class ExternalJvmPlugin : Plugin<Project> {
                 configureTestEmbeddedConfiguration()
                 configureModules()
                 configureLibraries()
-                configureSourceDependencies()
             }
             gradle.projectsEvaluated {
                 configureGenerator(configuration.generator)
                 configureExecutable(configuration.executable)
                 configureTest(configuration.test)
+                configureSourceDependencies(configuration.sources)
             }
         }.onFailure { error -> target.logger.error(error.message, error) }
     }
