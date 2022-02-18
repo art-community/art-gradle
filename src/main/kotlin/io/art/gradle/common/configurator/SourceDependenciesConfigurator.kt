@@ -32,9 +32,10 @@ fun Project.configureSourceDependencies() {
         tasks.register("$BUILD-${dependency.name}") {
             group = BUILD
             doLast {
-                if (!sources.directory.toFile().exists()) {
+                val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
+                if (!dependencyDirectory.exists()) {
                     Git.cloneRepository()
-                            .setDirectory(sources.directory.resolve(dependency.name).toFile())
+                            .setDirectory(dependencyDirectory)
                             .setBare(true)
                             .setURI(dependency.url!!)
                             .call()
