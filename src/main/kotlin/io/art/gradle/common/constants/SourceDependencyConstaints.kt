@@ -14,6 +14,6 @@ fun bashCommand(arguments: Array<String>) = arrayOf("bash", "-c", arguments.join
 
 fun builtinLxc() = UnixSourceDependency("lxc").apply {
     url("https://github.com/lxc/lxc")
-    configureOptions("--disable-doc")
+    configureOptions("--disable-doc", "--static")
     parallel()
 }
