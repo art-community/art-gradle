@@ -19,10 +19,10 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.constants.BUILD
-import io.art.gradle.common.constants.GIT_CLONE
 import io.art.gradle.common.constants.MAKE_FILE
 import io.art.gradle.common.logger.logger
 import io.art.gradle.external.plugin.externalPlugin
+import org.eclipse.jgit.api.Git
 import org.gradle.api.Project
 
 fun Project.configureSourceDependencies() {
@@ -35,7 +35,14 @@ fun Project.configureSourceDependencies() {
                 val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
                 if (!dependencyDirectory.exists()) {
                     dependencyDirectory.mkdirs()
-                    exec { commandLine(arrayOf(*GIT_CLONE), dependency.url) }
+                    Git.cloneRepository()
+                            .setDirectory(dependencyDirectory)
+                            .setURI(dependency.url!!)
+                            .setCloneAllBranches(true)
+                            .setCloneSubmodules(true)
+                            .call()
+                            .fetch()
+                            .call()
                 }
                 exec {
                     when (sources.directory.resolve(dependency.name).resolve(MAKE_FILE).toFile().exists()) {
