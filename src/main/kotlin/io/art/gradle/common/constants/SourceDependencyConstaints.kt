@@ -12,7 +12,7 @@ const val DOS_TO_UNIX_FILE = "/usr/bin/dos2unix"
 
 fun bashCommand(arguments: Array<String>) = arrayOf("bash", "-c", arguments.joinToString(" "))
 
-val LCX = UnixSourceDependency("lxc").apply {
+fun builtinLxc() = UnixSourceDependency("lxc").apply {
     url("https://github.com/lxc/lxc")
     configureOptions("--disable-doc")
     parallel()

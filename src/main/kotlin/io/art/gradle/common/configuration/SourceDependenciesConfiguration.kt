@@ -21,8 +21,10 @@ open class SourceDependenciesConfiguration @Inject constructor(project: Project,
         action.execute(unixDependencies.create(name))
     }
 
-    fun lxc() {
-        unixDependencies.add(LCX)
+    fun lxc(action: Action<in UnixSourceDependency> = Action {}) {
+        val lxc = builtinLxc()
+        action.execute(lxc)
+        unixDependencies.add(lxc)
     }
 }
 
