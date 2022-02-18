@@ -79,8 +79,8 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
 private fun Project.copyDependencyBuiltFiles(dependency: UnixSourceDependency, dependencyDirectory: File) {
     dependency.builtFiles().forEach { (from, to) ->
         copy {
-            from(dependencyDirectory.resolve(from))
-            to(projectDir.resolve(to))
+            from(dependencyDirectory.resolve(from).absolutePath)
+            into(projectDir.resolve(to).absolutePath)
         }
     }
 }
