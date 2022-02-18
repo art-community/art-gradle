@@ -99,9 +99,12 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
 }
 
 open class CmakeSourceDependency @Inject constructor(private val name: String) : Named, SourceDependency {
-    private val cmakeOptions: MutableList<String> = mutableListOf()
-    private val makeOptions: MutableList<String> = mutableListOf()
+    private val cmakeConfigureOptions: MutableList<String> = mutableListOf()
+    private val cmakeBuildOptions: MutableList<String> = mutableListOf()
     private val builtFiles: MutableMap<String, String> = mutableMapOf()
+
+    var wsl = false
+        private set
 
     var buildType = RELEASE_DEBUG
         private set
@@ -116,16 +119,16 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         this.url = url
     }
 
-    fun cmakeOptions(vararg options: String) {
-        cmakeOptions += options
+    fun cmakeConfigureOptions(vararg options: String) {
+        cmakeConfigureOptions += options
     }
 
-    fun makeOptions(vararg options: String) {
-        makeOptions + options
+    fun cmakeBuildOptions(vararg options: String) {
+        cmakeBuildOptions + options
     }
 
     fun parallel(cores: Int = Runtime.getRuntime().availableProcessors()) {
-        makeOptions + "-j $cores"
+        cmakeBuildOptions + "-j $cores"
     }
 
     fun copy(from: String, to: String) {
@@ -156,16 +159,27 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         this.buildDependency = buildDependency
     }
 
-    fun cmakeCommand(): Array<String> {
-        when (buildType) {
-            DEBUG -> cmakeOptions(CMAKE_BUILD_TYPE_DEBUG)
-            RELEASE -> cmakeOptions(CMAKE_BUILD_TYPE_RELEASE)
-            RELEASE_DEBUG -> cmakeOptions(CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG)
-        }
-        return bashCommand(CMAKE, cmakeOptions.joinToString(SPACE))
+    fun wsl(wsl: Boolean = true) {
+        this.wsl = wsl
     }
 
-    fun makeCommand(): Array<String> = bashCommand(MAKE, makeOptions.joinToString(SPACE))
+    fun cmakeConfigureCommand(): Array<String> {
+        when (buildType) {
+            DEBUG -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_DEBUG)
+            RELEASE -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_RELEASE)
+            RELEASE_DEBUG -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG)
+        }
+        return command(CMAKE, (cmakeConfigureOptions + SPACE + DOT).joinToString(SPACE))
+    }
+
+    fun cmakeBuildCommand(): Array<String> {
+        when (buildType) {
+            DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_DEBUG)
+            RELEASE -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE)
+            RELEASE_DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG)
+        }
+        return command(CMAKE_BUILD, (cmakeConfigureOptions + SPACE + DOT).joinToString(SPACE))
+    }
 
     override fun builtFiles() = builtFiles
 

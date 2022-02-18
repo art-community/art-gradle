@@ -86,16 +86,9 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
                         .call()
             }
 
-            if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
-                executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
-                copyDependencyBuiltFiles(dependency, dependencyDirectory)
-                return@doLast
-            }
-
-
-            dos2Unix(dependencyDirectory)
-            executeDependencyCommand(dependency.cmakeCommand(), dependencyDirectory)
-            executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
+            if (dependency.wsl) dos2Unix(dependencyDirectory)
+            executeDependencyCommand(dependency.cmakeConfigureCommand(), dependencyDirectory)
+            executeDependencyCommand(dependency.cmakeBuildCommand(), dependencyDirectory)
             copyDependencyBuiltFiles(dependency, dependencyDirectory)
         }
     }
@@ -104,8 +97,15 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
 private fun Project.copyDependencyBuiltFiles(dependency: SourceDependency, dependencyDirectory: File) {
     dependency.builtFiles().forEach { (from, to) ->
         copy {
-            from(dependencyDirectory.resolve(from).absolutePath)
-            into(projectDir.resolve(to).absolutePath)
+            val source = dependencyDirectory.resolve(from)
+            from(source.absolutePath)
+            val destination = projectDir.resolve(to)
+            if (destination.isDirectory) {
+                into(destination.absolutePath)
+                return@copy
+            }
+            into(destination.parentFile.absolutePath)
+            rename(source.name, destination.name)
         }
     }
 }
