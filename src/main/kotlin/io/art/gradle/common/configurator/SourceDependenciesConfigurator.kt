@@ -52,66 +52,46 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
 
             if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
                 if (File(DOS_TO_UNIX_FILE).exists()) {
-                    exec {
-                        commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(MAKE_FILE))
-                        workingDir(dependencyDirectory)
-                        errorOutput = logger.error()
-                    }
+                    dos2Unix(dependencyDirectory, dependencyDirectory.resolve(MAKE_FILE))
                 }
-                exec {
-                    commandLine(*dependency.makeCommand())
-                    workingDir(dependencyDirectory)
-                    errorOutput = logger.error()
-                }
+                executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 return@doLast
             }
 
             if (dependencyDirectory.resolve(CONFIGURE_SCRIPT).exists()) {
                 if (File(DOS_TO_UNIX_FILE).exists()) {
-                    exec {
-                        commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(CONFIGURE_SCRIPT))
-                        workingDir(dependencyDirectory)
-                        errorOutput = logger.error()
-                    }
+                    dos2Unix(dependencyDirectory, dependencyDirectory.resolve(CONFIGURE_FILE))
                 }
-                exec {
-                    commandLine(*dependency.configureCommand())
-                    workingDir(dependencyDirectory)
-                    errorOutput = logger.error()
-                }
-                exec {
-                    commandLine(*dependency.makeCommand())
-                    workingDir(dependencyDirectory)
-                    errorOutput = logger.error()
-                }
+                executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
+                executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 return@doLast
             }
 
             if (File(DOS_TO_UNIX_FILE).exists()) {
-                exec {
-                    commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(AUTOGEN_FILE))
-                    workingDir(dependencyDirectory)
-                    errorOutput = logger.error()
-                }
+                dos2Unix(dependencyDirectory, dependencyDirectory.resolve(AUTOGEN_FILE))
             }
 
-            exec {
-                commandLine(*dependency.autogenCommand())
-                workingDir(dependencyDirectory)
-                errorOutput = logger.error()
-            }
-
-            exec {
-                commandLine(*dependency.configureCommand())
-                workingDir(dependencyDirectory)
-                errorOutput = logger.error()
-            }
-
-            exec {
-                commandLine(*dependency.makeCommand())
-                workingDir(dependencyDirectory)
-                errorOutput = logger.error()
-            }
+            executeDependencyCommand(dependency.autogenCommand(), dependencyDirectory)
+            executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
+            executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
         }
+    }
+}
+
+private fun Project.dos2Unix(dependencyDirectory: File, file: File) {
+    val logger = logger(project.name)
+    exec {
+        commandLine(DOS_TO_UNIX_FILE, file)
+        workingDir(dependencyDirectory)
+        errorOutput = logger.error()
+    }
+}
+
+private fun Project.executeDependencyCommand(command: Array<String>, dependencyDirectory: File) {
+    val logger = logger(project.name)
+    exec {
+        commandLine(*command)
+        workingDir(dependencyDirectory)
+        errorOutput = logger.error()
     }
 }
