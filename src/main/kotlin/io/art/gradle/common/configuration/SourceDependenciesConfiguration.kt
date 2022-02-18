@@ -30,7 +30,7 @@ open class SourceDependenciesConfiguration @Inject constructor(project: Project,
     }
 
     fun lxc(static: Boolean = true, action: Action<in UnixSourceDependency> = Action {}) {
-        val lxc = builtinLxc(static)
+        val lxc = preconfiguredLxc(static)
         action.execute(lxc)
         unixDependencies.add(lxc)
     }

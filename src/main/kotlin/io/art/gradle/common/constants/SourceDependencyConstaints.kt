@@ -33,7 +33,7 @@ const val WSL_DISK_PREFIX = "/mnt/"
 
 fun bashCommand(vararg arguments: String) = arrayOf("bash", "-c", arguments.joinToString(SPACE))
 
-fun builtinLxc(static: Boolean) = UnixSourceDependency("lxc").apply {
+fun preconfiguredLxc(static: Boolean) = UnixSourceDependency("lxc").apply {
     url("https://github.com/lxc/lxc")
     configureOptions("--disable-doc")
     if (static) configureOptions("--enable-static")
