@@ -34,6 +34,10 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
     private val configureOptions: MutableList<String> = mutableListOf()
     private val makeOptions: MutableList<String> = mutableListOf()
     private val builtFiles: MutableMap<String, String> = mutableMapOf()
+
+    var buildDependency = false
+        private set
+
     var url: String? = null
         private set
 
@@ -67,6 +71,10 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
 
     fun copy(from: File, to: File) {
         builtFiles += from.toString() to to.toString()
+    }
+
+    fun buildDependency(buildDependency: Boolean = true) {
+        this.buildDependency = buildDependency
     }
 
     fun autogenCommand(): Array<String> = bashCommand(arrayOf(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE)))

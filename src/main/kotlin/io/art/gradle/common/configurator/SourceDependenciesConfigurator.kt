@@ -53,7 +53,6 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             }
 
             if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
-                dos2Unix(dependencyDirectory)
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
                 copyDependencyBuiltFiles(dependency, dependencyDirectory)
                 return@doLast
