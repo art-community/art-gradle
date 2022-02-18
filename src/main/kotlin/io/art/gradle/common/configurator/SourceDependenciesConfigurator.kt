@@ -18,6 +18,8 @@
 
 package io.art.gradle.common.configurator
 
+import SourceDependenciesConfiguration
+import UnixSourceDependency
 import io.art.gradle.common.constants.AUTOGEN_FILE
 import io.art.gradle.common.constants.BUILD
 import io.art.gradle.common.constants.DOS_TO_UNIX_FILE
@@ -29,47 +31,49 @@ import org.gradle.api.Project
 import java.io.File
 
 fun Project.configureSourceDependencies() {
-    val logger = logger(project.name)
     val sources = externalPlugin.configuration.sources
-    sources.unixDependencies.forEach { dependency ->
-        tasks.register("$BUILD-${dependency.name}") {
-            group = BUILD
-            doLast {
-                val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
-                if (!dependencyDirectory.exists()) {
-                    dependencyDirectory.mkdirs()
-                    Git.cloneRepository()
-                            .setDirectory(dependencyDirectory)
-                            .setURI(dependency.url!!)
-                            .setCloneAllBranches(true)
-                            .setCloneSubmodules(true)
-                            .call()
-                            .fetch()
-                            .call()
+    sources.unixDependencies.forEach { dependency -> configureUnix(dependency, sources) }
+}
+
+private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {
+    val logger = logger(project.name)
+    tasks.register("$BUILD-${dependency.name}") {
+        group = BUILD
+        doLast {
+            val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
+            if (!dependencyDirectory.exists()) {
+                dependencyDirectory.mkdirs()
+                Git.cloneRepository()
+                        .setDirectory(dependencyDirectory)
+                        .setURI(dependency.url!!)
+                        .setCloneAllBranches(true)
+                        .setCloneSubmodules(true)
+                        .call()
+                        .fetch()
+                        .call()
+            }
+            when (dependencyDirectory.resolve(MAKE_FILE).exists()) {
+                true -> exec {
+                    commandLine(*dependency.makeCommand())
+                    workingDir(sources.directory.resolve(dependency.name))
+                    standardOutput = logger.output()
+                    errorOutput = logger.error()
                 }
-                when (dependencyDirectory.resolve(MAKE_FILE).exists()) {
-                    true -> exec {
-                        commandLine(dependency.makeCommand())
-                        workingDir(sources.directory.resolve(dependency.name))
-                        standardOutput = logger.output()
-                        errorOutput = logger.error()
-                    }
-                    false -> {
-                        if (File(DOS_TO_UNIX_FILE).exists()) {
-                            exec {
-                                commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(AUTOGEN_FILE))
-                                workingDir(dependencyDirectory)
-                                standardOutput = logger.output()
-                                errorOutput = logger.error()
-                            }
+                false -> {
+                    if (File(DOS_TO_UNIX_FILE).exists()) {
+                        exec {
+                            commandLine(DOS_TO_UNIX_FILE, dependencyDirectory.resolve(AUTOGEN_FILE))
+                            workingDir(dependencyDirectory)
+                            standardOutput = logger.output()
+                            errorOutput = logger.error()
                         }
-                        dependency.fullCommands().forEach { command ->
-                            exec {
-                                commandLine(*command)
-                                workingDir(dependencyDirectory)
-                                standardOutput = logger.output()
-                                errorOutput = logger.error()
-                            }
+                    }
+                    dependency.fullCommands().forEach { command ->
+                        exec {
+                            commandLine(*command)
+                            workingDir(dependencyDirectory)
+                            standardOutput = logger.output()
+                            errorOutput = logger.error()
                         }
                     }
                 }
