@@ -14,5 +14,5 @@ fun builtinLxc() = UnixSourceDependency("lxc").apply {
     url("https://github.com/lxc/lxc")
     configureOptions("--disable-doc", "--static")
     parallel()
-    copy("src/lxc/.libs/liblxc.a", "src/resources/liblxc.a")
+    copy("src/lxc/.libs/liblxc.a", "src/main/resources/liblxc.a")
 }
