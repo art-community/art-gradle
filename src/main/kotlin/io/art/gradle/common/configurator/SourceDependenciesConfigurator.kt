@@ -33,7 +33,6 @@ fun Project.configureSourceDependencies() {
 }
 
 private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {
-    val logger = logger(project.name)
     tasks.register("$BUILD-${dependency.name}") {
         group = BUILD
         doLast {
