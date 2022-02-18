@@ -43,7 +43,6 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
                 Git.cloneRepository()
                         .setDirectory(dependencyDirectory)
                         .setURI(dependency.url!!)
-                        .setCloneAllBranches(true)
                         .setCloneSubmodules(true)
                         .call()
                         .fetch()
