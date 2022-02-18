@@ -6,6 +6,7 @@ const val AUTOGEN = "autogen.sh"
 const val CONFIGURE = "configure"
 const val MAKE = "make"
 const val MAKE_FILE = "Makefile"
+val GIT_CLONE = arrayOf("git", "clone")
 
 fun bashCommand(arguments: Array<String>) = arrayOf("bash", "-c", arguments.joinToString(" "))
 
