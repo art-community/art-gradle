@@ -20,10 +20,7 @@ package io.art.gradle.common.configurator
 
 import SourceDependenciesConfiguration
 import UnixSourceDependency
-import io.art.gradle.common.constants.BUILD
-import io.art.gradle.common.constants.CONFIGURE_SCRIPT
-import io.art.gradle.common.constants.DOS_TO_UNIX_FILE
-import io.art.gradle.common.constants.MAKE_FILE
+import io.art.gradle.common.constants.*
 import io.art.gradle.common.logger.logger
 import io.art.gradle.external.plugin.externalPlugin
 import org.eclipse.jgit.api.Git
@@ -86,13 +83,13 @@ private fun Project.copyDependencyBuiltFiles(dependency: UnixSourceDependency, d
 }
 
 private fun Project.dos2Unix(dependencyDirectory: File) {
-    if (!File(DOS_TO_UNIX_FILE).exists()) {
+    if (!File(DOS_TO_UNIX_FILE.wsl()).exists()) {
         return
     }
     val logger = logger(project.name)
     dependencyDirectory.listFiles()!!.forEach { file ->
         exec {
-            commandLine(DOS_TO_UNIX_FILE, file)
+            commandLine(*bashCommand(DOS_TO_UNIX_FILE, file.absolutePath.wsl()))
             workingDir(dependencyDirectory)
             errorOutput = logger.error()
         }

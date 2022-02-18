@@ -77,11 +77,11 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         this.buildDependency = buildDependency
     }
 
-    fun autogenCommand(): Array<String> = bashCommand(arrayOf(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE)))
+    fun autogenCommand(): Array<String> = bashCommand(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE))
 
-    fun configureCommand(): Array<String> = bashCommand(arrayOf(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE)))
+    fun configureCommand(): Array<String> = bashCommand(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE))
 
-    fun makeCommand(): Array<String> = bashCommand(arrayOf(MAKE, makeOptions.joinToString(SPACE)))
+    fun makeCommand(): Array<String> = bashCommand(MAKE, makeOptions.joinToString(SPACE))
 
     fun builtFiles() = builtFiles
 
