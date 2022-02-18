@@ -169,7 +169,7 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
             RELEASE -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_RELEASE)
             RELEASE_DEBUG -> cmakeConfigureOptions(CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG)
         }
-        return command(CMAKE, (cmakeConfigureOptions + SPACE + DOT).joinToString(SPACE))
+        return arrayOf(CMAKE) + cmakeConfigureOptions + DOT
     }
 
     fun cmakeBuildCommand(): Array<String> {
@@ -178,7 +178,7 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
             RELEASE -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE)
             RELEASE_DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG)
         }
-        return command(CMAKE_BUILD, (cmakeConfigureOptions + SPACE + DOT).joinToString(SPACE))
+        return arrayOf(CMAKE) + arrayOf(CMAKE_BUILD) + DOT + cmakeBuildOptions
     }
 
     override fun builtFiles() = builtFiles
