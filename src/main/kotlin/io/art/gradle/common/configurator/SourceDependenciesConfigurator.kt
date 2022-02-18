@@ -55,6 +55,7 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
                 dos2Unix(dependencyDirectory)
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
+                copyDependencyBuiltFiles(dependency)
                 return@doLast
             }
 
@@ -62,6 +63,7 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
                 dos2Unix(dependencyDirectory)
                 executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
                 executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
+                copyDependencyBuiltFiles(dependency)
                 return@doLast
             }
 
@@ -69,6 +71,16 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             executeDependencyCommand(dependency.autogenCommand(), dependencyDirectory)
             executeDependencyCommand(dependency.configureCommand(), dependencyDirectory)
             executeDependencyCommand(dependency.makeCommand(), dependencyDirectory)
+            copyDependencyBuiltFiles(dependency)
+        }
+    }
+}
+
+private fun Project.copyDependencyBuiltFiles(dependency: UnixSourceDependency, dependencyDirectory: File) {
+    dependency.builtFiles().forEach { (from, to) ->
+        copy {
+            from(dependencyDirectory.resolve(from))
+            to(projectDir.resolve(to))
         }
     }
 }

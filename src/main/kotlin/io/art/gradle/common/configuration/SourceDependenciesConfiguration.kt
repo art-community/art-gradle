@@ -5,6 +5,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.domainObjectContainer
+import java.io.File
 import java.nio.file.Path
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
     private val autogenOptions: MutableList<String> = mutableListOf()
     private val configureOptions: MutableList<String> = mutableListOf()
     private val makeOptions: MutableList<String> = mutableListOf()
+    private val builtFiles: MutableMap<String, String> = mutableMapOf()
     var url: String? = null
         private set
 
@@ -55,11 +57,25 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         makeOptions + "-j $cores"
     }
 
+    fun copy(from: String, to: String) {
+        builtFiles += from to to
+    }
+
+    fun copy(from: Path, to: Path) {
+        builtFiles += from.toString() to to.toString()
+    }
+
+    fun copy(from: File, to: File) {
+        builtFiles += from.toString() to to.toString()
+    }
+
     fun autogenCommand(): Array<String> = bashCommand(arrayOf(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE)))
 
     fun configureCommand(): Array<String> = bashCommand(arrayOf(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE)))
 
     fun makeCommand(): Array<String> = bashCommand(arrayOf(MAKE, makeOptions.joinToString(SPACE)))
+
+    fun builtFiles() = builtFiles
 
     override fun getName(): String = name
 }
