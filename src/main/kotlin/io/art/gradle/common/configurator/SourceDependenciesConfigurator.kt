@@ -38,6 +38,7 @@ fun Project.configureSourceDependencies() {
 private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {
     tasks.register("$BUILD-${dependency.name}") {
         group = BUILD
+        if (dependency.buildDependency) tasks.findByPath(BUILD)?.dependsOn(this)
         doLast {
             val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
             if (!dependencyDirectory.exists()) {
