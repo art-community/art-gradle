@@ -64,11 +64,11 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
     }
 
     fun makeOptions(vararg options: String) {
-        makeOptions + options
+        makeOptions += options
     }
 
     fun parallel(cores: Int = Runtime.getRuntime().availableProcessors()) {
-        makeOptions + "-j $cores"
+        makeOptions += "-j $cores"
     }
 
     fun copy(from: String, to: String) {
@@ -124,11 +124,11 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
     }
 
     fun cmakeBuildOptions(vararg options: String) {
-        cmakeBuildOptions + options
+        cmakeBuildOptions += options
     }
 
     fun parallel(cores: Int = Runtime.getRuntime().availableProcessors()) {
-        cmakeBuildOptions + "-j $cores"
+        cmakeBuildOptions += "-j $cores"
     }
 
     fun copy(from: String, to: String) {
@@ -143,15 +143,15 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         builtFiles += from.toString() to to.toString()
     }
 
-    fun cmakeRelease() {
+    fun release() {
         buildType = RELEASE
     }
 
-    fun cmakeDebug() {
+    fun debug() {
         buildType = DEBUG
     }
 
-    fun cmakeReleaseDebug() {
+    fun releaseDebug() {
         buildType = RELEASE_DEBUG
     }
 
