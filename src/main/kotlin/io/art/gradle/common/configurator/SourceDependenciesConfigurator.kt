@@ -114,7 +114,7 @@ private fun Project.dos2Unix(dependencyDirectory: File) {
     val logger = logger(project.name)
     dependencyDirectory.listFiles()!!.asSequence().filter { file -> file.isFile }.forEach { file ->
         exec {
-            commandLine(*bashCommand(DOS_TO_UNIX_FILE, file.absolutePath.wsl()))
+            commandLine(*bashCommand(DOS_TO_UNIX_FILE, file.absolutePath.wslResolve()))
             workingDir(dependencyDirectory)
             errorOutput = logger.error()
         }

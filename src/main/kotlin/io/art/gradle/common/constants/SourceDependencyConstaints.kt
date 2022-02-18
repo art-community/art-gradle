@@ -2,6 +2,8 @@ package io.art.gradle.common.constants
 
 import UnixSourceDependency
 import org.gradle.internal.os.OperatingSystem
+import java.io.File
+
 
 const val SOURCES = "sources"
 
@@ -9,8 +11,8 @@ const val AUTOGEN_SCRIPT = "./autogen.sh"
 const val CONFIGURE_SCRIPT = "./configure"
 const val MAKE = "make"
 const val MAKE_FILE = "Makefile"
-const val CMAKE = "cmake"
-const val CMAKE_BUILD = "cmake --build . "
+val CMAKE = "cmake".binaryResolve().absolutePath
+val CMAKE_BUILD = "$CMAKE --build . "
 
 const val CMAKE_BUILD_TYPE_DEBUG = "-DCMAKE_BUILD_TYPE=Debug"
 const val CMAKE_BUILD_TYPE_RELEASE = "-DCMAKE_BUILD_TYPE=Release"
@@ -40,7 +42,15 @@ fun builtinLxc(static: Boolean) = UnixSourceDependency("lxc").apply {
     copy("src/lxc/.libs/liblxc.a", "src/main/resources")
 }
 
-fun String.wsl(): String {
+fun String.binaryResolve(): File {
+    if (!OperatingSystem.current().isWindows) return File(this)
+    val process = Runtime.getRuntime().exec("where $this")
+    process.inputStream.reader().use { reader ->
+        return File(reader.readLines().first())
+    }
+}
+
+fun String.wslResolve(): String {
     var converted = this
     if (!OperatingSystem.current().isWindows) return converted
     if (converted.isEmpty()) return converted
