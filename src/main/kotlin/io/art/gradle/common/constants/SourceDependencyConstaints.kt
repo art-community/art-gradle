@@ -5,6 +5,7 @@ import UnixSourceDependency
 const val AUTOGEN = "autogen.sh"
 const val CONFIGURE = "configure"
 const val MAKE = "make"
+const val MAKE_FILE = "Makefile"
 
 fun bashCommand(arguments: Array<String>) = arrayOf("bash", "-c", arguments.joinToString(" "))
 
