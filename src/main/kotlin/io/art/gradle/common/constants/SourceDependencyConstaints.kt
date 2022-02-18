@@ -17,8 +17,8 @@ const val CMAKE_BUILD_TYPE_RELEASE = "-DCMAKE_BUILD_TYPE=Release"
 const val CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG = "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
 
 const val CMAKE_BUILD_CONFIG_DEBUG = "--config=Debug"
-const val CMAKE_BUILD_CONFIG_RELEASE = "--config Release"
-const val CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG = "--config RelWithDebInfo"
+const val CMAKE_BUILD_CONFIG_RELEASE = "--config=Release"
+const val CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG = "--config=RelWithDebInfo"
 
 const val DOS_TO_UNIX_FILE = "test /usr/bin/dos2unix && /usr/bin/dos2unix "
 const val BACKWARD_SLASH = "\\"

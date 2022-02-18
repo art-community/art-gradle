@@ -178,7 +178,7 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
             RELEASE -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE)
             RELEASE_DEBUG -> cmakeBuildOptions(CMAKE_BUILD_CONFIG_RELEASE_WITH_DEBUG)
         }
-        return arrayOf(CMAKE) + arrayOf(CMAKE_BUILD) + DOT + cmakeBuildOptions
+        return arrayOf(CMAKE) + CMAKE_BUILD + DOT + cmakeBuildOptions
     }
 
     override fun builtFiles() = builtFiles
