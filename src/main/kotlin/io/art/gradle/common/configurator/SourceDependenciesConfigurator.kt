@@ -86,7 +86,9 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
             }
 
             if (dependency.wsl) dos2Unix(dependencyDirectory)
-            executeDependencyCommand(dependency.cmakeConfigureCommand(), dependencyDirectory)
+            if (!dependencyDirectory.resolve(CMAKE_CACHE).exists()) {
+                executeDependencyCommand(dependency.cmakeConfigureCommand(), dependencyDirectory)
+            }
             executeDependencyCommand(dependency.cmakeBuildCommand(), dependencyDirectory)
             copyDependencyBuiltFiles(dependency, dependencyDirectory)
         }

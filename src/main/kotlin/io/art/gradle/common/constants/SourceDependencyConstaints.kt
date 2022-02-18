@@ -12,6 +12,8 @@ const val MAKE_FILE = "Makefile"
 const val CMAKE = "cmake"
 const val CMAKE_BUILD = "--build"
 
+val CMAKE_CACHE = "CMakeCache.txt"
+
 const val CMAKE_BUILD_TYPE_DEBUG = "-DCMAKE_BUILD_TYPE=Debug"
 const val CMAKE_BUILD_TYPE_RELEASE = "-DCMAKE_BUILD_TYPE=Release"
 const val CMAKE_BUILD_TYPE_RELEASE_WITH_DEBUG = "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
