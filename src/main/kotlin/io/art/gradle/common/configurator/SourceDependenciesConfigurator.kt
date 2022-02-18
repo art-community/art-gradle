@@ -19,6 +19,7 @@
 package io.art.gradle.common.configurator
 
 import io.art.gradle.common.constants.BUILD
+import io.art.gradle.common.constants.MAKE_FILE
 import io.art.gradle.common.logger.logger
 import io.art.gradle.external.plugin.externalPlugin
 import org.eclipse.jgit.api.Git
@@ -32,10 +33,17 @@ fun Project.configureSourceDependencies() {
             group = BUILD
             doLast {
                 if (!sources.directory.toFile().exists()) {
-                    Git.cloneRepository().setBare(true).setURI(dependency.url!!).call()
+                    Git.cloneRepository()
+                            .setDirectory(sources.directory.resolve(dependency.name).toFile())
+                            .setBare(true)
+                            .setURI(dependency.url!!)
+                            .call()
                 }
                 exec {
-                    commandLine(dependency.command())
+                    when (sources.directory.resolve(dependency.name).resolve(MAKE_FILE).toFile().exists()) {
+                        true -> commandLine(*dependency.makeCommand())
+                        false -> commandLine(*dependency.fullCommand())
+                    }
                     workingDir(sources.directory.resolve(dependency.name))
                     standardOutput = logger.output()
                     errorOutput = logger.error()
