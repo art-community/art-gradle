@@ -45,8 +45,6 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
                         .setURI(dependency.url!!)
                         .setCloneSubmodules(true)
                         .call()
-                        .fetch()
-                        .call()
             }
 
             if (dependencyDirectory.resolve(MAKE_FILE).exists()) {
