@@ -99,12 +99,18 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
                 }
     }
 
-    when (configuration.graalPlatform) {
-        WINDOWS -> copy {
+    when {
+        configuration.wsl -> exec {
+            commandLine(*bashCommand(TAR,
+                    TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile.absolutePath.wsl(),
+                    TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile.absolutePath.wsl()
+            ))
+        }
+        configuration.graalPlatform == WINDOWS -> copy {
             from(zipTree(archiveFile))
             into(graalDirectory)
         }
-        LINUX, DARWIN -> exec {
+        configuration.graalPlatform == LINUX || configuration.graalPlatform == DARWIN -> exec {
             commandLine(TAR)
             args(TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile)
             args(TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile)
