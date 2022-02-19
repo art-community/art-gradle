@@ -42,11 +42,17 @@ interface SourceDependency {
 
 open class UnixSourceDependency @Inject constructor(private val name: String) : Named, SourceDependency {
     private val autogenOptions: MutableList<String> = mutableListOf()
+
     private val configureOptions: MutableList<String> = mutableListOf()
+
     private val makeOptions: MutableList<String> = mutableListOf()
+
     private val builtFiles: MutableMap<String, String> = mutableMapOf()
 
     var buildDependency = false
+        private set
+
+    var nativeBuildDependency = false
         private set
 
     var url: String? = null
@@ -88,6 +94,10 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         buildDependency = buildDependsOn
     }
 
+    fun nativeBuildDependsOn(buildDependsOn: Boolean = true) {
+        nativeBuildDependency = buildDependsOn
+    }
+
     fun autogenCommand(): Array<String> = bashCommand(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE))
 
     fun configureCommand(): Array<String> = bashCommand(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE))
@@ -111,6 +121,9 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         private set
 
     var buildDependency = false
+        private set
+
+    var nativeBuildDependency = false
         private set
 
     var url: String? = null
@@ -158,6 +171,10 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
 
     fun buildDependsOn(buildDependsOn: Boolean = true) {
         buildDependency = buildDependsOn
+    }
+
+    fun nativeBuildDependsOn(buildDependsOn: Boolean = true) {
+        nativeBuildDependency = buildDependsOn
     }
 
     fun wsl(wsl: Boolean = true) {

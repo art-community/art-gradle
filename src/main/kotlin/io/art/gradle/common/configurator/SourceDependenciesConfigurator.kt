@@ -70,6 +70,8 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
     }
     if (dependency.buildDependency) {
         tasks.getByPath(BUILD).dependsOn(task)
+    }
+    if (dependency.nativeBuildDependency) {
         tasks.findByPath(BUILD_NATIVE_EXECUTABLE_TASK)?.dependsOn(task)
     }
 }
@@ -98,6 +100,8 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
     }
     if (dependency.buildDependency) {
         tasks.getByPath(BUILD).dependsOn(task)
+    }
+    if (dependency.nativeBuildDependency) {
         tasks.findByPath(BUILD_NATIVE_EXECUTABLE_TASK)?.dependsOn(task)
     }
 }
