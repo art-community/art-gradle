@@ -35,9 +35,7 @@ private const val bufferSize = DEFAULT_BUFFER_SIZE * 2
 fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPaths {
     configuration.graalLocalDirectory?.takeIf { path -> path.toFile().exists() }?.let { directory ->
         var binary = directory.toFile().resolve(BIN)
-        if (OperatingSystem.current().isMacOsX) {
-            binary = binary.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
-        }
+        if (OperatingSystem.current().isMacOsX) binary = binary.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
         var nativeImage = binary.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
         if (configuration.wsl) nativeImage = binary.resolve(GRAAL_UNIX_NATIVE_IMAGE).apply { setExecutable(true) }
         return GraalPaths(base = directory.toFile(), binary = binary, nativeImage = nativeImage)
