@@ -59,8 +59,12 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
                 if (configuration.llvm) {
                     exec {
                         var executable = binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
-                        if (configuration.wsl) executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath
-                        commandLine(*bashCommand(executable, *GRAAL_UPDATE_LLVM_ARGUMENTS.toTypedArray()))
+                        if (configuration.wsl) {
+                            executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath.wsl()
+                            commandLine(*bashCommand(executable, *GRAAL_UPDATE_LLVM_ARGUMENTS.toTypedArray()))
+                            return@exec
+                        }
+                        commandLine(executable, *GRAAL_UPDATE_LLVM_ARGUMENTS.toTypedArray())
                     }
                 }
 
@@ -128,8 +132,12 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
 
     exec {
         var executable = binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
-        if (configuration.wsl) executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath
-        commandLine(*bashCommand(executable, *GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS.toTypedArray()))
+        if (configuration.wsl) {
+            executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath.wsl()
+            commandLine(*bashCommand(executable, *GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS.toTypedArray()))
+            return@exec
+        }
+        commandLine(executable, *GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS.toTypedArray())
     }
 
     var nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }

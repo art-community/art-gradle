@@ -200,7 +200,6 @@ private fun Exec.useUnixBuilder(configuration: NativeExecutableCreationConfigura
             GRAAL_CONFIGURATIONS_PATH_OPTION(configurationPath.toAbsolutePath().toString().wsl())
     )
 
-
     val systemProperties = native
             .graalSystemProperties
             .map { entry -> SYSTEM_PROPERTY(entry.key, entry.value) } + SYSTEM_PROPERTY(GRAAL_WORKING_PATH_PROPERTY, directory.toFile().absolutePath.wsl())
