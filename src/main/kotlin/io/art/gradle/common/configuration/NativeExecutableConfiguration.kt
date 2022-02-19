@@ -164,7 +164,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         graalOptions.remove(GRAAL_LLVM_OPTION)
     }
 
-
     fun disableGC() {
         graalOptions.add(GRAAL_EPSILON_OPTION)
     }
