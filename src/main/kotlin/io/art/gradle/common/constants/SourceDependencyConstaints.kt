@@ -1,6 +1,7 @@
 package io.art.gradle.common.constants
 
 import UnixSourceDependency
+import org.gradle.api.GradleException
 
 const val SOURCES = "sources"
 
@@ -31,3 +32,5 @@ fun preconfiguredLxc(static: Boolean) = UnixSourceDependency("lxc").apply {
     parallel()
     copy("src/lxc/.libs/liblxc.a", "src/main/resources")
 }
+
+val DEPENDENCY_URL_EXCEPTION = GradleException("Dependency Git url was not specified")
