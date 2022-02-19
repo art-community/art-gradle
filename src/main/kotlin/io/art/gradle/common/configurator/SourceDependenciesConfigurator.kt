@@ -35,7 +35,7 @@ fun Project.configureSourceDependencies(configuration: SourceDependenciesConfigu
 
 private fun Project.configureUnix(dependency: UnixSourceDependency, sources: SourceDependenciesConfiguration) {
     val task = tasks.register("$BUILD-${dependency.name}") {
-        group = BUILD
+        group = SOURCES
         doLast {
             val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
             if (!dependencyDirectory.exists()) {
@@ -44,6 +44,7 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
                         .setDirectory(dependencyDirectory)
                         .setURI(dependency.url!!)
                         .setCloneSubmodules(true)
+                        .apply { dependency.version?.let(::setBranch) }
                         .call()
             }
 
@@ -78,7 +79,7 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
 
 private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: SourceDependenciesConfiguration) {
     val task = tasks.register("$BUILD-${dependency.name}") {
-        group = BUILD
+        group = SOURCES
         doLast {
             val dependencyDirectory = sources.directory.resolve(dependency.name).toFile()
             if (!dependencyDirectory.exists()) {
