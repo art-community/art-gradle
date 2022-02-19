@@ -86,6 +86,7 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
                 Git.cloneRepository()
                         .setDirectory(dependencyDirectory)
                         .setURI(dependency.url ?: throw DEPENDENCY_URL_EXCEPTION)
+                        .apply { dependency.version?.let(::setBranch) }
                         .setCloneSubmodules(true)
                         .call()
             }

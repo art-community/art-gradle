@@ -27,6 +27,7 @@ const val DOS_TO_UNIX_FILE = "test /usr/bin/dos2unix && /usr/bin/dos2unix "
 
 fun preconfiguredLxc(static: Boolean) = UnixSourceDependency("lxc").apply {
     url("https://github.com/lxc/lxc")
+    version("lxc-4.0.12")
     configureOptions("--disable-doc")
     if (static) configureOptions("--enable-static", "--enable-static-binaries")
     parallel()

@@ -58,8 +58,15 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
     var url: String? = null
         private set
 
+    var version: String? = null
+        private set
+
     fun url(url: String) {
         this.url = url
+    }
+
+    fun version(version: String) {
+        this.version = version
     }
 
     fun autogenOptions(vararg options: String) {
@@ -129,8 +136,15 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
     var url: String? = null
         private set
 
+    var version: String? = null
+        private set
+
     fun url(url: String) {
         this.url = url
+    }
+
+    fun version(version: String) {
+        this.version = version
     }
 
     fun cmakeConfigureOptions(vararg options: String) {
