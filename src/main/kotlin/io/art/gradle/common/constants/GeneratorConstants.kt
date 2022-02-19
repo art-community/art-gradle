@@ -23,14 +23,12 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
 import java.time.Duration.ofMinutes
-import java.time.Duration.ofSeconds
 
 const val GENERATOR = "generator"
 
 const val GENERATOR_CONTROLLER = "generator.controller"
 
 val GENERATOR_DOWNLOAD_TIMEOUT: Duration = ofMinutes(5)
-val GENERATOR_STOP_TIMEOUT: Duration = ofSeconds(30)
 
 enum class GeneratorLanguage(val extension: String) {
     JAVA("java"),
