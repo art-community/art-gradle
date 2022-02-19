@@ -4,7 +4,6 @@ import org.gradle.internal.os.OperatingSystem
 
 const val EMPTY_STRING = ""
 const val SPACE = " "
-const val SHELL_AND = "&&"
 const val NEW_LINE = "\n"
 const val DOT = "."
 const val DOLLAR = "$"
@@ -43,7 +42,6 @@ const val CONFIGURATION = "configuration"
 const val DOT_EXE = ".exe"
 const val DOT_JAR = ".jar"
 const val DOT_LOCK = ".lock"
-const val DOT_STOP = ".stop"
 const val POWERSHELL = "powershell"
 const val BIN = "bin"
 
