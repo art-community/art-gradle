@@ -39,6 +39,9 @@ import javax.inject.Inject
 open class NativeExecutableConfiguration @Inject constructor(objectFactory: ObjectFactory) {
     val agentConfiguration: NativeImageAgentConfiguration = objectFactory.newInstance()
 
+    var wsl = false
+        private set
+
     var enableAgent = false
         private set
 
@@ -223,9 +226,13 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
         this.buildConfigurator = buildConfigurator
     }
 
-
     fun useLocal(directory: String) {
         graalLocalDirectory = Paths.get(directory)
+    }
+
+    fun wsl(wsl: Boolean = true) {
+        if (!OperatingSystem.current().isWindows) return
+        this.wsl = wsl
     }
 
     open class NativeImageAgentConfiguration {

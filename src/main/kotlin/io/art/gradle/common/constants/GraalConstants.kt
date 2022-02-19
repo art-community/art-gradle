@@ -29,14 +29,17 @@ import java.time.Duration.ofMinutes
 
 const val GRAAL = "graal"
 
+const val GRAAL_UNIX_UPDATER = "gu"
+const val GRAAL_UNIX_NATIVE_IMAGE = "native-image"
+
 val GRAAL_NATIVE_IMAGE_EXECUTABLE = when {
     OperatingSystem.current().isWindows -> "native-image.cmd"
-    else -> "native-image"
+    else -> GRAAL_UNIX_NATIVE_IMAGE
 }
 
 val GRAAL_UPDATER_EXECUTABLE = when {
     OperatingSystem.current().isWindows -> "gu.cmd"
-    else -> "gu"
+    else -> GRAAL_UNIX_UPDATER
 }
 
 var GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS = listOf("install", "native-image")
@@ -68,7 +71,7 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
         "--allow-incomplete-classpath"
 )
 
-val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: Path -> "-H:ConfigurationFileDirectories=${path.toAbsolutePath()}" }
+val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: String -> "-H:ConfigurationFileDirectories=$path" }
 
 val GRAAL_WINDOWS_LAUNCH_SCRIPT = { workingDirectory: Path, visualStudioVarsPath: Path, graalOptions: List<String> ->
     """
