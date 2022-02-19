@@ -62,7 +62,7 @@ fun Project.configureNative(executableConfiguration: NativeExecutableCreationCon
 
     val executable = executableConfiguration.executable
     val buildNative = tasks.register(executableConfiguration.buildTask, Exec::class.java) {
-        group = ART
+        group = NATIVE
 
         val jarTask = tasks.getByName(executableConfiguration.buildJarTask)
 
@@ -88,7 +88,7 @@ fun Project.configureNative(executableConfiguration: NativeExecutableCreationCon
     tasks.findByPath(executableConfiguration.runTask)?.let { return@let }
 
     tasks.register(executableConfiguration.runTask, Exec::class.java) {
-        group = ART
+        group = NATIVE
         dependsOn(buildNative)
 
         val directory = executableConfiguration.directory
@@ -105,7 +105,7 @@ private fun Project.configureAgent(executableConfiguration: NativeExecutableCrea
     tasks.findByPath(runAgentTask)?.let { return@with }
 
     tasks.register(runAgentTask, JavaExec::class.java) {
-        group = ART
+        group = NATIVE
         val native = executableConfiguration.configuration
         val jarTask = tasks.getByName(buildJarTask)
         dependsOn(jarTask)

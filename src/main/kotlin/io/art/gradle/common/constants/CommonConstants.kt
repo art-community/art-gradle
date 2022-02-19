@@ -15,6 +15,8 @@ const val SLASH = "/"
 const val STAR = "*"
 
 const val ART = "art"
+const val JAR = "jar"
+const val NATIVE = "native"
 const val MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven/"
 
 const val ANNOTATION_PROCESSOR_CONFIGURATION_NAME = "annotationProcessor"

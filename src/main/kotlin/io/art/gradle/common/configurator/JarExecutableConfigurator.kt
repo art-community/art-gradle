@@ -58,7 +58,7 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
             tasks.getByPath(BUILD).dependsOn(configuration.buildTask)
         }
 
-        group = ART
+        group = JAR
 
         isZip64 = true
 
@@ -96,7 +96,7 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
         dependsOn(buildJar)
         classpath(buildJar.get().outputs.files)
         configuration.mainClass?.let(mainClass::set)
-        group = ART
+        group = JAR
         jar.runConfigurator(this)
     }
 }

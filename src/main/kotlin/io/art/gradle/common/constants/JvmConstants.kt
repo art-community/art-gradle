@@ -20,7 +20,6 @@ package io.art.gradle.common.constants
 
 const val MAIN_CLASS_MANIFEST_ATTRIBUTE = "Main-Class"
 const val MULTI_RELEASE_MANIFEST_ATTRIBUTE = "Multi-Release"
-const val JAR = "jar"
 const val BUILD_JAR_EXECUTABLE_TASK = "build-jar-executable"
 const val RUN_JAR_EXECUTABLE_TASK = "run-jar-executable"
 const val BUILD_JAR_TEST_TASK = "build-jar-test"

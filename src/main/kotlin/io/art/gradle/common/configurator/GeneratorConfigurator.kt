@@ -61,18 +61,18 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
     writeGeneratorConfiguration(configuration.mainConfiguration)
 
     tasks.register(WRITE_CONFIGURATION_TASK) {
-        group = ART
+        group = GENERATOR
         doLast { writeGeneratorConfiguration(configuration.mainConfiguration) }
     }
 
     tasks.register(CLEAN_GENERATOR_TASK) {
-        group = ART
+        group = GENERATOR
         doLast { configuration.mainConfiguration.workingDirectory.toFile().deleteRecursively() }
     }
 
     if (!configuration.mainConfiguration.disabledRunning) {
         val runGenerator = tasks.register(RUN_GENERATOR_TASK) {
-            group = ART
+            group = GENERATOR
             doLast { runGenerator(configuration.mainConfiguration) }
         }
 
