@@ -68,7 +68,10 @@ private fun Project.configureUnix(dependency: UnixSourceDependency, sources: Sou
             copyDependencyBuiltFiles(dependency, dependencyDirectory)
         }
     }
-    if (dependency.buildDependency) tasks.getByPath(BUILD).dependsOn(task)
+    if (dependency.buildDependency) {
+        tasks.getByPath(BUILD).dependsOn(task)
+        tasks.findByPath(BUILD_NATIVE_EXECUTABLE_TASK)?.dependsOn(task)
+    }
 }
 
 private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: SourceDependenciesConfiguration) {
@@ -93,7 +96,10 @@ private fun Project.configureCmake(dependency: CmakeSourceDependency, sources: S
             copyDependencyBuiltFiles(dependency, dependencyDirectory)
         }
     }
-    if (dependency.buildDependency) tasks.getByPath(BUILD).dependsOn(task)
+    if (dependency.buildDependency) {
+        tasks.getByPath(BUILD).dependsOn(task)
+        tasks.findByPath(BUILD_NATIVE_EXECUTABLE_TASK)?.dependsOn(task)
+    }
 }
 
 private fun Project.copyDependencyBuiltFiles(dependency: SourceDependency, dependencyDirectory: File) {
