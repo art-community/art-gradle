@@ -36,7 +36,7 @@ open class JarExecutableConfiguration @Inject constructor() {
         private set
     var buildConfigurator: Jar.() -> Unit = {}
         private set
-    var asBuildDependency: Boolean = true
+    var beforeBuild: Boolean = true
         private set
 
     var manifestAttributes = mutableMapOf<String, String>()
@@ -76,8 +76,8 @@ open class JarExecutableConfiguration @Inject constructor() {
         this.exclusions = exclusions(this.exclusions).toMutableSet()
     }
 
-    fun buildDependsOn(buildDependsOn: Boolean = true) {
-        asBuildDependency = buildDependsOn
+    fun beforeBuild(beforeBuild: Boolean = true) {
+        this.beforeBuild = beforeBuild
     }
 
     fun configureRun(runConfigurator: JavaExec.() -> Unit) {

@@ -54,7 +54,7 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
 
         dependsOn(jarTask)
 
-        if (jar.asBuildDependency) {
+        if (jar.beforeBuild) {
             tasks.getByPath(BUILD).dependsOn(configuration.buildTask)
         }
 

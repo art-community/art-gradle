@@ -49,10 +49,10 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
 
     private val builtFiles: MutableMap<String, String> = mutableMapOf()
 
-    var buildDependency = false
+    var beforeBuild = false
         private set
 
-    var nativeBuildDependency = false
+    var beforeNativeBuild = false
         private set
 
     var url: String? = null
@@ -90,12 +90,12 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         builtFiles += from.toString() to to.toString()
     }
 
-    fun buildDependsOn(buildDependsOn: Boolean = true) {
-        buildDependency = buildDependsOn
+    fun beforeBuild(before: Boolean = true) {
+        beforeBuild = before
     }
 
-    fun nativeBuildDependsOn(buildDependsOn: Boolean = true) {
-        nativeBuildDependency = buildDependsOn
+    fun beforeNativeBuild(before: Boolean = true) {
+        beforeNativeBuild = before
     }
 
     fun autogenCommand(): Array<String> = bashCommand(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE))
@@ -120,10 +120,10 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
     var buildType = RELEASE_DEBUG
         private set
 
-    var buildDependency = false
+    var beforeBuild = false
         private set
 
-    var nativeBuildDependency = false
+    var beforeNativeBuild = false
         private set
 
     var url: String? = null
@@ -169,12 +169,12 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         buildType = RELEASE_DEBUG
     }
 
-    fun buildDependsOn(buildDependsOn: Boolean = true) {
-        buildDependency = buildDependsOn
+    fun beforeBuild(before: Boolean = true) {
+        beforeBuild = before
     }
 
-    fun nativeBuildDependsOn(buildDependsOn: Boolean = true) {
-        nativeBuildDependency = buildDependsOn
+    fun beforeNativeBuild(before: Boolean = true) {
+        beforeNativeBuild = before
     }
 
     fun wsl(wsl: Boolean = true) {
