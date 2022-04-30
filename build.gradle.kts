@@ -65,7 +65,8 @@ fun configurePublishing(publisherUsername: String, publisherPassword: String) = 
 
     repositories {
         maven {
-            url = uri("https://nexus.art-platform.io/repository/art-gradle-plugins/")
+            isAllowInsecureProtocol = true
+            url = uri("https://135.181.2.177/repository/art-gradle-plugins/")
             credentials {
                 username = publisherUsername
                 password = publisherPassword
