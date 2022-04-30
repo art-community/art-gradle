@@ -34,8 +34,7 @@ fun Project.configureModules() {
 
         repositories {
             maven {
-                isAllowInsecureProtocol = true
-                url = uri("https://135.181.2.177/repository/art-gradle-plugins/")
+                url = uri(MAVEN_REPOSITORY)
             }
         }
 
