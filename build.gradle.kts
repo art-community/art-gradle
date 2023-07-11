@@ -26,7 +26,8 @@ plugins {
 
 group = "io.art.gradle"
 
-version = findProperty("version") ?: "main"
+rootProject.version = findProperty("version") ?: "main"
+if (rootProject.version == "unspecified") rootProject.version = "main"
 
 tasks.withType(type = Wrapper::class) {
     gradleVersion = "7.2"
@@ -65,7 +66,7 @@ fun configurePublishing(publisherUsername: String, publisherPassword: String) = 
 
     repositories {
         maven {
-            url = uri("https://nexus.art-platform.io/repository/art-gradle-plugins/")
+            url = uri("https://maven.pkg.github.com/art-community/art-packages/")
             credentials {
                 username = publisherUsername
                 password = publisherPassword
@@ -78,6 +79,7 @@ fun configurePublishing(publisherUsername: String, publisherPassword: String) = 
             withoutBuildIdentifier()
             artifactId = project.name
             groupId = project.group as String
+            version = rootProject.version as String
             from(project.components["java"])
             suppressAllPomMetadataWarnings()
             pom {
@@ -118,14 +120,14 @@ fun configurePublishing(publisherUsername: String, publisherPassword: String) = 
 val publishingProperties
     get(): Map<String, String> {
         val content = rootDir.parentFile
-                ?.resolve("publishing.properties")
-                ?.takeIf(File::exists)
-                ?.readText()
-                ?: return emptyMap()
+            ?.resolve("publishing.properties")
+            ?.takeIf(File::exists)
+            ?.readText()
+            ?: return emptyMap()
         return Properties()
-                .apply { load(content.reader()) }
-                .entries
-                .associate { entry -> "${entry.key}" to "${entry.value}" }
+            .apply { load(content.reader()) }
+            .entries
+            .associate { entry -> "${entry.key}" to "${entry.value}" }
     }
 
 val userNameProperty = "publisher.username"

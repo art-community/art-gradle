@@ -16,7 +16,7 @@ const val STAR = "*"
 const val ART = "art"
 const val JAR = "jar"
 const val NATIVE = "native"
-const val MAVEN_REPOSITORY = "https://nexus.art-platform.io/repository/art-maven/"
+const val MAVEN_REPOSITORY = "https://maven.pkg.github.com/art-community/art-packages/"
 
 const val ANNOTATION_PROCESSOR_CONFIGURATION_NAME = "annotationProcessor"
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"
