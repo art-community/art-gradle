@@ -66,7 +66,7 @@ fun configurePublishing(publisherUsername: String, publisherPassword: String) = 
 
     repositories {
         maven {
-            url = uri("https://maven.pkg.github.com/art-community/art-packages/")
+            url = uri("https://repsy.io/mvn/antonsh/art-packages/")
             credentials {
                 username = publisherUsername
                 password = publisherPassword
