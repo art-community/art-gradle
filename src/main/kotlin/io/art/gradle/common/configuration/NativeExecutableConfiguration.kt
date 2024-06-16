@@ -48,16 +48,14 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var runAgentBeforeBuild = false
         private set
 
-    var graalVersion: String = GraalVersion.LATEST.version
+    var graalPrefix: String = GRAALVM_DEFAULT_PACKAGE_PREFIX
+        private set
+
+    var graalVersion: String = GRAALVM_DEFAULT_VERSION
         private set
 
     var graalUrl: String? = null
         private set
-
-    var graalJavaVersion: GraalJavaVersion = when {
-        current().isCompatibleWith(JavaVersion.VERSION_1_9) -> GraalJavaVersion.JAVA_11
-        else -> GraalJavaVersion.JAVA_8
-    }
 
     var graalPlatform: GraalPlatformName = when {
         OperatingSystem.current().isWindows -> GraalPlatformName.WINDOWS
@@ -68,7 +66,7 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
     var graalArchitecture: GraalArchitectureName = System.getProperty(OS_ARCH_PROPERTY).let { architecture ->
         when {
-            X86_64.architecture.names().any(architecture::contains) -> GraalArchitectureName.AMD
+            X86_64.architecture.names().any(architecture::contains) -> GraalArchitectureName.X64
             ARM_V8.architecture.names().any(architecture::contains) -> GraalArchitectureName.ARM
             else -> throw unsupportedGraalArchitecture(architecture)
         }
@@ -106,19 +104,15 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     }
 
     fun graalVersion(version: String) {
-        this.graalVersion = version
+        this.graalPrefix = version
     }
 
     fun graalUrl(url: String) {
         this.graalUrl = url
     }
 
-    fun graalVersion(version: GraalVersion) {
-        this.graalVersion = version.version
-    }
-
-    fun graalJavaVersion(version: GraalJavaVersion) {
-        this.graalJavaVersion = version
+    fun graalPrefix(prefix: String) {
+        this.graalPrefix = prefix
     }
 
     fun graalPlatform(platformName: GraalPlatformName) {

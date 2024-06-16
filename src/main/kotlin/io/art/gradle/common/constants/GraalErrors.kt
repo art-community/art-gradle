@@ -25,7 +25,8 @@ fun unsupportedGraalOs(os: OperatingSystem) = GradleException("Unsupported Graal
 
 fun unsupportedGraalArchitecture(architecture: String) = GradleException("Unsupported GraalVM architecture: $architecture")
 
-fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
+fun graalWindowsVSVarsPathIsEmpty() = GradleException(
+    """
     You are using GraalVM on Windows. Please specify windowsVisualStudioVarsScript(<existed path>) in section 'art { executable { native {} } }' or pass the path with the property -PwindowsVisualStudioVars=<existed path>
     Example: 
         art {
@@ -35,8 +36,7 @@ fun graalWindowsVSVarsPathIsEmpty() = GradleException("""
                 }
             }
         }
-""".trimIndent())
+""".trimIndent()
+)
 
 fun unableToFindGraalUpdater() = GradleException("Unable to find 'gu' executable for GraalVM")
-
-const val GRAAL_VM_JDK_8_DARWIN_WARING = "GraalVM for JDK 8 on MacOS not supported"

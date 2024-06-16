@@ -26,7 +26,7 @@ import io.art.gradle.common.service.withLock
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.util.concurrent.CompletableFuture.supplyAsync
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
@@ -40,23 +40,18 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
         if (configuration.wsl) nativeImage = binary.resolve(GRAAL_UNIX_NATIVE_IMAGE).apply { setExecutable(true) }
         return GraalPaths(base = directory.toFile(), binary = binary, nativeImage = nativeImage)
     }
-    val graalDirectory = configuration.graalDownloadingDirectory?.toFile() ?: rootProject.buildDir.resolve(GRAAL)
+    val graalDirectory = configuration.graalDownloadingDirectory?.toFile() ?: rootProject.layout.buildDirectory.file(GRAAL).get().asFile
     return supplyAsync {
         graalDirectory.resolve("$GRAAL$DOT_LOCK").toPath().withLock {
-            var binariesDirectory = graalDirectory
-                    .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-                    .resolve(BIN)
-
-            if (OperatingSystem.current().isMacOsX) {
-                binariesDirectory = binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
-            }
-
-            var nativeExecutable = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
-            if (configuration.wsl) nativeExecutable = binariesDirectory.resolve(GRAAL_UNIX_NATIVE_IMAGE).apply { setExecutable(true) }
-            if (graalDirectory.exists() && nativeExecutable.exists()) {
+            val graalContentDirectory = graalDirectory.listFiles()?.first()
+            var binariesDirectory = graalContentDirectory?.resolve(BIN)
+            if (OperatingSystem.current().isMacOsX) binariesDirectory = binariesDirectory?.parentFile?.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
+            var nativeExecutable = binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.apply { setExecutable(true) }
+            if (configuration.wsl) nativeExecutable = binariesDirectory?.resolve(GRAAL_UNIX_NATIVE_IMAGE)?.apply { setExecutable(true) }
+            if (graalContentDirectory?.exists() == true && nativeExecutable?.exists() == true) {
                 if (configuration.llvm) {
                     exec {
-                        var executable = binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
+                        var executable = binariesDirectory!!.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
                         if (configuration.wsl) {
                             executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath.wsl()
                             commandLine(*bashCommand(executable, *GRAAL_UPDATE_LLVM_ARGUMENTS.toTypedArray()))
@@ -66,7 +61,7 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
                     }
                 }
 
-                return@withLock GraalPaths(base = graalDirectory, binary = binariesDirectory, nativeImage = nativeExecutable)
+                return@withLock GraalPaths(base = graalContentDirectory, binary = binariesDirectory!!, nativeImage = nativeExecutable)
             }
 
             return@withLock processDownloading(configuration, graalDirectory)
@@ -75,59 +70,59 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
 }
 
 private fun Project.processDownloading(configuration: NativeExecutableConfiguration, graalDirectory: File): GraalPaths {
+    var resultGraalDirectory = graalDirectory
+
     val archiveName = GRAAL_ARCHIVE_NAME(
-            if (configuration.wsl) LINUX else configuration.graalPlatform,
-            configuration.graalJavaVersion,
-            configuration.graalArchitecture,
-            configuration.graalVersion
+        if (configuration.wsl) LINUX else configuration.graalPlatform,
+        configuration.graalPrefix,
+        configuration.graalArchitecture,
     )
 
-    val archiveFile = graalDirectory.resolve(archiveName)
+    val archiveFile = resultGraalDirectory.resolve(archiveName)
 
-    if (!graalDirectory.exists()) {
-        graalDirectory.mkdirs()
+    if (!resultGraalDirectory.exists()) {
+        resultGraalDirectory.mkdirs()
     }
 
     if (!archiveFile.exists()) {
-        (configuration.graalUrl?.let(::URL) ?: GRAAL_DOWNLOAD_URL(archiveName, configuration.graalVersion))
-                .openStream().use { input ->
-                    archiveFile.outputStream().use { output ->
-                        val buffer = ByteArray(bufferSize)
-                        var read: Int
-                        while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
-                            output.write(buffer, 0, read)
-                        }
-                    }
+        (configuration.graalUrl?.let(::URI)?.let(URI::toURL) ?: GRAAL_DOWNLOAD_URL(configuration.graalVersion, archiveName)).openStream().use { input ->
+            archiveFile.outputStream().use { output ->
+                val buffer = ByteArray(bufferSize)
+                var read: Int
+                while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
+                    output.write(buffer, 0, read)
                 }
+            }
+        }
     }
 
     when {
         configuration.wsl -> exec {
-            commandLine(*bashCommand(TAR,
-                    TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile.absolutePath.wsl(),
-                    TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile.absolutePath.wsl()
-            ))
+            commandLine(
+                *bashCommand(
+                    TAR, TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile.absolutePath.wsl(), TAR_DIRECTORY_OPTION, resultGraalDirectory.absoluteFile.absolutePath.wsl()
+                )
+            )
         }
+
         configuration.graalPlatform == WINDOWS -> copy {
             from(zipTree(archiveFile))
-            into(graalDirectory)
+            into(resultGraalDirectory)
         }
+
         configuration.graalPlatform == LINUX || configuration.graalPlatform == DARWIN -> exec {
             commandLine(TAR)
             args(TAR_EXTRACT_ZIP_OPTIONS, archiveFile.absoluteFile)
-            args(TAR_DIRECTORY_OPTION, graalDirectory.absoluteFile)
+            args(TAR_DIRECTORY_OPTION, resultGraalDirectory.absoluteFile)
         }
     }
 
     archiveFile.delete()
 
-    var binariesDirectory = graalDirectory
-            .resolve(GRAAL_UNPACKED_NAME(configuration.graalJavaVersion, configuration.graalVersion))
-            .resolve(BIN)
-    if (OperatingSystem.current().isMacOsX) {
-        binariesDirectory = binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
-    }
+    resultGraalDirectory = resultGraalDirectory.listFiles()!!.first()
+    var binariesDirectory = resultGraalDirectory.resolve(BIN)
 
+    if (OperatingSystem.current().isMacOsX) binariesDirectory = binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
     exec {
         var executable = binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
         if (configuration.wsl) {
@@ -141,8 +136,6 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
     var nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
     if (configuration.wsl) nativeImage = binariesDirectory.resolve(GRAAL_UNIX_NATIVE_IMAGE).apply { setExecutable(true) }
     return GraalPaths(
-            base = graalDirectory,
-            binary = binariesDirectory,
-            nativeImage = nativeImage
+        base = resultGraalDirectory, binary = binariesDirectory, nativeImage = nativeImage
     )
 }

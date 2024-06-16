@@ -21,7 +21,7 @@ package io.art.gradle.common.constants
 import io.art.gradle.common.constants.GraalPlatformName.*
 import io.art.gradle.common.model.ProcessorArchitecture
 import org.gradle.internal.os.OperatingSystem
-import java.net.URL
+import java.net.URI
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
@@ -46,29 +46,29 @@ var GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS = listOf("install", "native-image")
 var GRAAL_UPDATE_LLVM_ARGUMENTS = listOf("install", "llvm-toolchain")
 
 const val GRAALVM_RELEASES_BASE_URL = "https://github.com/graalvm/graalvm-ce-builds/releases/download"
+const val GRAALVM_DEFAULT_VERSION = "jdk-21.0.2"
+const val GRAALVM_DEFAULT_PACKAGE_PREFIX = "graalvm-community-jdk-21.0.2"
 
-val GRAAL_ARCHIVE_NAME = { platform: GraalPlatformName, java: GraalJavaVersion, architecture: GraalArchitectureName, version: String ->
+val GRAAL_ARCHIVE_NAME = { platform: GraalPlatformName, prefix: String, architecture: GraalArchitectureName ->
     when (platform) {
-        WINDOWS -> "graalvm-ce-${java.version}-${platform.platform}-${architecture.architecture}-$version.zip"
-        LINUX, DARWIN -> "graalvm-ce-${java.version}-${platform.platform}-${architecture.architecture}-$version.tar.gz"
+        WINDOWS -> "${prefix}_${platform.platform}-${architecture.architecture}_bin.zip"
+        LINUX, DARWIN -> "${prefix}_${platform.platform}-${architecture.architecture}_bin.tar.gz"
     }
 }
-val GRAAL_UNPACKED_NAME = { java: GraalJavaVersion, version: String ->
-    "graalvm-ce-${java.version}-$version"
-}
-val GRAAL_DOWNLOAD_URL = { archive: String, version: String ->
-    URL("$GRAALVM_RELEASES_BASE_URL/vm-${version}/${archive}")
+
+val GRAAL_DOWNLOAD_URL = { version: String, archive: String ->
+    URI.create("$GRAALVM_RELEASES_BASE_URL/$version/$archive").toURL()
 }
 
 var GRAAL_DEFAULT_OPTIONS = listOf(
-        "-H:+ReportExceptionStackTraces",
-        "-H:+JNI",
-        "--enable-http",
-        "--enable-https",
-        "--install-exit-handlers",
-        "--no-fallback",
-        "--report-unsupported-elements-at-runtime",
-        "--allow-incomplete-classpath"
+    "-H:+ReportExceptionStackTraces",
+    "-H:+JNI",
+    "--enable-http",
+    "--enable-https",
+    "--install-exit-handlers",
+    "--no-fallback",
+    "--report-unsupported-elements-at-runtime",
+    "--allow-incomplete-classpath"
 )
 
 val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: String -> "-H:ConfigurationFileDirectories=$path" }
@@ -102,19 +102,8 @@ enum class GraalPlatformName(val platform: String) {
 }
 
 enum class GraalArchitectureName(val architecture: String) {
-    AMD("amd64"),
+    X64("x64"),
     ARM("aarch64")
-}
-
-enum class GraalJavaVersion(val version: String) {
-    JAVA_8("java8"),
-    JAVA_11("java11")
-}
-
-enum class GraalVersion(val version: String) {
-    LATEST("22.0.0.2"),
-    VERSION_21_3_0("21.3.0"),
-    VERSION_21_2_0("21.2.0")
 }
 
 enum class GraalAgentOutputMode {

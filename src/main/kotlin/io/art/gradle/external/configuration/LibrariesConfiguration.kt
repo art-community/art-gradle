@@ -26,24 +26,27 @@ import javax.inject.Inject
 open class LibrariesConfiguration @Inject constructor(private val objectFactory: ObjectFactory) {
     val dependencies = objectFactory.domainObjectSet(Library::class)
 
-    fun graal(version: GraalVersion = GraalVersion.LATEST) {
-        dependencies += Library(COMPILE_ONLY_CONFIGURATION_NAME,
-                GRAAL_DEPENDENCY_GROUP,
-                GRAAL_DEPENDENCY_ARTIFACT,
-                version.version
+    fun graal(version: String = GRAALVM_DEFAULT_SVM_VERSION) {
+        dependencies += Library(
+            COMPILE_ONLY_CONFIGURATION_NAME,
+            GRAAL_DEPENDENCY_GROUP,
+            GRAAL_DEPENDENCY_ARTIFACT,
+            version,
         )
     }
 
     fun lombok(version: String) {
-        dependencies += Library(COMPILE_ONLY_CONFIGURATION_NAME,
-                LOMBOK_DEPENDENCY_GROUP,
-                LOMBOK_DEPENDENCY_ARTIFACT,
-                version
+        dependencies += Library(
+            COMPILE_ONLY_CONFIGURATION_NAME,
+            LOMBOK_DEPENDENCY_GROUP,
+            LOMBOK_DEPENDENCY_ARTIFACT,
+            version
         )
-        dependencies += Library(ANNOTATION_PROCESSOR_CONFIGURATION_NAME,
-                LOMBOK_DEPENDENCY_GROUP,
-                LOMBOK_DEPENDENCY_ARTIFACT,
-                version
+        dependencies += Library(
+            ANNOTATION_PROCESSOR_CONFIGURATION_NAME,
+            LOMBOK_DEPENDENCY_GROUP,
+            LOMBOK_DEPENDENCY_ARTIFACT,
+            version
         )
     }
 

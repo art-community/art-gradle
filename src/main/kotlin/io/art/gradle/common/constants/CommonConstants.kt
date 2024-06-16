@@ -60,6 +60,7 @@ const val LOCAL_PROPERTIES_FILE = "local.properties"
 
 const val GRAAL_DEPENDENCY_GROUP = "org.graalvm.nativeimage"
 const val GRAAL_DEPENDENCY_ARTIFACT = "svm"
+const val GRAALVM_DEFAULT_SVM_VERSION = "24.0.1"
 
 const val LOMBOK_DEPENDENCY_GROUP = "org.projectlombok"
 const val LOMBOK_DEPENDENCY_ARTIFACT = "lombok"
@@ -86,7 +87,7 @@ fun String.wsl(): String {
                 .replace(WINDOWS_DISK_PATH_BACKWARD_SLASH_REGEX.toRegex(), SLASH)
                 .replace(BACKWARD_SLASH_REGEX.toRegex(), SLASH)
         val firstLetter: String = EMPTY_STRING + converted[0]
-        return WSL_DISK_PREFIX + firstLetter.toLowerCase() + converted.substring(1)
+        return WSL_DISK_PREFIX + firstLetter.lowercase() + converted.substring(1)
     }
     return converted
 }

@@ -30,7 +30,7 @@ rootProject.version = findProperty("version") ?: "main"
 if (rootProject.version == "unspecified") rootProject.version = "main"
 
 tasks.withType(type = Wrapper::class) {
-    gradleVersion = "7.2"
+    gradleVersion = "8.5"
 }
 
 repositories {
@@ -56,8 +56,8 @@ gradlePlugin {
 }
 
 dependencies {
-    api("org.eclipse.jgit:org.eclipse.jgit:+")
-    api("org.yaml:snakeyaml:+")
+    api("org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r")
+    api("org.yaml:snakeyaml:2.2")
 }
 
 fun configurePublishing(publisherUsername: String, publisherPassword: String) = publishing {

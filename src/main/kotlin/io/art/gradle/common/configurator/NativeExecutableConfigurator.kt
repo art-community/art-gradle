@@ -22,7 +22,6 @@ import io.art.gradle.common.configuration.NativeExecutableConfiguration
 import io.art.gradle.common.constants.*
 import io.art.gradle.common.constants.GraalAgentOutputMode.MERGE
 import io.art.gradle.common.constants.GraalAgentOutputMode.OVERWRITE
-import io.art.gradle.common.constants.GraalJavaVersion.JAVA_8
 import io.art.gradle.common.constants.GraalPlatformName.DARWIN
 import io.art.gradle.common.graal.downloadGraal
 import io.art.gradle.common.logger.log
@@ -49,10 +48,6 @@ data class NativeExecutableCreationConfiguration(
 
 fun Project.configureNative(executableConfiguration: NativeExecutableCreationConfiguration) {
     val native = executableConfiguration.configuration
-    if (native.graalJavaVersion == JAVA_8 && native.graalPlatform == DARWIN) {
-        log(GRAAL_VM_JDK_8_DARWIN_WARING)
-        return
-    }
 
     if (native.enableAgent) {
         configureAgent(executableConfiguration)
