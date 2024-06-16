@@ -22,8 +22,8 @@ jobs:
   gradle-publish:
     strategy:
       matrix:
+        os: [ ubuntu-latest ]
         jdk: [ 21 ]
-        
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
