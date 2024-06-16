@@ -53,7 +53,17 @@ val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }
 
-val GENERATOR_JVM_OPTIONS = arrayOf("-Xms1g", "-Dfile.encoding=UTF-8")
+val GENERATOR_JVM_OPTIONS = arrayOf(
+    "-Xms1g", "-Dfile.encoding=UTF-8",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"
+)
 const val GENERATOR_MAIN = "io.art.generator.Generator"
 
 const val LANGUAGES_KEY = "languages"

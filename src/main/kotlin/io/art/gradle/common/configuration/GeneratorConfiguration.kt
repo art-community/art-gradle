@@ -105,7 +105,7 @@ open class GeneratorSourceConfiguration @Inject constructor(val module: String) 
 }
 
 open class GeneratorMainConfiguration @Inject constructor(project: Project) {
-    var workingDirectory: Path = project.rootProject.buildDir.resolve(GENERATOR).toPath()
+    var workingDirectory: Path = project.rootProject.layout.buildDirectory.file(GENERATOR).get().asFile.toPath()
         private set
 
     var loggingToConsole = false
