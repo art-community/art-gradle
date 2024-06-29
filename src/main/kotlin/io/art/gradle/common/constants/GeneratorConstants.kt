@@ -18,7 +18,7 @@
 
 package io.art.gradle.common.constants
 
-import java.net.URL
+import java.net.URI
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
@@ -49,7 +49,7 @@ const val CLEAN_GENERATOR_TASK = "clean-generator"
 const val DISABLED_GENERATOR_PROPERTY = "art.generator.disabled"
 const val ENABLED_AUTO_GENERATOR_PROPERTY = "art.generator.auto.enabled"
 
-val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URL("$url/io/art/generator/art-generator/$version/art-generator-$version.jar") }
+val JVM_GENERATOR_DOWNLOAD_URL = { url: String, version: String -> URI("$url/io/art/generator/art-generator/$version/art-generator-$version.jar") }
 val JVM_GENERATOR_FILE = { version: String -> Paths.get("art-generator-$version.jar") }
 val JVM_GENERATOR_CONFIGURATION_ARGUMENT = { path: Path -> "-Dconfiguration=${path.toFile().absolutePath}" }
 
@@ -62,7 +62,7 @@ val GENERATOR_JVM_OPTIONS = arrayOf(
     "--add-exports", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
     "--add-exports", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
     "--add-exports", "jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-    "--add-exports", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"
+    "--add-exports", "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
 )
 const val GENERATOR_MAIN = "io.art.generator.Generator"
 

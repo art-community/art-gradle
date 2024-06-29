@@ -18,31 +18,31 @@
 
 package io.art.gradle.common.service
 
-import java.net.URL
+import java.net.URI
 import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 data class DownloadingRequest(
-        val url: URL,
+        val url: URI,
         val path: Path,
         val lockName: String,
         val timeout: Duration,
 )
 
 object FileDownloadService {
-    private const val bufferSize = DEFAULT_BUFFER_SIZE * 2
+    private const val BUFFER_SIZE = DEFAULT_BUFFER_SIZE * 2
 
     fun downloadFile(request: DownloadingRequest) {
         runAsync {
             request.apply {
                 request.path.parent.resolve(request.lockName).withLock {
-                    url.openStream().use { input ->
+                    url.toURL().openStream().use { input ->
                         path.toFile().outputStream().use { output ->
-                            val buffer = ByteArray(bufferSize)
+                            val buffer = ByteArray(BUFFER_SIZE)
                             var read: Int
-                            while (input.read(buffer, 0, bufferSize).also { byte -> read = byte } >= 0) {
+                            while (input.read(buffer, 0, BUFFER_SIZE).also { byte -> read = byte } >= 0) {
                                 output.write(buffer, 0, read)
                             }
                         }
