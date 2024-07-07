@@ -49,18 +49,6 @@ fun Project.downloadGraal(configuration: NativeExecutableConfiguration): GraalPa
             var nativeExecutable = binariesDirectory?.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE)?.apply { setExecutable(true) }
             if (configuration.wsl) nativeExecutable = binariesDirectory?.resolve(GRAAL_UNIX_NATIVE_IMAGE)?.apply { setExecutable(true) }
             if (graalContentDirectory?.exists() == true && nativeExecutable?.exists() == true) {
-                if (configuration.llvm) {
-                    exec {
-                        var executable = binariesDirectory!!.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
-                        if (configuration.wsl) {
-                            executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath.wsl()
-                            commandLine(*bashCommand(executable, *GRAAL_UPDATE_LLVM_ARGUMENTS.toTypedArray()))
-                            return@exec
-                        }
-                        commandLine(executable, *GRAAL_UPDATE_LLVM_ARGUMENTS.toTypedArray())
-                    }
-                }
-
                 return@withLock GraalPaths(base = graalContentDirectory, binary = binariesDirectory!!, nativeImage = nativeExecutable)
             }
 
@@ -123,16 +111,6 @@ private fun Project.processDownloading(configuration: NativeExecutableConfigurat
     var binariesDirectory = resultGraalDirectory.resolve(BIN)
 
     if (OperatingSystem.current().isMacOsX) binariesDirectory = binariesDirectory.parentFile.resolve(GRAAL_MAC_OS_BIN_PATH.toFile())
-    exec {
-        var executable = binariesDirectory.resolve(GRAAL_UPDATER_EXECUTABLE).apply { setExecutable(true) }.absolutePath
-        if (configuration.wsl) {
-            executable = binariesDirectory.resolve(GRAAL_UNIX_UPDATER).apply { setExecutable(true) }.absolutePath.wsl()
-            commandLine(*bashCommand(executable, *GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS.toTypedArray()))
-            return@exec
-        }
-        commandLine(executable, *GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS.toTypedArray())
-    }
-
     var nativeImage = binariesDirectory.resolve(GRAAL_NATIVE_IMAGE_EXECUTABLE).apply { setExecutable(true) }
     if (configuration.wsl) nativeImage = binariesDirectory.resolve(GRAAL_UNIX_NATIVE_IMAGE).apply { setExecutable(true) }
     return GraalPaths(

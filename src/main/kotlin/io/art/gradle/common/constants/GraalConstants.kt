@@ -29,21 +29,12 @@ import java.time.Duration.ofMinutes
 
 const val GRAAL = "graal"
 
-const val GRAAL_UNIX_UPDATER = "gu"
 const val GRAAL_UNIX_NATIVE_IMAGE = "native-image"
 
 val GRAAL_NATIVE_IMAGE_EXECUTABLE = when {
     OperatingSystem.current().isWindows -> "native-image.cmd"
     else -> GRAAL_UNIX_NATIVE_IMAGE
 }
-
-val GRAAL_UPDATER_EXECUTABLE = when {
-    OperatingSystem.current().isWindows -> "gu.cmd"
-    else -> GRAAL_UNIX_UPDATER
-}
-
-var GRAAL_UPDATE_NATIVE_IMAGE_ARGUMENTS = listOf("install", "native-image")
-var GRAAL_UPDATE_LLVM_ARGUMENTS = listOf("install", "llvm-toolchain")
 
 const val GRAALVM_RELEASES_BASE_URL = "https://github.com/graalvm/graalvm-ce-builds/releases/download"
 const val GRAALVM_DEFAULT_VERSION = "jdk-21.0.2"
@@ -111,7 +102,6 @@ enum class GraalAgentOutputMode {
     MERGE
 }
 
-const val GRAAL_LLVM_OPTION = "-H:CompilerBackend=llvm"
 const val GRAAL_MUSL_OPTION = "--libc=musl"
 const val GRAAL_EPSILON_OPTION = "--gc=epsilon"
 const val GRAAL_G1_OPTION = "--gc=g1"

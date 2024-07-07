@@ -90,9 +90,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
     var graalSystemProperties = mutableMapOf<String, String>()
         private set
 
-    var llvm = false
-        private set
-
     var runConfigurator: Exec.() -> Unit = {}
         private set
 
@@ -145,17 +142,6 @@ open class NativeExecutableConfiguration @Inject constructor(objectFactory: Obje
 
     fun graalSystemProperties(properties: Map<String, String>) {
         graalSystemProperties.putAll(properties)
-    }
-
-    fun llvm(use: Boolean = true) {
-        llvm = use
-
-        if (use) {
-            graalOptions.add(GRAAL_LLVM_OPTION)
-            return
-        }
-
-        graalOptions.remove(GRAAL_LLVM_OPTION)
     }
 
     fun disableGC() {
