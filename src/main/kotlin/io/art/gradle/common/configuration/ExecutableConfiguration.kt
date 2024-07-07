@@ -36,14 +36,8 @@ open class ExecutableConfiguration @Inject constructor(project: Project, objectF
 
     val jar = objectFactory.newInstance<JarExecutableConfiguration>()
 
-    val native = objectFactory.newInstance<NativeExecutableConfiguration>()
-
     var jarEnabled = false
         private set
-
-    var nativeEnabled = false
-        private set
-
 
     fun name(name: String) {
         this.executableName = name
@@ -56,11 +50,6 @@ open class ExecutableConfiguration @Inject constructor(project: Project, objectF
     fun jar(action: Action<in JarExecutableConfiguration> = Action { }) {
         action.execute(jar)
         jarEnabled = true
-    }
-
-    fun native(action: Action<in NativeExecutableConfiguration> = Action { }) {
-        action.execute(native)
-        nativeEnabled = true
     }
 
     fun main(mainClass: String) {

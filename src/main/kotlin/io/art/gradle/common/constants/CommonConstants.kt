@@ -58,9 +58,6 @@ const val KOTLIN_COMPILE_TASK_CLASS = "org.jetbrains.kotlin.gradle.tasks.KotlinC
 
 const val LOCAL_PROPERTIES_FILE = "local.properties"
 
-const val GRAAL_DEPENDENCY_GROUP = "org.graalvm.nativeimage"
-const val GRAAL_DEPENDENCY_ARTIFACT = "svm"
-const val GRAALVM_DEFAULT_SVM_VERSION = "24.0.1"
 
 const val LOMBOK_DEPENDENCY_GROUP = "org.projectlombok"
 const val LOMBOK_DEPENDENCY_ARTIFACT = "lombok"

@@ -52,9 +52,6 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
     var beforeBuild = false
         private set
 
-    var beforeNativeBuild = false
-        private set
-
     var url: String? = null
         private set
 
@@ -101,10 +98,6 @@ open class UnixSourceDependency @Inject constructor(private val name: String) : 
         beforeBuild = before
     }
 
-    fun beforeNativeBuild(before: Boolean = true) {
-        beforeNativeBuild = before
-    }
-
     fun autogenCommand(): Array<String> = bashCommand(AUTOGEN_SCRIPT, autogenOptions.joinToString(SPACE))
 
     fun configureCommand(): Array<String> = bashCommand(CONFIGURE_SCRIPT, configureOptions.joinToString(SPACE))
@@ -128,9 +121,6 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
         private set
 
     var beforeBuild = false
-        private set
-
-    var beforeNativeBuild = false
         private set
 
     var url: String? = null
@@ -185,10 +175,6 @@ open class CmakeSourceDependency @Inject constructor(private val name: String) :
 
     fun beforeBuild(before: Boolean = true) {
         beforeBuild = before
-    }
-
-    fun beforeNativeBuild(before: Boolean = true) {
-        beforeNativeBuild = before
     }
 
     fun wsl(wsl: Boolean = true) {

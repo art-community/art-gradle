@@ -25,7 +25,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.getByType
 
 fun Project.configureTest(testConfiguration: TestConfiguration) {
-    if (testConfiguration.jarEnabled || testConfiguration.nativeEnabled) {
+    if (testConfiguration.jarEnabled) {
         val creation = JarExecutableCreationConfiguration(
                 configuration = testConfiguration.jar,
                 runTask = RUN_JAR_TEST_TASK,
@@ -41,19 +41,6 @@ fun Project.configureTest(testConfiguration: TestConfiguration) {
                 }
         )
         configureJar(creation)
-    }
-    if (testConfiguration.nativeEnabled) {
-        val creation = NativeExecutableCreationConfiguration(
-                configuration = testConfiguration.native,
-                runTask = RUN_NATIVE_TEST_TASK,
-                buildTask = BUILD_NATIVE_TEST_TASK,
-                buildJarTask = BUILD_JAR_TEST_TASK,
-                runAgentTask = RUN_NATIVE_TEST_AGENT,
-                mainClass = testConfiguration.launcherClass,
-                executable = testConfiguration.executableName,
-                directory = testConfiguration.directory
-        )
-        configureNative(creation)
     }
 }
 

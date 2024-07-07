@@ -23,7 +23,7 @@ import io.art.gradle.common.constants.*
 import org.gradle.api.Project
 
 fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration) {
-    if (executableConfiguration.jarEnabled || executableConfiguration.nativeEnabled) {
+    if (executableConfiguration.jarEnabled) {
         val creation = JarExecutableCreationConfiguration(
                 configuration = executableConfiguration.jar,
                 runTask = RUN_JAR_EXECUTABLE_TASK,
@@ -34,19 +34,6 @@ fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration
                 executable = executableConfiguration.executableName
         )
         configureJar(creation)
-    }
-    if (executableConfiguration.nativeEnabled) {
-        val creation = NativeExecutableCreationConfiguration(
-                configuration = executableConfiguration.native,
-                runTask = RUN_NATIVE_EXECUTABLE_TASK,
-                buildTask = BUILD_NATIVE_EXECUTABLE_TASK,
-                buildJarTask = BUILD_JAR_EXECUTABLE_TASK,
-                runAgentTask = RUN_NATIVE_AGENT,
-                mainClass = executableConfiguration.mainClass,
-                executable = executableConfiguration.executableName,
-                directory = executableConfiguration.directory
-        )
-        configureNative(creation)
     }
 }
 
