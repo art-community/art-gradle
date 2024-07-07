@@ -52,6 +52,7 @@ val GRAAL_DOWNLOAD_URL = { version: String, archive: String ->
 }
 
 var GRAAL_DEFAULT_OPTIONS = listOf(
+    "-H:+UnlockExperimentalVMOptions",
     "-H:+ReportExceptionStackTraces",
     "-H:+JNI",
     "--enable-http",
@@ -59,7 +60,6 @@ var GRAAL_DEFAULT_OPTIONS = listOf(
     "--install-exit-handlers",
     "--no-fallback",
     "--report-unsupported-elements-at-runtime",
-    "--allow-incomplete-classpath"
 )
 
 val GRAAL_CONFIGURATIONS_PATH_OPTION = { path: String -> "-H:ConfigurationFileDirectories=$path" }
