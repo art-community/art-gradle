@@ -25,6 +25,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.initialization.IncludedBuild
+import org.gradle.api.internal.artifacts.ForeignBuildIdentifier
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import java.lang.Boolean.TRUE
@@ -114,13 +115,13 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
                 current = current.parent!!
             }
 
-            builds.filter { build -> dependencyId.build.name == build.name && !dependencyId.build.isCurrentBuild }.forEach { build ->
+            builds.filter { build -> dependencyId.build.buildPath == build.name && dependencyId.build !is ForeignBuildIdentifier }.forEach { build ->
                 jar.dependsOn(build.task(":${dependencyId.projectName}:$JAR"))
             }
 
             project.rootProject
                     .subprojects
-                    .filter { subProject -> dependencyId.build.isCurrentBuild && subProject.name == dependencyId.projectName }
+                    .filter { subProject -> dependencyId.build is ForeignBuildIdentifier && subProject.name == dependencyId.projectName }
                     .forEach { subProject -> jar.dependsOn(":${subProject.name}:$JAR") }
         }
     }
