@@ -33,7 +33,7 @@ import java.io.File.separator
 fun Project.configureLua() {
     val logger = logger(project.name)
     val sourcesDirectory = projectDir.resolve(LUA_SOURCE_SET)
-    val destinationDirectory = buildDir.resolve(DESTINATION)
+    val destinationDirectory = layout.buildDirectory.file(DESTINATION).get().asFile
 
     pluginManager.apply(IdeaPlugin::class.java)
     with(the<IdeaModel>()) { module { sourceDirs.add(sourcesDirectory) } }

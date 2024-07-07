@@ -31,7 +31,7 @@ open class TestConfiguration @Inject constructor(project: Project, objectFactory
         private set
     var executableName: String = project.name
         private set
-    var directory: Path = project.buildDir.resolve(TEST_EXECUTABLE).toPath()
+    var directory: Path = project.layout.buildDirectory.file(TEST_EXECUTABLE).get().asFile.toPath()
         private set
 
     val jar = objectFactory.newInstance<JarExecutableConfiguration>()

@@ -83,7 +83,7 @@ fun Project.configureGenerator(configuration: GeneratorConfiguration) {
 
     tasks.withType(Delete::class.java) {
         delete = emptySet()
-        delete.add(buildDir.listFiles()!!.filter { directory -> directory != configuration.mainConfiguration.workingDirectory.toFile() })
+        delete.add(layout.buildDirectory.asFile.get().listFiles()!!.filter { directory -> directory != configuration.mainConfiguration.workingDirectory.toFile() })
     }
 }
 

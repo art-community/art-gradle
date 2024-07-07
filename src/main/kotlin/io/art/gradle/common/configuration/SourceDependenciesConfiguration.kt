@@ -12,7 +12,7 @@ import java.nio.file.Path
 import javax.inject.Inject
 
 open class SourceDependenciesConfiguration @Inject constructor(project: Project, objectFactory: ObjectFactory) {
-    var directory: Path = project.buildDir.resolve(DEPENDENCIES).toPath()
+    var directory: Path = project.layout.buildDirectory.file(DEPENDENCIES).get().asFile.toPath()
         private set
     val unixDependencies: NamedDomainObjectContainer<UnixSourceDependency> = objectFactory.domainObjectContainer(UnixSourceDependency::class, ::UnixSourceDependency)
     val cmakeDependencies: NamedDomainObjectContainer<CmakeSourceDependency> = objectFactory.domainObjectContainer(CmakeSourceDependency::class, ::CmakeSourceDependency)
