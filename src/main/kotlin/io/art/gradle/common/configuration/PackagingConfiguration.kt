@@ -19,22 +19,19 @@
 package io.art.gradle.common.configuration
 
 import io.art.gradle.common.constants.DEFAULT_JAR_EXCLUSIONS
+import io.art.gradle.common.constants.PACKAGE_JRE_URL
 import org.gradle.api.JavaVersion.VERSION_1_9
 import org.gradle.api.JavaVersion.current
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.DuplicatesStrategy.EXCLUDE
-import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import javax.inject.Inject
 
-open class JarExecutableConfiguration @Inject constructor() {
+open class PackagingConfiguration @Inject constructor() {
     var duplicateStrategy: DuplicatesStrategy = EXCLUDE
         private set
-    var runConfigurator: JavaExec.() -> Unit = {}
-        private set
+
     var buildConfigurator: Jar.() -> Unit = {}
-        private set
-    var beforeBuild: Boolean = true
         private set
 
     var manifestAttributes = mutableMapOf<String, String>()
@@ -44,6 +41,9 @@ open class JarExecutableConfiguration @Inject constructor() {
         private set
 
     var exclusions = DEFAULT_JAR_EXCLUSIONS.toMutableSet()
+        private set
+
+    var jreUrl = PACKAGE_JRE_URL
         private set
 
     fun resolveDuplicates(strategy: DuplicatesStrategy) {
@@ -70,12 +70,8 @@ open class JarExecutableConfiguration @Inject constructor() {
         this.exclusions = exclusions(this.exclusions).toMutableSet()
     }
 
-    fun beforeBuild(beforeBuild: Boolean = true) {
-        this.beforeBuild = beforeBuild
-    }
-
-    fun configureRun(runConfigurator: JavaExec.() -> Unit) {
-        this.runConfigurator = runConfigurator
+    fun jre(url: String) {
+        this.jreUrl = url
     }
 
     fun configureBuild(buildConfigurator: Jar.() -> Unit) {

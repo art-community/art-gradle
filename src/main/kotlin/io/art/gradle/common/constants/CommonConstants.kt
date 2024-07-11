@@ -15,7 +15,8 @@ const val STAR = "*"
 
 const val ART = "art"
 const val JAR = "jar"
-const val NATIVE = "native"
+const val ZIP = "zip"
+const val PACKAGE = "package"
 const val MAVEN_REPOSITORY = "https://repsy.io/mvn/antonsh/art-packages/"
 
 const val ANNOTATION_PROCESSOR_CONFIGURATION_NAME = "annotationProcessor"
@@ -33,22 +34,11 @@ const val CLEAN = "clean"
 const val EXECUTABLE = "executable"
 const val DEPENDENCIES = "dependencies"
 const val TEST = "test"
-const val MAIN = "main"
 const val TEST_EXECUTION = "testExecution"
 const val TEST_EXECUTABLE = "test-executable"
 
-const val OS_ARCH_PROPERTY = "os.arch"
-const val CONFIGURATION = "configuration"
-const val DOT_EXE = ".exe"
 const val DOT_JAR = ".jar"
 const val DOT_LOCK = ".lock"
-const val POWERSHELL = "powershell"
-const val BIN = "bin"
-
-const val TAR = "tar"
-const val TAR_EXTRACT_ZIP_OPTIONS = "xzf"
-const val TAR_DIRECTORY_OPTION = "-C"
-
 const val MODULE_YML = "module.yml"
 
 val LOG_TEMPLATE = { context: String, line: String -> "($context): $line" }

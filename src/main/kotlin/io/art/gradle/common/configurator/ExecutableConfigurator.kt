@@ -24,7 +24,7 @@ import org.gradle.api.Project
 
 fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration) {
     if (executableConfiguration.jarEnabled) {
-        val creation = JarExecutableCreationConfiguration(
+        val configuration = JarExecutableCreationConfiguration(
                 configuration = executableConfiguration.jar,
                 runTask = RUN_JAR_EXECUTABLE_TASK,
                 buildTask = BUILD_JAR_EXECUTABLE_TASK,
@@ -33,7 +33,18 @@ fun Project.configureExecutable(executableConfiguration: ExecutableConfiguration
                 directory = executableConfiguration.directory,
                 executable = executableConfiguration.executableName
         )
-        configureJar(creation)
+        configureJar(configuration)
+    }
+    if (executableConfiguration.packagingEnabled) {
+        val configuration = PackagingCreationConfiguration(
+            configuration = executableConfiguration.packaging,
+            buildTask = PACKAGE_TASK,
+            dependencyConfiguration = EMBEDDED_CONFIGURATION_NAME,
+            mainClass = executableConfiguration.mainClass,
+            directory = executableConfiguration.directory,
+            executable = executableConfiguration.executableName
+        )
+        configurePackaging(configuration)
     }
 }
 

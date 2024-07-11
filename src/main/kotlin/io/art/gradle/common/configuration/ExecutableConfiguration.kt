@@ -36,7 +36,12 @@ open class ExecutableConfiguration @Inject constructor(project: Project, objectF
 
     val jar = objectFactory.newInstance<JarExecutableConfiguration>()
 
+    val packaging = objectFactory.newInstance<PackagingConfiguration>()
+
     var jarEnabled = false
+        private set
+
+    var packagingEnabled = false
         private set
 
     fun name(name: String) {
@@ -50,6 +55,11 @@ open class ExecutableConfiguration @Inject constructor(project: Project, objectF
     fun jar(action: Action<in JarExecutableConfiguration> = Action { }) {
         action.execute(jar)
         jarEnabled = true
+    }
+
+    fun packaging(action: Action<in PackagingConfiguration> = Action { }) {
+        action.execute(packaging)
+        packagingEnabled = true
     }
 
     fun main(mainClass: String) {

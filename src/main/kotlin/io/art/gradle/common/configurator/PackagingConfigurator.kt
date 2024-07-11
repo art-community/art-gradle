@@ -18,36 +18,40 @@
 
 package io.art.gradle.common.configurator
 
-import io.art.gradle.common.configuration.JarExecutableConfiguration
+import io.art.gradle.common.configuration.PackagingConfiguration
 import io.art.gradle.common.constants.*
-import org.gradle.api.JavaVersion
+import io.art.gradle.common.service.DownloadingRequest
+import io.art.gradle.common.service.FileDownloadService
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.initialization.IncludedBuild
 import org.gradle.api.internal.artifacts.ForeignBuildIdentifier
-import org.gradle.api.tasks.JavaExec
+import org.gradle.internal.jvm.Jvm
+import org.gradle.internal.os.OperatingSystem.current
 import org.gradle.jvm.tasks.Jar
+import org.gradle.kotlin.dsl.support.unzipTo
+import org.gradle.kotlin.dsl.support.zipTo
+import java.io.File
 import java.lang.Boolean.TRUE
+import java.net.URI
 import java.nio.file.Path
 
 
-data class JarExecutableCreationConfiguration(
-        val configuration: JarExecutableConfiguration,
-        val runTask: String,
-        val buildTask: String,
-        val dependencyConfiguration: String,
-        val mainClass: String?,
-        val executable: String,
-        val directory: Path,
-        val configurator: Jar.() -> Unit = { },
+data class PackagingCreationConfiguration(
+    val configuration: PackagingConfiguration,
+    val buildTask: String,
+    val dependencyConfiguration: String,
+    val mainClass: String?,
+    val executable: String,
+    val directory: Path,
+    val configurator: Jar.() -> Unit = { },
 )
 
-fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
+fun Project.configurePackaging(configuration: PackagingCreationConfiguration) {
     val jar = configuration.configuration
     tasks.findByPath(configuration.buildTask)?.let { return }
-
-    val buildJar = tasks.register(configuration.buildTask, Jar::class.java) {
+    tasks.register(configuration.buildTask, Jar::class.java) {
         val jarTask = tasks.getByName(JAR)
         val embedded = configurations.getByName(configuration.dependencyConfiguration)
 
@@ -55,11 +59,7 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
 
         dependsOn(jarTask)
 
-        if (jar.beforeBuild) {
-            tasks.getByPath(BUILD).dependsOn(configuration.buildTask)
-        }
-
-        group = JAR
+        group = PACKAGE
 
         isZip64 = true
 
@@ -87,18 +87,54 @@ fun Project.configureJar(configuration: JarExecutableCreationConfiguration) {
         configuration.configurator(this)
 
         jar.buildConfigurator(this)
-    }
 
-    tasks.findByPath(configuration.runTask)?.let { return }
-
-    tasks.register(configuration.runTask, JavaExec::class.java) {
-        dependsOn(buildJar)
-        classpath(buildJar.get().outputs.files)
-        configuration.mainClass?.let(mainClass::set)
-        group = JAR
-        jar.runConfigurator(this)
+        doLast {
+            createPackage(configuration, this@register)
+        }
     }
 }
+
+private fun Project.createPackage(configuration: PackagingCreationConfiguration, jar: Jar) {
+    val output = configuration.directory.resolve(PACKAGE).toFile()
+    val jre = configuration.directory.resolve(JRE).toFile()
+    val jreArchive = jre.resolve(configuration.configuration.jreUrl.substringAfterLast(SLASH)).toPath()
+    var runtime = jre.resolve(RUNTIME)
+    if (output.exists()) output.deleteRecursively()
+    if (!runtime.exists()) {
+        if (jre.exists()) jre.deleteRecursively()
+        runtime.mkdirs()
+        val request = DownloadingRequest(
+            url = URI(configuration.configuration.jreUrl),
+            path = jreArchive,
+            lockName = "$PACKAGE$DOT_LOCK",
+            timeout = PACKAGE_JRE_DOWNLOAD_TIMEOUT
+        )
+        FileDownloadService.downloadFile(request)
+        copy {
+            from(
+                when {
+                    current().isWindows -> zipTree(jreArchive)
+                    else -> tarTree(jreArchive)
+                }
+            )
+            into(runtime)
+        }
+    }
+    runtime = runtime.listFiles()!!.first()
+    exec {
+        commandLine(runtime.resolve(BIN).resolve(JLINK))
+        args(
+            *JLINK_OPTIONS(runtime),
+            output.absolutePath,
+        )
+    }
+    copy {
+        from(jar.archiveFile.get().asFile.absolutePath)
+        into(output)
+    }
+    zipTo(output.parentFile.resolve(configuration.executable + DOT + ZIP), output)
+}
+
 
 private fun Project.addGradleBuildDependencies(configuration: Configuration, jar: Jar) {
     configuration.incoming.resolutionResult.allDependencies {
@@ -118,9 +154,9 @@ private fun Project.addGradleBuildDependencies(configuration: Configuration, jar
             }
 
             project.rootProject
-                    .subprojects
-                    .filter { subProject -> dependencyId.build is ForeignBuildIdentifier && subProject.name == dependencyId.projectName }
-                    .forEach { subProject -> jar.dependsOn(":${subProject.name}:$JAR") }
+                .subprojects
+                .filter { subProject -> dependencyId.build is ForeignBuildIdentifier && subProject.name == dependencyId.projectName }
+                .forEach { subProject -> jar.dependsOn(":${subProject.name}:$JAR") }
         }
     }
 }
