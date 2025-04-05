@@ -17,7 +17,7 @@ const val ART = "art"
 const val JAR = "jar"
 const val ZIP = "zip"
 const val PACKAGE = "package"
-const val MAVEN_REPOSITORY = "https://repsy.io/mvn/antonsh/art-packages/"
+const val MAVEN_REPOSITORY = "https://repo.repsy.io/mvn/antonsh/art-packages/"
 
 const val ANNOTATION_PROCESSOR_CONFIGURATION_NAME = "annotationProcessor"
 const val COMPILE_CLASS_PATH_CONFIGURATION_NAME = "compileClasspath"

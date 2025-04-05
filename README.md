@@ -6,7 +6,7 @@ ART Gradle is a Gradle plugin for configuring and using ART projects.
 ![GitHub repo size](https://img.shields.io/github/repo-size/art-community/art-gradle)
 
 ## Build and Binaries
-Releases are available via [ART Packages](https://repsy.io/mvn/antonsh/art-packages/).
+Releases are available via [ART Packages](https://repo.repsy.io/mvn/antonsh/art-packages/).
 
 ## Requirements
 - Gradle 7+
@@ -30,7 +30,7 @@ settings.gradle.kts:
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven { url = uri("https://repsy.io/mvn/antonsh/art-packages/") }
+        maven { url = uri("https://repo.repsy.io/mvn/antonsh/art-packages/") }
     }
     resolutionStrategy {
         eachPlugin {
